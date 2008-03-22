@@ -1,0 +1,15 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+OpenCapture is a document capture system.
+
+
+= Details =
+
+OpenCapture consists of the following modules:
+  * Import module.
+  * Cognizance module.
+  * Delivery module.
+
+The first release is planned to be used as pass through system.
