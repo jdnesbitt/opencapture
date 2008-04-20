@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BatchClass Name="FFE Carrier Files" ImagePath="C:\Temp" version="0.0.1">
+    <Batch Name="" ID="" CreateDateTime="" ScanUser="">
+        <BatchFields>
+        </BatchFields>
+        <BatchDataFields>
+        </BatchDataFields>
+        <Queues CurrentQueue="">
+            <Queue Name="OCImport" ID="1" CustomPlugin="" />
+            <Queue Name="OCCognizance" ID="2" CustomPlugin="" />
+            <Queue Name="OCDelivery" ID="3" CustomPlugin="net.filterlogic.OpenCapture.alfresco.delivery" />
+        </Queues>
+        <Logging>
+        </Logging>
+        <Documents>
+            <Document Name="Carrier Header" FormID="CARRIER">
+                <IndexDataFields>
+                </IndexDataFields>
+                <Pages>
+                </Pages>
+                <IndexFields>
+                    <IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />
+                    <IndexField Name="CUSTOMER_ID" Type="N" Value="" Stickey="Y" />
+                    <IndexField Name="MC_NUMBER" Type="N" Value="" Stickey="Y" />
+                </IndexFields>
+                <Zones>
+                    <Zone Name="FORMID" Type="CODE39" X="393" Y="218" W="851" H="300" MinAccuracy="" FieldType="FormID"/>
+                    <Zone Name="CUSTOMER_NAME" Type="CODE39" X="162" Y="676" W="1386" H="306" MinAccuracy="" FieldType="Index"/>
+                    <Zone Name="CUSTOMER_ID" Type="CODE39" X="572" Y="984" W="603" H="265" MinAccuracy="" FieldType="Index"/>
+                    <Zone Name="MC_NUMBER" Type="CODE39" X="586" Y="1265" W="535" H="282" MinAccuracy="" FieldType="Index"/>
+                </Zones>
+            </Document>
+            <Document Name="Document Header" FormID="DOCUMENT">
+                <IndexDataFields>
+                </IndexDataFields>
+                <Pages>
+                </Pages>
+                <IndexFields>
+                    <IndexField Name="DOC_TYPE" Type="S" Value="" Stickey="N" />
+                </IndexFields>
+                <Zones>
+                    <Zone Name="FORMID" Type="CODE39" X="324" Y="192" W="1019" H="355" MinAccuracy="" FieldType="FormID"/>
+                    <Zone Name="DOC_TYPE" Type="CODE39" X="273" Y="710" W="1150" H="349" MinAccuracy="" FieldType="Index"/>
+                </Zones>
+            </Document>
+        </Documents>
+    </Batch>
+</BatchClass>
