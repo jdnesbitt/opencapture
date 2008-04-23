@@ -18,7 +18,7 @@ package net.filterlogic.util;
 
 import java.util.Date;
 import java.text.DateFormat;
-import java.text.ParseException;
+//import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -28,6 +28,22 @@ import java.text.SimpleDateFormat;
 public class DateUtil 
 {
 
+    /**
+     * Returns the current date and or time in the specified format.
+     * @param format Format of date to be returned.
+     * @return String containing current date.
+     */
+    public static String getDateTime(String format)
+    {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+    
+    /**
+     * Returns the curent date time in yyyy/MM/dd HH:mm:ss format.
+     * @return String containg current date and time.
+     */
     public static String getDateTime() 
     {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -35,6 +51,13 @@ public class DateUtil
         return dateFormat.format(date);
     } 
     
+    /**
+     * Convert string date to Date object.
+     * @param date String date.
+     * @param dateFormat Format of date parameter.
+     * @return Date object.
+     * @throws java.text.ParseException
+     */
     public static Date toDate(String date, String dateFormat) throws java.text.ParseException
     {
         return new SimpleDateFormat(dateFormat).parse(date);

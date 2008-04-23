@@ -21,7 +21,11 @@ public class Tester {
         try
         {
             //batch.CreateBatch("FFE Carrier Files","Test");
-            batch.getNextBatch("OCDelivery", 1);
+            batch.getNextBatch("OCDelivery");
+            
+            System.out.println(batch.getBatchName());
+            
+            
         }
         catch(OpenCaptureException e)
         {

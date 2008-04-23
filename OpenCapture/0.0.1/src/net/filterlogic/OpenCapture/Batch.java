@@ -16,16 +16,11 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture;
 
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Hashtable;
-import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Query;
 import net.filterlogic.OpenCapture.data.DBManager;
 import net.filterlogic.util.xml.XMLParser;
-//import java.net.URI;
-//import java.net.URISyntaxException;
 import net.filterlogic.util.DateUtil;
 
 /**
@@ -44,6 +39,8 @@ public class Batch
     private Queues queues;
     private BatchFields  batchFields;
     private BatchFields  batchDataFields;
+    private Logging logging;
+    private Log log;
     
     private DBManager dbm = new DBManager();
     
@@ -62,11 +59,16 @@ public class Batch
     private String ID = "";
     private Queue currentQueue = new Queue();
     
+    private long batchID = 0;
+    
     private boolean fsLocked = false;
     private boolean dbLocked = false;
    
+    private String moduleID = "";
+
     public Batch()
     {
+        logging = new Logging();
     }
     
     /**
@@ -157,16 +159,19 @@ public class Batch
         }
 
         // moark as locked in db (being processed)
-        this.dbLocked = true;
+        //this.dbLocked = true;
         
         // kill xml parser obj
         xmlParser = null;
         
-        OpenBatch(id);
+        //OpenBatch(id);
     }
 
     protected void loadBatch(long batchID) throws OpenCaptureException
     {
+        // set batch id
+        this.batchID = batchID;
+        
         // set rootpath if empty
         if(this.rootPath.length()<1)
             this.rootPath = OpenCaptureCommon.getRootPath();
@@ -193,14 +198,14 @@ public class Batch
      */
     public void getNextBatch(String moduleID) throws OpenCaptureException
     {
-        long batchID = 0;
-        
+        this.moduleID = moduleID;
+
         try
         {
             dbm = new DBManager();
             
             batchID = dbm.getNextBatch(moduleID);
-
+            
             OpenBatch(batchID);
         }
         catch(Exception e)
@@ -216,7 +221,6 @@ public class Batch
      */
     protected void OpenBatch(long batchID) throws OpenCaptureException
     {
-
         if(OpenCaptureCommon.isBatchXmlFileLocked(batchID))
             throw new OpenCaptureException("Batch is already being processed!");
 
@@ -236,9 +240,50 @@ public class Batch
         queues = new Queues(xmlParser);
 
         documents = new Documents(xmlParser);
-        
+
         // lock batch xml file
         OpenCaptureCommon.lockBatchXmlFile(batchID);
+
+        // make sure this isn't a create batch
+        if(moduleID.length()>0)
+            log = new Log(this.moduleID,"");
+    }
+
+    public void CloseBatch() throws OpenCaptureException
+    {
+        long id = 0;
+
+        net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
+
+        queues.moveNextQueue();
+
+        // set end time
+        log.setEndDateTime(DateUtil.getDateTime());
+
+        // add log to logging object
+        logging.addLog(log);
+
+        // if no more queues, write output log
+        if(this.currentQueue.getCurrentQueue().length()<1)
+        {
+            // unlock batch file.
+            OpenCaptureCommon.unlockBatchXmlFile(batchID);
+
+            // log batch
+            OpenCaptureCommon.writeBatchLog(logging);
+
+            // remove lock file
+            OpenCaptureCommon.unlockBatchXmlFile(batchID);
+
+            // delete batch 
+            dbm.deleteBatch(batchID);
+        }
+        else
+        {
+            id = dbm.getQueueIDByName(this.currentQueue.getQueueName());
+
+            dbm.setBatchQueueByQueueID(batchID, id);
+        }
     }
 
     /**
@@ -250,46 +295,82 @@ public class Batch
         return batchClass;
     }
 
+    /**
+     * 
+     * @return
+     */
     public Queue getQueue()
     {
         return currentQueue;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getBatchName()
     {
         return BatchName;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getCreationDateTime()
     {
         return CreationDateTime;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getCreateUser()
     {
         return CreateUser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getID()
     {
         return ID;
     }
 
+    /**
+     * 
+     * @param BatchName
+     */
     protected void setBatchName(String BatchName)
     {
         this.BatchName = BatchName;
     }
 
+    /**
+     * 
+     * @param CreationDateTime
+     */
     protected void setCreationDateTime(String CreationDateTime)
     {
         this.CreationDateTime = CreationDateTime;
     }
 
+    /**
+     * 
+     * @param CreateUser
+     */
     protected void setCreateUser(String CreateUser)
     {
         this.CreateUser = CreateUser;
     }
 
+    /**
+     * 
+     * @param ID
+     */
     protected void setID(String ID)
     {
         this.ID = ID;

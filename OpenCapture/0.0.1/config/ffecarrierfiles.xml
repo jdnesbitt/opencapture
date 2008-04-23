@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BatchClass Name="FFE Carrier Files" ImagePath="C:\Temp" version="0.0.1">
+<BatchClass Name="FFE Carrier Files" ImagePath="C:\Test\OpenCapture\FFE\Images" version="0.0.1" Priority="7">
     <Batch Name="" ID="" CreateDateTime="" ScanUser="">
         <BatchFields>
         </BatchFields>

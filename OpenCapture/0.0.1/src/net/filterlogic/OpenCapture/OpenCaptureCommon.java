@@ -16,6 +16,14 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture;
 
+//import java.util.HashMap;
+//import net.filterlogic.util.DateUtil;
+import java.io.File;
+import java.util.List;
+import net.filterlogic.io.Path;
+import net.filterlogic.io.ReadWriteTextFile;
+import net.filterlogic.util.DateUtil;
+
 /**
  *
  * @author dnesbitt
@@ -26,6 +34,7 @@ public class OpenCaptureCommon
     public static String BATCH_CLASS_NAME = "//BatchClass/@Name";
     public static String BATCH_CLASS_IMAGE_PATH = "//BatchClass/@ImagePath";
     public static String BATCH_CLASS_VERSION = "//BatchClass/@version";
+    public static String BATCH_CLASS_PRIORITY = "//BatchClass/@Priority";
 
     public static String BATCH_NAME = "//BatchClass/Batch/@Name";
 
@@ -37,6 +46,7 @@ public class OpenCaptureCommon
     public static String QUEUES = "//BatchClass/Batch/Queues/*";
     public static String DOCUMENTS = "//BatchClass/Batch/Documents/Document";
     public static String DOCUMENT = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]";
+    
     public static String INDEX_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField";
     public static String INDEX_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
     public static String INDEX_DATA_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexDataField";
@@ -44,13 +54,18 @@ public class OpenCaptureCommon
     public static String ZONES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone";
     public static String ZONE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone[@Name=\"<2>\"]";
 
+    public static String LOG_FIELDS = "//BatchClass/Batch/Logging";
+
     public static String OC_NAME_TAG = "Name";
     public static String OC_DOCUMENT_FORMID_TAG = "FormID";
+    public static String OC_LOG_TAG = "Log";
 
     public static int BATCH_STATUS_READY = 0;
     public static int BATCH_STATUS_PROCESSING = 10;
     public static int BATCH_STATUS_ERROR = 20;
     public static int BATCH_STATUS_HOLD = 30;
+    
+    private static String LOG_FOLDER = "Logs";
 
     public static String BATHCXML_FOLDER_NAME = "BatchXML";
 
@@ -204,5 +219,45 @@ public class OpenCaptureCommon
         }
         
         return batchClassXmlFile;
+    }
+    
+    protected static void writeBatchLog(Logging logging) throws OpenCaptureException
+    {
+        List logs = logging.getLogs();
+        String logEntries = "";
+        String rootPath = "";
+
+        for(int i=0;i<logs.size();i++)
+        {
+            Log log = (Log)logs.get(i);
+            
+            if(logEntries.length()>0)
+                logEntries += "\n";
+
+            logEntries += log.getBatchLogEntry();
+        }
+
+        rootPath = getRootPath() + LOG_FOLDER;
+
+        if(!Path.createPath(rootPath))
+            throw new OpenCaptureException("Unable to create log folder!");
+
+        ReadWriteTextFile rwt = new ReadWriteTextFile();
+        String today = DateUtil.getDateTime("MMyyyy");
+
+        File file = new File(rootPath + PATH_SEPARATOR + today + ".log");
+
+        try
+        {
+            rwt.setContents(file, logEntries);
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to write batch log. " + e.toString());
+        }
+        finally
+        {
+            rwt = null;
+        }
     }
 }
