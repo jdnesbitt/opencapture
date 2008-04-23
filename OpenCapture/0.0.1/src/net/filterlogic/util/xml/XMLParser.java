@@ -30,6 +30,7 @@ import org.jaxen.dom.DOMXPath;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import net.filterlogic.util.NamedValueList;
 
 /**
  *
@@ -132,6 +133,49 @@ public class XMLParser
     }
     
     /**
+     * Add xml node with or without attributes.
+     * @param xPath XPath to where node should be added.
+     * @param nodeName Name of new node.
+     * @param attributes NamedNodeList of attributes.
+     * @throws java.lang.Exception
+     */
+    public void addValue(String xPath, String nodeName, NamedValueList attributes) throws Exception
+    {
+        Element elem;
+        
+        if(nodeName.trim().length()<1 || xPath.trim().length()<1)
+            throw new Exception("Either XPath, NodeName or both are empty!");
+        
+        List attList = null;
+        
+        Element newNode = this.doc.createElement(nodeName);
+        
+        // make sure there are values in attribute
+        if(attributes.size()>0)
+            attList = attributes.getOrderedNameList();
+     
+        if(attList != null)
+        {
+            // loop through attributes
+            for(int i=0;i<attList.size();i++)
+            {
+                String attName = (String)attList.get(i);
+                String attVal = (String)attributes.get(attName);
+                
+                // add attribute to element
+                newNode.setAttribute(attName, attVal);
+            }
+        }
+            
+        elem = getNode(xPath);
+        
+        if(elem == null)
+            throw new Exception("XPath[" + xPath + "] not found!");
+
+        elem.appendChild(newNode);
+    }
+
+    /**
      * Sets value of tag or attribute at xPath.
      * @param xPath
      * @param value
@@ -140,7 +184,7 @@ public class XMLParser
     public void setValue(String xPath,String value) throws Exception
     {
         Element result = null;
-        
+
         try
         {
             try
@@ -156,7 +200,7 @@ public class XMLParser
             
             if(result == null)
                 throw new Exception("Unable to locate XPath[" + xPath + "]");
-            
+
             result.setNodeValue(value);
         }
         catch(Exception e)
@@ -173,7 +217,7 @@ public class XMLParser
     public List getValues(String xPath)
     {
         List result;
-        List values = new ArrayList();
+        List <String>values = new ArrayList<String>();
         try
         {
             XPath xpath = new DOMXPath(xPath);
@@ -195,7 +239,7 @@ public class XMLParser
     public List getNodeList(String xPath)
     {
         List result;
-        List values = new ArrayList();
+        List <Map>values = new ArrayList<Map>();
         
         try
         {
@@ -211,7 +255,7 @@ public class XMLParser
         {
             Node elem = (Node)result.get(i);
 
-            Map map = new HashMap();
+            Map <String,String> map = new HashMap<String,String>();
             
             for(int m=0;m<elem.getAttributes().getLength();m++)
             {
@@ -251,6 +295,16 @@ public class XMLParser
         return result;
     }
     
+    public Element getNode(String xPath) throws Exception
+    {
+        Element elem;
+
+        XPath xpath = new DOMXPath(xPath);
+        elem = (Element)xpath.selectSingleNode(this.doc);
+
+        return elem;
+    }
+    
     public static void main(String[] argv)
     {
         try
@@ -264,7 +318,6 @@ public class XMLParser
             }
             else
             {
-                //filePath = "C:\\Code\\Java\\FaxTrax\\GetDocumentList.xml";
                 System.out.println("\n\nInvalid parameters.  \n\nusage: java -cp FaxTrax.jar com.jpmchase.util.xml.XMLParser <xml file path> <xpath>\n");
                 System.exit(0);
             }

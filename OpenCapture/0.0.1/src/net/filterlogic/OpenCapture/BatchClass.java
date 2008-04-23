@@ -18,13 +18,15 @@ public class BatchClass
     private String Description = "";
     private String ImagePath = "";
     private String Version = "";
+    private String Priority = "";
     
     public BatchClass(XMLParser newBatch) throws OpenCaptureException
     {
         this.BatchClassName = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_NAME);
         this.ImagePath = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_IMAGE_PATH);
         this.Version = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_VERSION);
-        
+        this.Priority = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_PRIORITY);
+
         if(this.ImagePath.length()<1)
             throw new OpenCaptureException("Image path not set.");
         
@@ -90,6 +92,14 @@ public class BatchClass
     protected void setVersion(String Version)
     {
         this.Version = Version;
+    }
+
+    public String getPriority() {
+        return Priority;
+    }
+
+    public void setPriority(String Priority) {
+        this.Priority = Priority;
     }
     
     

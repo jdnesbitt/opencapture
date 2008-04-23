@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package net.filterlogic.OpenCapture.data;
 
 import java.io.Serializable;
@@ -25,7 +24,24 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "batches")
-@NamedQueries({@NamedQuery(name = "Batches.findByBatchId", query = "SELECT b FROM Batches b WHERE b.batchId = :batchId"), @NamedQuery(name = "Batches.findByBatchName", query = "SELECT b FROM Batches b WHERE b.batchName = :batchName"), @NamedQuery(name = "Batches.findByBatchClassId", query = "SELECT b FROM Batches b WHERE b.batchClassId = :batchClassId"), @NamedQuery(name = "Batches.findByScanDatetime", query = "SELECT b FROM Batches b WHERE b.scanDatetime = :scanDatetime"), @NamedQuery(name = "Batches.findBySiteId", query = "SELECT b FROM Batches b WHERE b.siteId = :siteId"), @NamedQuery(name = "Batches.findByBatchState", query = "SELECT b FROM Batches b WHERE b.batchState = :batchState"), @NamedQuery(name = "Batches.findByErrorNo", query = "SELECT b FROM Batches b WHERE b.errorNo = :errorNo"), @NamedQuery(name = "Batches.findByBatchDesc", query = "SELECT b FROM Batches b WHERE b.batchDesc = :batchDesc"), @NamedQuery(name = "Batches.findByPriority", query = "SELECT b FROM Batches b WHERE b.priority = :priority"), @NamedQuery(name = "Batches.findByQueueId", query = "SELECT b FROM Batches b WHERE b.queueId = :queueId"), @NamedQuery(name = "Batches.getNextBatchByQueueId", query = "SELECT b FROM Batches where b.queue_id = :queueId and batch_state = 0 order by scan_datetime,priority desc limit 1")})
+@NamedQueries(
+{
+    @NamedQuery(name = "Batches.findByBatchId", query = "SELECT b FROM Batches b WHERE b.batchId = :batchId"), 
+    @NamedQuery(name = "Batches.findByBatchName", query = "SELECT b FROM Batches b WHERE b.batchName = :batchName"), 
+    @NamedQuery(name = "Batches.findByBatchClassId", query = "SELECT b FROM Batches b WHERE b.batchClassId = :batchClassId"), 
+    @NamedQuery(name = "Batches.findByScanDatetime", query = "SELECT b FROM Batches b WHERE b.scanDatetime = :scanDatetime"), 
+    @NamedQuery(name = "Batches.findBySiteId", query = "SELECT b FROM Batches b WHERE b.siteId = :siteId"), 
+    @NamedQuery(name = "Batches.findByBatchState", query = "SELECT b FROM Batches b WHERE b.batchState = :batchState"), 
+    @NamedQuery(name = "Batches.findByErrorNo", query = "SELECT b FROM Batches b WHERE b.errorNo = :errorNo"), 
+    @NamedQuery(name = "Batches.findByBatchDesc", query = "SELECT b FROM Batches b WHERE b.batchDesc = :batchDesc"), 
+    @NamedQuery(name = "Batches.findByPriority", query = "SELECT b FROM Batches b WHERE b.priority = :priority"), 
+    @NamedQuery(name = "Batches.findByQueueId", query = "SELECT b FROM Batches b WHERE b.queueId = :queueId"), 
+    @NamedQuery(name = "Batches.getNextBatchByQueueId", query = "SELECT b FROM Batches where b.queue_id = :queueId and batch_state = 0 order by scan_datetime,priority desc limit 1"),
+    @NamedQuery(name = "Batches.updateBatchStatusByBatchID", query = "UPDATE b Batches set b.queue_id = :queueId WHERE b.batchId = :batchId"),
+    @NamedQuery(name = "Batches.removeBatchByBatchID", query = "Delete FROM Batches b WHERE b.batchId = :batchId")
+})
+    
+
 public class Batches implements Serializable {
     private static final long serialVersionUID = 1L;
 

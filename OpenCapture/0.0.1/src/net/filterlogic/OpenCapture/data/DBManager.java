@@ -16,16 +16,13 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture.data;
 
-import java.lang.reflect.Method;
 import java.util.Date;
-import java.lang.*;
 import java.lang.reflect.*;
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import net.filterlogic.OpenCapture.OpenCaptureException;
 
 import java.util.List;
-import java.util.HashMap;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -47,21 +44,93 @@ public class DBManager
         
     }
     
+    //Batches.removeBatchByBatchID
+    public void deleteBatch(long batchID) throws OpenCaptureException
+    {
+
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            qry = entMgr.createNamedQuery("Batches.updateBatchStatusByBatchID");
+            
+            qry.setParameter("batchId", batchID);
+
+            qry.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to delete batch! " + e.toString());
+        }
+    }
+    
+    public void setBatchQueueByQueueID(long batchID, long queueID) throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+            
+            qry = entMgr.createNamedQuery("Batches.updateBatchStatusByBatchID");
+            
+            qry.setParameter("batchId", batchID);
+            qry.setParameter("queueId", queueID);
+  
+            qry.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to set batch queue using queue id. " + e.toString());
+        }
+    }
+    
+    /**
+     * Get queue id specified by queue name.
+     * @param queueName Name of queue to retrieve id.
+     * @return Return long containing queue id.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public long getQueueIDByName(String queueName) throws OpenCaptureException
+    {
+        List list;
+        Queues queues;
+        
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+            
+            qry = entMgr.createNamedQuery("Queues.findByQueueName").setParameter("queueName", queueName);
+
+            list = qry.getResultList();
+
+            // if list not empty, get queue object
+            if(list.size()>0)
+                queues  = (Queues)list.get(0);
+            else
+                throw new OpenCaptureException("Invalid queue name[" + queueName + "]!");
+            
+            return queues.getQueueId();
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            queues = null;
+            list = null;
+        }
+    }
+    
     public long getNextBatch(String moduleID) throws OpenCaptureException
     {
         Queues queues;
         Batches batches;
         List list;
-        HashMap map;
 
         try
         {
             entMgr = entMgrFac.createEntityManager();
             
-//            Queues queues = new Queues();
-//            queues.setQueueName(moduleID);
-
-            //entMgr.persist(queues);
             qry = entMgr.createNamedQuery("Queues.findByQueueName").setParameter("queueName", moduleID);
 
             list = qry.getResultList();
@@ -76,6 +145,7 @@ public class DBManager
             qry = entMgr.createNamedQuery("Batches.getNextBatchByQueueId").setParameter("queueId", queues.getQueueId());
             list = qry.getResultList();
             
+            // if list isn't empty
             if(list.size()>0)
                 batches = (Batches)list.get(0);
             else
@@ -86,6 +156,12 @@ public class DBManager
         catch(Exception e)
         {
             throw new OpenCaptureException("Unable to getQueueByModuleID[" + moduleID + "].  " + e.toString());
+        }
+        finally
+        {
+            list = null;
+            queues = null;
+            batches = null;
         }
     }
 

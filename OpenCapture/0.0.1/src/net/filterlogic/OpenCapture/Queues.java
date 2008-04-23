@@ -49,6 +49,9 @@ public class Queues
      */
     public void moveNextQueue() throws OpenCaptureException
     {
+        // clear out queue name.
+        this.currentQueue = "";
+
         try
         {
             for(int i=0;i<queues.size();i++)
