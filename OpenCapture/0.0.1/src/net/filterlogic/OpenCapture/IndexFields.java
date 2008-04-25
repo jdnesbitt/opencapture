@@ -38,7 +38,7 @@ public class IndexFields
     /**
      * Constructor 
      * @param batch XMLParser object.
-     * @param documentName
+     * @param xPath Path to index fields.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
     public IndexFields(XMLParser batch,String xPath) throws OpenCaptureException
@@ -70,7 +70,12 @@ public class IndexFields
             throw new OpenCaptureException(e.toString());
         }
     }
-    
+  
+    /**
+     * Get index field.
+     * @param indexFieldName Index field name.
+     * @return
+     */
     public IndexField getIndexField(String indexFieldName)
     {
         IndexField ndxField = (IndexField)indexFields.get(indexFieldName);
@@ -81,6 +86,11 @@ public class IndexFields
         return ndxField;
     }
     
+    /**
+     * Set index field.
+     * @param indexField IndexField object to save.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public void setIndexField(IndexField indexField) throws OpenCaptureException
     {
         String indexFieldName = indexField.getName();
@@ -91,6 +101,10 @@ public class IndexFields
         indexFields.put(indexFieldName, indexField);
     }
     
+    /**
+     * Get count of IndexFields.
+     * @return Returns count.
+     */
     public int Count()
     {
         return indexFields.size();
