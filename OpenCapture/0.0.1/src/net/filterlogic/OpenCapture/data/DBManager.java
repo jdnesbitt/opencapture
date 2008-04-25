@@ -39,12 +39,19 @@ public class DBManager
     private Batches tblBatches;
     private BatchClass tblBatchClasses;
     
+    /**
+     * Default constructor.
+     */
     public DBManager()
     {
         
     }
     
-    //Batches.removeBatchByBatchID
+    /**
+     * Delete batch using batch id as key.
+     * @param batchID Batch id.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public void deleteBatch(long batchID) throws OpenCaptureException
     {
 
@@ -64,16 +71,47 @@ public class DBManager
         }
     }
     
-    public void setBatchQueueByQueueID(long batchID, long queueID) throws OpenCaptureException
+    /**
+     * Set batch queue using batch id.
+     * @param batchID Batch id.
+     * @param queueID Id of queue to move batch to.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void setBatchQueueByBatchIDQueueID(long batchID, long queueID) throws OpenCaptureException
     {
         try
         {
             entMgr = entMgrFac.createEntityManager();
             
-            qry = entMgr.createNamedQuery("Batches.updateBatchStatusByBatchID");
+            qry = entMgr.createNamedQuery("Batches.updateBatchQueueByBatchIDQueueID");
             
             qry.setParameter("batchId", batchID);
             qry.setParameter("queueId", queueID);
+  
+            qry.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to set batch queue using queue id. " + e.toString());
+        }
+    }
+    
+    /**
+     * Set batch state using batch id as key.
+     * @param batchID Batch id.
+     * @param stateID Batch state id located in OpenCaptureCommon.BATCH_STATE....
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void setBatchStateByBatchID(long batchID, long stateID) throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+            
+            qry = entMgr.createNamedQuery("Batches.updateBatchStateByBatchID");
+            
+            qry.setParameter("batchId", batchID);
+            qry.setParameter("batchState", stateID);
   
             qry.executeUpdate();
         }
@@ -121,6 +159,12 @@ public class DBManager
         }
     }
     
+    /**
+     * Get next batch in modules queue.
+     * @param moduleID ID of module to retrieve batch for.
+     * @return Returns batch id.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public long getNextBatch(String moduleID) throws OpenCaptureException
     {
         Queues queues;
@@ -165,6 +209,12 @@ public class DBManager
         }
     }
 
+    /**
+     * Get batch using id as key.
+     * @param batchID Batch id.
+     * @return Returns a list of batches.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public List getBatchByID(long batchID) throws OpenCaptureException
     {
         
@@ -186,6 +236,18 @@ public class DBManager
         }
     }
     
+    /**
+     * Create a new batch.
+     * @param batchId Set this to 0.
+     * @param batchName Name of new batch.
+     * @param batchClassId Id of batch class the batch is assigned to.
+     * @param scanDateTime DateTime batch is created.
+     * @param siteId Id of site that is creating batch.
+     * @param batchState State of batch when creating (usually OpenCaptureCommon.BATCH_STATE_READY).
+     * @param queueId Id of starting queue.
+     * @return Return new batch id.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public long createBatch(Long batchId, String batchName, long batchClassId, Date scanDateTime, int siteId, 
                                                                 int batchState, long queueId) throws OpenCaptureException
     {
@@ -216,11 +278,24 @@ public class DBManager
         }
     }
 
+    /**
+     * Get batch row.
+     * @return
+     */
     public Batches getBatchRow()
     {
         return tblBatches;
     }
     
+    /**
+     * Create new batch class.
+     * @param batchClassID Set this to 0.
+     * @param batchClassName Name of new batch class.
+     * @param batchDescr Description of batch class.
+     * @param imagePath Path when scanned/imported images will be stored.
+     * @return Return id of new batch class.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public long createBatchClass(long batchClassID, String batchClassName, String batchDescr, String imagePath) throws OpenCaptureException
     {
         
