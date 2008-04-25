@@ -37,7 +37,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Batches.findByPriority", query = "SELECT b FROM Batches b WHERE b.priority = :priority"), 
     @NamedQuery(name = "Batches.findByQueueId", query = "SELECT b FROM Batches b WHERE b.queueId = :queueId"), 
     @NamedQuery(name = "Batches.getNextBatchByQueueId", query = "SELECT b FROM Batches where b.queue_id = :queueId and batch_state = 0 order by scan_datetime,priority desc limit 1"),
-    @NamedQuery(name = "Batches.updateBatchStatusByBatchID", query = "UPDATE b Batches set b.queue_id = :queueId WHERE b.batchId = :batchId"),
+    @NamedQuery(name = "Batches.updateBatchQueueByBatchIDQueueID", query = "UPDATE b Batches set b.queue_id = :queueId WHERE b.batchId = :batchId"),
+    @NamedQuery(name = "Batches.updateBatchStateByBatchID", query = "UPDATE b Batches set b.batch_state = :batchState WHERE b.batchId = :batchId"),
     @NamedQuery(name = "Batches.removeBatchByBatchID", query = "Delete FROM Batches b WHERE b.batchId = :batchId")
 })
     
