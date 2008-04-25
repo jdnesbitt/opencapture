@@ -24,7 +24,9 @@ import net.filterlogic.util.xml.XMLParser;
 import net.filterlogic.util.DateUtil;
 
 /**
- *
+ * The Batch class represents a batch within the OpenCapture.  When a batch is loaded
+ * this object is populated.  All operations on the batch will start with the Batch 
+ * object.
  * @author dnesbitt
  */
 public class Batch 
@@ -111,7 +113,7 @@ public class Batch
 
             // create batch db entry and set status to in use.
             id = dbm.createBatch(Long.parseLong("0"), batchName, Long.parseLong("1"),
-                                                                            scanDate , 1,OpenCaptureCommon.BATCH_STATUS_PROCESSING, 
+                                                                            scanDate , 1,OpenCaptureCommon.BATCH_STATUS_READY, 
                                                                             Long.parseLong("1"));
 
             // set batch xml file name which is also the folder name
@@ -155,18 +157,24 @@ public class Batch
         }
         catch(Exception dbe)
         {
+            logException(dbe.toString());
             throw new OpenCaptureException(dbe.toString());
         }
 
-        // moark as locked in db (being processed)
-        //this.dbLocked = true;
-        
         // kill xml parser obj
         xmlParser = null;
-        
-        //OpenBatch(id);
     }
 
+    /**
+     * Log error message and add log object to logging.
+     * @param message
+     */
+    protected void logException(String message)
+    {
+        log.setMessage(message);
+        logging.addLog(log);
+    }
+    
     protected void loadBatch(long batchID) throws OpenCaptureException
     {
         // set batch id
@@ -210,6 +218,7 @@ public class Batch
         }
         catch(Exception e)
         {
+            logException(e.toString());
             throw new OpenCaptureException(e.toString());
         }
     }
@@ -221,8 +230,14 @@ public class Batch
      */
     protected void OpenBatch(long batchID) throws OpenCaptureException
     {
+        //DBManager dbm = new DBManager();
+        
+        // of batch already locked, error.
         if(OpenCaptureCommon.isBatchXmlFileLocked(batchID))
             throw new OpenCaptureException("Batch is already being processed!");
+
+        // set batch state in db to processing.
+        dbm.setBatchStateByBatchID(batchID, OpenCaptureCommon.BATCH_STATUS_PROCESSING);
 
         // load batch xml
         loadBatch(batchID);
@@ -244,17 +259,22 @@ public class Batch
         // lock batch xml file
         OpenCaptureCommon.lockBatchXmlFile(batchID);
 
-        // make sure this isn't a create batch
+        // make sure this isn't a create batch, then add new log entry.
         if(moduleID.length()>0)
             log = new Log(this.moduleID,"");
     }
 
+    /**
+     * Close batch.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public void CloseBatch() throws OpenCaptureException
     {
         long id = 0;
 
         net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
 
+        // move batch to next queue.
         queues.moveNextQueue();
 
         // set end time
@@ -266,9 +286,6 @@ public class Batch
         // if no more queues, write output log
         if(this.currentQueue.getCurrentQueue().length()<1)
         {
-            // unlock batch file.
-            OpenCaptureCommon.unlockBatchXmlFile(batchID);
-
             // log batch
             OpenCaptureCommon.writeBatchLog(logging);
 
@@ -280,10 +297,15 @@ public class Batch
         }
         else
         {
+            // get id of next queue for batch
             id = dbm.getQueueIDByName(this.currentQueue.getQueueName());
 
-            dbm.setBatchQueueByQueueID(batchID, id);
+            // set batch to next queue
+            dbm.setBatchQueueByBatchIDQueueID(batchID, id);
         }
+
+        // unlock batch file.
+        OpenCaptureCommon.unlockBatchXmlFile(batchID);
     }
 
     /**
