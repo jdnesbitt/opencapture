@@ -20,6 +20,7 @@ import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.List;
 import net.filterlogic.util.xml.XMLParser;
+import net.filterlogic.util.NamedValueList;
 
 /**
  *
@@ -28,7 +29,7 @@ import net.filterlogic.util.xml.XMLParser;
 public class Documents 
 {
     //private Hashtable <String,Document> documents = new Hashtable<String,Document>();
-    private Hashtable<String,Document> documents = new Hashtable<String,Document>();
+    private NamedValueList<String,Document> documents = new NamedValueList<String,Document>();
     
     public Documents(XMLParser batch) throws OpenCaptureException
     {
@@ -56,10 +57,58 @@ public class Documents
         }
     }
     
+    /**
+     * Get the named document.
+     * @param documentName Name of the document.
+     * @return Document object.
+     */
     public Document getDocument(String documentName)
     {
-        Document document = documents.get(documentName);
+        Document document = (Document)documents.get(documentName);
         
         return document;
+    }
+
+    /**
+     * Get count of documents.
+     * @return Count of documents.
+     */
+    public int Count()
+    {
+        return documents.size();
+    }
+
+    /**
+     * Return batch xml.
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+        
+        List list = documents.getOrderedNameList();
+        
+        for(int i=0;i<list.size();i++)
+        {
+            String name = (String)list.get(i);
+            Document document = (Document)documents.get(name);
+
+            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\">\n";
+            xml += "<IndexDataFields>\n";
+            xml += document.getIndexDataFields().getXML();
+            xml += "</IndexDataFields>";
+            xml += "<Pages>\n";
+            xml += document.getPages().getXML();
+            xml += "</Pages>\n";
+            xml += "<IndexFields>\n";
+            xml += document.getIndexFields().getXML();
+            xml += "</IndexFields>\n";
+            xml += "<Zones>\n";
+            xml += document.getZones().getXML();
+            xml += "</Zones>\n";
+            xml += "</Document>";
+        }
+        
+        return xml;
     }
 }

@@ -177,4 +177,23 @@ public class Queues
 
         return queue;
     }
+
+    /**
+     * Return batch xml.
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+
+        for(int i=0;i<queues.size();i++)
+        {
+            Queue queue = (Queue)queues.get(i);
+
+            xml += "<Queue Name=\"" + queue.getQueueName() + "\" ID=\"" + queue.getID() + 
+                    "\" CustomPlugin=\"" + queue.getPluginID() + "\" />\n";
+        }
+
+        return xml;
+    }
 }

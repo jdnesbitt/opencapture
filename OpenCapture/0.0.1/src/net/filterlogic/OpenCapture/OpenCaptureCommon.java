@@ -40,8 +40,8 @@ public class OpenCaptureCommon
 
     public static String BATCH_FIELDS = "//BatchClass/Batch/BatchFields/BatchField";
     public static String BATCH_FIELD = "//BatchClass/Batch/BatchFields/BatchField[@Name=\"<1>\"]";
-    public static String BATCH_DATA_FIELDS = "//BatchClass/Batch/BatchDataFields/BatchDataField";
-    public static String BATCH_DATA_FIELD = "//BatchClass/Batch/BatchDataFields/BatchDataField[@Name=\"<1>\"]";
+    public static String BATCH_DATA_FIELDS = "//BatchClass/Batch/BatchDataFields/BatchField";
+    public static String BATCH_DATA_FIELD = "//BatchClass/Batch/BatchDataFields/BatchField[@Name=\"<1>\"]";
 
     public static String QUEUES = "//BatchClass/Batch/Queues/*";
     public static String DOCUMENTS = "//BatchClass/Batch/Documents/Document";
@@ -49,10 +49,12 @@ public class OpenCaptureCommon
     
     public static String INDEX_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField";
     public static String INDEX_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
-    public static String INDEX_DATA_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexDataField";
-    public static String INDEX_DATA_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexDataField[@Name=\"<2>\"]";
+    public static String INDEX_DATA_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexField";
+    public static String INDEX_DATA_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexField[@Name=\"<2>\"]";
     public static String ZONES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone";
     public static String ZONE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone[@Name=\"<2>\"]";
+    public static String PAGES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page";
+    public static String PAGE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page[@Name=\"<2>\"]";
 
     public static String LOG_FIELDS = "//BatchClass/Batch/Logging";
 

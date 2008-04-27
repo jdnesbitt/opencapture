@@ -29,7 +29,8 @@ public class Document
     private IndexFields indexFields;
     private IndexFields indexDataFields;
     private Zones zones;
-    
+    private Pages pages;
+
     private String Name = "";
     private String formID = "";
 
@@ -73,6 +74,10 @@ public class Document
 
             // get zones for this document
             zones = new Zones(batch, xPath);
+            
+            // get pages
+            xPath = OpenCaptureCommon.PAGES.replaceAll("<1>", documentName);
+            pages = new Pages(batch, xPath);
         }
         catch(Exception e)
         {
@@ -106,6 +111,20 @@ public class Document
     {
         this.Name = Name;
     }
-    
-    
+
+    public String getFormID() {
+        return formID;
+    }
+
+    public void setFormID(String formID) {
+        this.formID = formID;
+    }
+
+    public Zones getZones() {
+        return zones;
+    }
+
+    public Pages getPages() {
+        return pages;
+    }
 }

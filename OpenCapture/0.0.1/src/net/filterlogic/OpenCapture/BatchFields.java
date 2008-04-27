@@ -17,6 +17,7 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture;
 
 import net.filterlogic.util.xml.XMLParser;
+import net.filterlogic.util.NamedValueList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class BatchFields 
 {
-    private HashMap <String,BatchField> batchFields = new HashMap<String,BatchField>();
+    private NamedValueList <String,BatchField> batchFields = new NamedValueList<String,BatchField>();
 
     public BatchFields(XMLParser batch,String xPath) throws OpenCaptureException
     {
@@ -74,6 +75,28 @@ public class BatchFields
             throw new OpenCaptureException("BatchField name not set!");
 
         batchFields.put(batchFieldName, batchField);
+    }
+
+    /**
+     * Return batch xml.
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+
+        List list = batchFields.getOrderedNameList();
+
+        for(int i=0;i<list.size();i++)
+        {
+            String name = (String)list.get(i);
+            BatchField batchField = (BatchField)batchFields.get(name);
+
+            xml += "<BatchField Name=\"" + batchField.getName() + "\" Type=\"" + batchField.getType() + 
+                    "\" Value=\"" + batchField.getValue() + "\" />\n";
+        }
+
+        return xml;
     }
 
     public int Count()
