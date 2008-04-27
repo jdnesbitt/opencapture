@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author d106931
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 @Entity
 @Table(name = "batch_class")

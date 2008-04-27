@@ -1,35 +1,35 @@
-/*
+/**
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
-package net.filterlogic.util;
+package net.filterlogic.OpenCapture.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  *
- * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
+ * @author d106931
  */
-public class NamedValueList<K,V> extends HashMap
+public class ResultSet extends HashMap
 {
-    private ArrayList<Object> nameList;
 
-    public NamedValueList()
+    private ArrayList<Object> fieldList;
+    
+    public ResultSet(Object resultSet)
     {
-        nameList = new ArrayList<Object>();
+        fieldList = new ArrayList<Object>();
     }
-
+    
     @Override
     public Object put(Object key, Object value) 
     {
         // if key doesn't exists, add to list.
         if(!super.containsKey(key))
         {
-            nameList.add(key);
+            fieldList.add(key);
         }
 
         return super.put(key, value);
@@ -44,7 +44,7 @@ public class NamedValueList<K,V> extends HashMap
     @Override
     public void clear() 
     {
-        nameList.clear();
+        fieldList.clear();
         super.clear();
     }
 
@@ -55,8 +55,8 @@ public class NamedValueList<K,V> extends HashMap
         //return super.clone();
     }
     
-    public List getOrderedNameList()
+    public List getFieldList()
     {
-        return this.nameList;
+        return this.fieldList;
     }
 }

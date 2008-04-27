@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 
 /**
  *
- * @author D106931
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 @Embeddable
 public class LkpBatchclassQueuesPK implements Serializable {

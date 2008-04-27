@@ -23,7 +23,7 @@ import net.filterlogic.util.NamedValueList;
 
 /**
  *
- * @author d106931
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 public class Pages 
 {

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author D106931
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 public class Logging 
 {
