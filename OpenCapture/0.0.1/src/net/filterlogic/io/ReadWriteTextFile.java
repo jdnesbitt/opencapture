@@ -9,7 +9,7 @@ package net.filterlogic.io;
 import java.io.*;
 /**
  *
- * @author Darron Nesbitt
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 public class ReadWriteTextFile {
   /**

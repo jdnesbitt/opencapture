@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author D106931
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 @Entity
 @Table(name = "queues")

@@ -271,6 +271,8 @@ public class Batch
     {
         long id = 0;
 
+        try
+        {
         net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
 
         // move batch to next queue.
@@ -305,6 +307,17 @@ public class Batch
 
         // unlock batch file.
         OpenCaptureCommon.unlockBatchXmlFile(batchID);
+        }
+        catch(Exception e)
+        {
+            logException("Unable to close batch. " + e.toString());
+            throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            // save the batch
+            saveBatch();
+        }
     }
 
     /**

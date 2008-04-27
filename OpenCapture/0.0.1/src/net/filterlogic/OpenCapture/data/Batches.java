@@ -39,10 +39,10 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Batches.getNextBatchByQueueId", query = "SELECT b FROM Batches where b.queue_id = :queueId and batch_state = 0 order by scan_datetime,priority desc limit 1"),
     @NamedQuery(name = "Batches.updateBatchQueueByBatchIDQueueID", query = "UPDATE b Batches set b.queue_id = :queueId WHERE b.batchId = :batchId"),
     @NamedQuery(name = "Batches.updateBatchStateByBatchID", query = "UPDATE b Batches set b.batch_state = :batchState WHERE b.batchId = :batchId"),
+    @NamedQuery(name = "Batches.BatchList", query = "SELECT b.* from batches b order by scan_datetime"),
     @NamedQuery(name = "Batches.removeBatchByBatchID", query = "Delete FROM Batches b WHERE b.batchId = :batchId")
 })
     
-
 public class Batches implements Serializable {
     private static final long serialVersionUID = 1L;
 

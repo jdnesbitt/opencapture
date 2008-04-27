@@ -34,7 +34,7 @@ import net.filterlogic.util.NamedValueList;
 
 /**
  *
- * @author Darron Nesbitt
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 public class XMLParser 
 {

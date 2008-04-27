@@ -236,6 +236,26 @@ public class DBManager
         }
     }
     
+    public List getBatchList() throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            qry = entMgr.createNamedQuery("Batches.BatchList");
+
+            List list = qry.getResultList();
+
+            
+            
+            return list;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to retrieve batch id.  " + e.toString());
+        }
+    }
+
     /**
      * Create a new batch.
      * @param batchId Set this to 0.

@@ -20,7 +20,7 @@ package net.filterlogic.OpenCapture;
  * Page object contains information on each scanned/imported page
  * in the OpenCapture system.
  * 
- * @author Darron Nesbitt
+ * @author Darron Nesbitt <jd_nesbitt@hotmail.com>
  */
 public class Page 
 {
