@@ -17,6 +17,7 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture;
 
 import net.filterlogic.util.xml.XMLParser;
+import net.filterlogic.util.NamedValueList;
 import java.util.List;
 import java.util.HashMap;
 
@@ -26,7 +27,7 @@ import java.util.HashMap;
  */
 public class Zones 
 {
-    private HashMap <String,Zone> zones = new HashMap<String,Zone>();
+    private NamedValueList <String,Zone> zones = new NamedValueList<String,Zone>();
     
     public Zones(XMLParser batch,String xPath) throws OpenCaptureException
     {
@@ -78,5 +79,30 @@ public class Zones
             throw new OpenCaptureException("Zone name not set!");
 
         zones.put(zoneName, zone);
+    }
+    
+    /**
+     * Return batch xml.
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+        
+        List list = zones.getOrderedNameList();
+        
+        for(int i=0;i<list.size();i++)
+        {
+            String name = (String)list.get(i);
+            Zone zone = (Zone)zones.get(name);
+
+            xml += "<Zone Name=\"" + zone.getName() + "\" Type=\"" + zone.getType() + 
+                    "\" X=\"" + zone.getX() + "\" Y=\"" + zone.getY() + 
+                    "\" W=\"" + zone.getW() + "\" H=\"" + zone.getH() + 
+                    "\" MinAccuracy=\"" + zone.getMinAccuracy() + 
+                    "\" FieldType=\"" + zone.getFieldType() + "\" />\n";
+        }
+
+        return xml;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 public class NamedValueList<K,V> extends HashMap
 {
     private ArrayList<Object> nameList;
-    
+
     public NamedValueList()
     {
         nameList = new ArrayList<Object>();

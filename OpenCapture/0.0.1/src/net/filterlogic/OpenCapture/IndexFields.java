@@ -17,6 +17,7 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture;
 
 import net.filterlogic.util.xml.XMLParser;
+import net.filterlogic.util.NamedValueList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class IndexFields 
 {
-    private HashMap <String,IndexField> indexFields = new HashMap<String,IndexField>();
+    private NamedValueList <String,IndexField> indexFields = new NamedValueList<String,IndexField>();
 
     /**
      * Default constructor.
@@ -99,6 +100,29 @@ public class IndexFields
             throw new OpenCaptureException("IndexField name not set!");
 
         indexFields.put(indexFieldName, indexField);
+    }
+    
+    /**
+     * Return batch xml.
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+        
+        List list = indexFields.getOrderedNameList();
+        
+        for(int i=0;i<list.size();i++)
+        {
+            String name = (String)list.get(i);
+            IndexField ndxField = (IndexField)indexFields.get(name);
+            String stickey = !ndxField.isStickey() ? "N" : "Y";
+            
+            xml += "<IndexField Name=\"" + ndxField.getName() + "\" Type=\"" + ndxField.getType() + 
+                    "\" Value=\"" + ndxField.getValue() + "\" Stickey=\"" + stickey + "\" />\n";
+        }
+        
+        return xml;
     }
     
     /**

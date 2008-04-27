@@ -44,6 +44,10 @@ public class BatchClass
         this.ImagePath = imagePath;
     }
     
+    public String getXML()
+    {
+        return "<BatchClass Name\"" + this.BatchClassName + "\" ImagePath=\"" + this.ImagePath + "\" version=\"" + this.Version + "\">\n";
+    }
     public long getID()
     {
         return ID;

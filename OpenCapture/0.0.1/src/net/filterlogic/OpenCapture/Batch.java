@@ -17,7 +17,6 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture;
 
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Query;
 import net.filterlogic.OpenCapture.data.DBManager;
 import net.filterlogic.util.xml.XMLParser;
@@ -396,5 +395,44 @@ public class Batch
     protected void setID(String ID)
     {
         this.ID = ID;
+    }
+    
+    protected void saveBatch() throws OpenCaptureException
+    {
+        String batchXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        
+        try
+        {
+            // create batch xml.
+            batchXML += this.batchClass.getXML();
+            batchXML += "<Batch Name=\"" + this.BatchName + "\" ID=\"" + this.ID + "\" ScanUser=\"\">\n";
+            batchXML += "<BatchFields>\n";
+            batchXML += this.batchFields.getXML();
+            batchXML += "</BatchFields>\n";
+            batchXML += "<BatchDataFields>\n";
+            batchXML += this.batchDataFields.getXML();
+            batchXML += "</BatchDataFields>\n";
+            batchXML += "<Queues CurrentQueue=\"" + this.queues.getCurrentQueue().getQueueName() + "\">\n";
+            batchXML += this.queues.getXML();
+            batchXML += "</Queues>\n";
+            batchXML += "<Logging>\n";
+            batchXML += this.logging.getXML();
+            batchXML += "</Logging>\n";
+            batchXML += "<Documents>\n";
+            
+            batchXML += "</Documents>\n";
+            batchXML += "</Batch>\n";
+            batchXML += "</BatchClass>\n";
+            
+            // replace xml in batch XMLParser object
+            xmlParser.parseDocument(batchXML);
+            
+            // save xml file to disk.
+            xmlParser.saveDocument(this.batchXmlFileName);
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to save batch[" + this.BatchName + "]. " + e.toString());
+        }
     }
 }

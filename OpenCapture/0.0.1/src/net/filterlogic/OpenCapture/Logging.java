@@ -30,4 +30,24 @@ public class Logging
     {
         return logging;
     }
+    
+    /**
+     * Return batch xml.
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+
+        for(int i=0;i<logging.size();i++)
+        {
+            Log log = (Log)logging.get(i);
+
+            xml += "<Log QueueName=\"" + log.getQueueName() + "\" StartDateTime=\"" + log.getStartDateTime() + 
+                    "\" EndDateTime=\"" + log.getEndDateTime() + 
+                    "\" Host=\"" + log.getHost() + "\" Message=\"" + log.getMessage() + "\" />\n";
+        }
+
+        return xml;
+    }
 }
