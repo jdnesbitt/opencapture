@@ -39,6 +39,19 @@ public class DateUtil
         Date date = new Date();
         return dateFormat.format(date);
     }
+
+    /**
+     * Returns date/time formatted.
+     * @param format DateTime format to return.
+     * @param date Date to format.
+     * @return Return String of formatted date.
+     */
+    public static String getDateTime(String format, Date date)
+    {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(date);
+    }
+    
     
     /**
      * Returns the curent date time in yyyy/MM/dd HH:mm:ss format.
