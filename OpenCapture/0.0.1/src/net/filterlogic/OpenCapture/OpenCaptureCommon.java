@@ -66,7 +66,9 @@ public class OpenCaptureCommon
     public static int BATCH_STATUS_PROCESSING = 10;
     public static int BATCH_STATUS_ERROR = 20;
     public static int BATCH_STATUS_HOLD = 30;
-    
+
+    public static String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+
     private static String LOG_FOLDER = "Logs";
 
     public static String BATHCXML_FOLDER_NAME = "BatchXML";

@@ -7,54 +7,96 @@ package net.filterlogic.OpenCapture.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
+
+import net.filterlogic.util.NamedValueList;
+import net.filterlogic.OpenCapture.OpenCaptureCommon;
+import net.filterlogic.util.DateUtil;
+import net.filterlogic.OpenCapture.data.BatchClass;
+import net.filterlogic.OpenCapture.data.Batches;
+import net.filterlogic.OpenCapture.data.LkpBatchclassQueues;
+import net.filterlogic.OpenCapture.data.LkpBatchclassQueuesPK;
+import net.filterlogic.OpenCapture.data.Queues;
+import org.omg.CORBA.NameValuePair;
+        
 
 /**
  *
  * @author d106931
  */
-public class ResultSet extends HashMap
+public class ResultSet
 {
 
     private ArrayList<Object> fieldList;
+    private int rowCount = 0;
     
-    public ResultSet(Object resultSet)
+    private List resultSet;
+    
+    public ResultSet(List resultSet)
     {
         fieldList = new ArrayList<Object>();
+        this.resultSet = resultSet;
     }
     
-    @Override
-    public Object put(Object key, Object value) 
+    private void createResultSet()
     {
-        // if key doesn't exists, add to list.
-        if(!super.containsKey(key))
+        for(int i=0;i<resultSet.size();i++)
         {
-            fieldList.add(key);
+            Object obj = resultSet.get(i);
+
+
+            if(obj.getClass().equals("net.filterlogic.OpenCapture.data.BatchClass"))
+                createResultSet((BatchClass)obj);
+
+            if(obj.getClass().equals("net.filterlogic.OpenCapture.data.Batches"))
+                createResultSet((Batches)obj);
+
+            if(obj.getClass().equals("net.filterlogic.OpenCapture.data.LkpBatchclassQueues"))
+                createResultSet((LkpBatchclassQueues)obj);
+
+            if(obj.getClass().equals("net.filterlogic.OpenCapture.data.LkpBatchclassQueuesPK"))
+                createResultSet((LkpBatchclassQueuesPK)obj);
+
+            if(obj.getClass().equals("net.filterlogic.OpenCapture.data.Queues"))
+                createResultSet((Queues)obj);
         }
-
-        return super.put(key, value);
+        
     }
 
-    @Override
-    public Object get(Object key) 
+    private void createResultSet(BatchClass batchClass)
     {
-        return super.get(key);
     }
 
-    @Override
-    public void clear() 
+    private void createResultSet(Batches batches)
     {
-        fieldList.clear();
-        super.clear();
-    }
+        NamedValueList<String,String> map = new NamedValueList<String, String>();
 
-    @Override
-    public Object clone() 
-    {
-        return this.clone();
-        //return super.clone();
+        map.put("Batch_Id", batches.getBatchId().toString());
+        map.put("Batch_Name", batches.getBatchName());
+        map.put("Batch_Desc", batches.getBatchDesc());
+        map.put("Batch_State", String.valueOf(batches.getBatchState()));
+        map.put("Priority", batches.getPriority().toString());
+        map.put("Queue_Id", String.valueOf(batches.getQueueId()));
+        map.put("Scan_DateTime", DateUtil.getDateTime(OpenCaptureCommon.DATE_FORMAT, batches.getScanDatetime()));
+        map.put("Site_Id", String.valueOf(batches.getSiteId()));
+        map.put("Error_No", batches.getErrorNo().toString());
+        map.put("Error_Msg", batches.getErrorMsg());
+        map.put("Batch_Class_Id", String.valueOf(batches.getBatchClassId()));
+
+        this.resultSet.add(map);
     }
     
+    private void createResultSet(LkpBatchclassQueues lkpBatchclassQueues)
+    {
+    }
+    
+    private void createResultSet(LkpBatchclassQueuesPK lkpBatchclassQueuesPK)
+    {
+    }
+    
+    private void createResultSet(Queues queues)
+    {
+    }
+  
     public List getFieldList()
     {
         return this.fieldList;
