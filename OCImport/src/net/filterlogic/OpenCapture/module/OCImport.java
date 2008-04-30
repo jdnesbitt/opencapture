@@ -18,7 +18,7 @@ package net.filterlogic.OpenCapture.module;
 
 /**
  *
- * @author d106931
+ * @author Darron Nesbitt
  */
 public class OCImport {
 
