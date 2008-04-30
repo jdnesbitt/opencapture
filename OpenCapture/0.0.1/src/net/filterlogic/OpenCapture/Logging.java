@@ -21,6 +21,10 @@ public class Logging
         logging = new ArrayList<Log>();
     }
     
+    /**
+     * Add new log to logging collection.
+     * @param log Log to add.
+     */
     public void addLog(Log log)
     {
         this.logging.add(log);

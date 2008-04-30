@@ -55,11 +55,14 @@ public class OpenCaptureCommon
     public static String ZONE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone[@Name=\"<2>\"]";
     public static String PAGES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page";
     public static String PAGE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page[@Name=\"<2>\"]";
+    public static String LOOSE_PAGES = "//BatchClass/Batch/Pages/Page";
+    public static String LOOSE_PAGE = "//BatchClass/Batch/Pages/Page[@Name=\"<1>\"]";
 
     public static String LOG_FIELDS = "//BatchClass/Batch/Logging";
 
     public static String OC_NAME_TAG = "Name";
     public static String OC_DOCUMENT_FORMID_TAG = "FormID";
+    public static String OC_DOCUMENT_NUMBER_TAG = "Number";
     public static String OC_LOG_TAG = "Log";
 
     public static int BATCH_STATUS_READY = 0;

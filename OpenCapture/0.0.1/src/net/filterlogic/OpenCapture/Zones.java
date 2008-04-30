@@ -71,7 +71,7 @@ public class Zones
         return zone;
     }
     
-    public void setZone(Zone zone) throws OpenCaptureException
+    public void addZone(Zone zone) throws OpenCaptureException
     {
         String zoneName = zone.getName();
 
@@ -79,6 +79,25 @@ public class Zones
             throw new OpenCaptureException("Zone name not set!");
 
         zones.put(zoneName, zone);
+    }
+    
+    /**
+     * Delete a zone.
+     * @param zoneName Name of zone to delete.
+     * @return Zone being deleted.  Returns empty Zone if zone name doesn't exist.
+     */
+    public Zone deleteZone(String zoneName)
+    {
+        return zones.containsKey(zoneName) ? (Zone)zones.remove(zoneName) : new Zone();
+    }
+    
+    /**
+     * Count of zones.
+     * @return Integer
+     */
+    public int Count()
+    {
+        return zones.size();
     }
     
     /**

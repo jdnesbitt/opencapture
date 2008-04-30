@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  *
- * @author dnesbitt
+ * @author Darron Nesbitt
  */
 public class IndexFields 
 {
@@ -132,5 +132,24 @@ public class IndexFields
     public int Count()
     {
         return indexFields.size();
+    }
+    
+    /**
+     * Add index field to index field collection.
+     * @param indexField IndexField to add.
+     */
+    public void addIndexField(IndexField indexField)
+    {
+        indexFields.put(indexField.getName(), indexField);
+    }
+    
+    /**
+     * Delete index field.
+     * @param indexFieldName Name of index field to delete.
+     * @return IndexField being deleted.  Returns empty index field if index field name doesn't exist.
+     */
+    public IndexField deleteIndexField(String indexFieldName)
+    {
+        return indexFields.containsKey(indexFieldName) ? (IndexField)indexFields.remove(indexFieldName) : new IndexField();
     }
 }

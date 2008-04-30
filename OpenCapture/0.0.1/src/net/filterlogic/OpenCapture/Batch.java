@@ -42,6 +42,7 @@ public class Batch
     private BatchFields  batchDataFields;
     private Logging logging;
     private Log log;
+    private Pages loosePages;
     
     private DBManager dbm = new DBManager();
     
@@ -50,6 +51,9 @@ public class Batch
     private XMLParser xmlParser = null;
     
     private String batchClassXmlFile = "";
+    /**
+     * Path and name of xml batch file.
+     */
     private String batchXmlFileName = "";
     private String batchXmlFilePath = "";
     
@@ -252,6 +256,10 @@ public class Batch
 
         // get queues
         queues = new Queues(xmlParser);
+        
+        // get pages
+        xPath = OpenCaptureCommon.LOOSE_PAGES;
+        loosePages = new Pages(xmlParser, xPath);
 
         documents = new Documents(xmlParser);
 
@@ -410,6 +418,25 @@ public class Batch
         this.ID = ID;
     }
     
+    /**
+     * Add loose page to batch.
+     * @param page Page to add.
+     */
+    public void addLoosePage(Page page)
+    {
+        loosePages.addPage(page);
+    }
+    
+    /**
+     * Delete loose page from batch.
+     * @param pageName Name of loose page.
+     * @return Page being deleted.  Returns empty page if pageName doesn't exist.
+     */
+    public Page deleteLoosePage(String pageName)
+    {
+        return loosePages.deletePage(pageName);
+    }
+    
     protected void saveBatch() throws OpenCaptureException
     {
         String batchXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -431,8 +458,11 @@ public class Batch
             batchXML += "<Logging>\n";
             batchXML += this.logging.getXML();
             batchXML += "</Logging>\n";
+            batchXML += "<Pages>\n";
+            batchXML += this.loosePages.getXML();
+            batchXML += "</Pages>\n";
             batchXML += "<Documents>\n";
-            
+            batchXML += this.documents.getXML();
             batchXML += "</Documents>\n";
             batchXML += "</Batch>\n";
             batchXML += "</BatchClass>\n";
