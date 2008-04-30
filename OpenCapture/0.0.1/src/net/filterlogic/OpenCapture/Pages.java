@@ -87,6 +87,34 @@ public class Pages
             throw new OpenCaptureException("Unable to move page[" + currentSequence + "]. " + e.toString());
         }
     }
+
+    /**
+     * Add page to pages object.
+     * @param page Page to add.
+     */
+    public void addPage(Page page)
+    {
+        pages.put(page.getName(), page);
+    }
+
+    /**
+     * Delete named page from pages collection.
+     * @param pageName Name of page to delete.
+     * @return Page named.  Returns an empty page object if page doesn't exist.
+     */
+    public Page deletePage(String pageName)
+    {
+        return pages.containsKey(pageName) ? (Page)pages.remove(pageName) : new Page();
+    }
+    
+    /**
+     * Number of pages.
+     * @return Integer of number of pages.
+     */
+    public int Count()
+    {
+        return pages.size();
+    }
     
     /**
      * Return batch xml.

@@ -13,7 +13,7 @@
         <Logging>
         </Logging>
         <Documents>
-            <Document Name="Carrier Header" FormID="CARRIER">
+            <Document Name="Carrier Header" FormID="CARRIER" Number="">
                 <IndexDataFields>
                 </IndexDataFields>
                 <Pages>

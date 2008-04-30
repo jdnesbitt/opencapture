@@ -15,8 +15,11 @@
         <Logging>
             <Log QueueName="" StartDateTime="" EndDateTime="" Host="" Message="" />
         </Logging>
+        <Pages>
+            <Page Name="" />
+        </Pages>
         <Documents>
-            <Document Name="Carrier Header" FormID="HDR">
+            <Document Name="Carrier Header" FormID="HDR" Number="">
                 <IndexDataFields>
                     <IndexDataField Name="CARRIER" Value="" Stickey="Y"/>
                 </IndexDataFields>

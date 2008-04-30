@@ -179,6 +179,39 @@ public class Queues
     }
 
     /**
+     * Count of queues in OpenCapture flow.
+     * @return Integer
+     */
+    public int Count()
+    {
+        return queues.size();
+    }
+    
+    /**
+     * Add queue to OpenCapture flow.
+     * @param queue Queue to add.
+     */
+    public void addQueue(Queue queue)
+    {
+        queues.add(queue);
+    }
+
+    /**
+     * Delete queue.
+     * @param queueName Name of queue to delete.
+     * @param queueIndex Index of queue to delete (queues can be specified multiple times).
+     */
+    public void deleteQueue(String queueName, int queueIndex)
+    {
+        Queue q = (Queue)queues.get(queueIndex);
+        
+        if(q.getQueueName().equals(queueName))
+            queues.remove(queueIndex);
+
+        q = null;
+    }
+    
+    /**
      * Return batch xml.
      * @return String containing XML.
      */

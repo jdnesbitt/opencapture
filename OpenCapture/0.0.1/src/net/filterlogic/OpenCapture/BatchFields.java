@@ -99,8 +99,31 @@ public class BatchFields
         return xml;
     }
 
+    /**
+     * Count of batch fields.
+     * @return Integer
+     */
     public int Count()
     {
         return batchFields.size();
+    }
+    
+    /**
+     * Add batch field to batch field collection.
+     * @param batchField BatchField to add.
+     */
+    public void addBatchField(BatchField batchField)
+    {
+        batchFields.put(batchField.getName(), batchField);
+    }
+    
+    /**
+     * Delete named batch field.
+     * @param batchFieldName Name of batch field.
+     * @return BatchField being deleted.
+     */
+    public BatchField deleteBatchField(String batchFieldName)
+    {
+        return batchFields.containsKey(batchFieldName) ? (BatchField)batchFields.remove(batchFieldName) : new BatchField();
     }
 }

@@ -44,8 +44,10 @@ public class Documents
                 HashMap map = (HashMap)docs.get(i);
                 String documentName = (String)map.get(OpenCaptureCommon.OC_NAME_TAG);
                 String formID = (String)map.get(OpenCaptureCommon.OC_DOCUMENT_FORMID_TAG);
+                int number = ((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)).trim().length()>0 
+                        ? Integer.parseInt((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)) : 0;
                 
-                Document document = new Document(batch, documentName, formID);
+                Document document = new Document(batch, documentName, formID,number);
                 
                 // add document obj to documents hash
                 documents.put(documentName, document);
@@ -64,7 +66,7 @@ public class Documents
      */
     public Document getDocument(String documentName)
     {
-        Document document = (Document)documents.get(documentName);
+        Document document = (Document)getDocuments().get(documentName);
         
         return document;
     }
@@ -75,7 +77,7 @@ public class Documents
      */
     public int Count()
     {
-        return documents.size();
+        return getDocuments().size();
     }
 
     /**
@@ -86,14 +88,14 @@ public class Documents
     {
         String xml = "";
         
-        List list = documents.getOrderedNameList();
+        List list = getDocuments().getOrderedNameList();
         
         for(int i=0;i<list.size();i++)
         {
             String name = (String)list.get(i);
-            Document document = (Document)documents.get(name);
+            Document document = (Document)getDocuments().get(name);
 
-            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\">\n";
+            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\">\n";
             xml += "<IndexDataFields>\n";
             xml += document.getIndexDataFields().getXML();
             xml += "</IndexDataFields>";
@@ -110,5 +112,32 @@ public class Documents
         }
         
         return xml;
+    }
+
+    public NamedValueList<String, Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(NamedValueList<String, Document> documents) {
+        this.documents = documents;
+    }
+    
+    /**
+     * Add document to document collection.
+     * @param document Document to add.
+     */
+    public void addDocument(Document document)
+    {
+        documents.put(document.getName(), document);
+    }
+    
+    /**
+     * Delete document from documents collection.
+     * @param documentName Name of document to delete.
+     * @return Delete document.  Returns an empty document if documentName doesn't exist.
+     */
+    public Document deleteDocument(String documentName)
+    {
+        return documents.containsKey(documentName) ? (Document)documents.remove(documentName) : new Document();
     }
 }

@@ -33,6 +33,7 @@ public class Document
 
     private String Name = "";
     private String formID = "";
+    private int number = 0;
 
     /**
      * Constructor used to parse specified document.
@@ -41,10 +42,11 @@ public class Document
      * @param formID FormID value.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    public Document(XMLParser batch,String documentName,String formID) throws OpenCaptureException
+    public Document(XMLParser batch,String documentName,String formID, int number) throws OpenCaptureException
     {
         this.Name = documentName;
         this.formID = formID;
+        this.number = number;
 
         loadDocument(batch, documentName);
     }
@@ -63,21 +65,21 @@ public class Document
             String xPath = (OpenCaptureCommon.INDEX_FIELDS).replaceAll("<1>",documentName);
 
             // get index fields for this document.
-            indexFields = new IndexFields(batch,xPath);
+            setIndexFields(new IndexFields(batch, xPath));
 
             xPath = OpenCaptureCommon.INDEX_DATA_FIELDS.replaceAll("<1>",documentName);
 
             // get index data fields for this document.
-            indexDataFields = new IndexFields(batch, xPath);
+            setIndexDataFields(new IndexFields(batch, xPath));
 
             xPath = OpenCaptureCommon.ZONES.replaceAll("<1>", documentName);
 
             // get zones for this document
-            zones = new Zones(batch, xPath);
+            setZones(new Zones(batch, xPath));
             
             // get pages
             xPath = OpenCaptureCommon.PAGES.replaceAll("<1>", documentName);
-            pages = new Pages(batch, xPath);
+            setPages(new Pages(batch, xPath));
         }
         catch(Exception e)
         {
@@ -90,6 +92,7 @@ public class Document
      */
     public Document()
     {
+        
     }
 
     public IndexFields getIndexFields()
@@ -126,5 +129,29 @@ public class Document
 
     public Pages getPages() {
         return pages;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public void setIndexFields(IndexFields indexFields) {
+        this.indexFields = indexFields;
+    }
+
+    public void setIndexDataFields(IndexFields indexDataFields) {
+        this.indexDataFields = indexDataFields;
+    }
+
+    public void setZones(Zones zones) {
+        this.zones = zones;
+    }
+
+    public void setPages(Pages pages) {
+        this.pages = pages;
     }
 }
