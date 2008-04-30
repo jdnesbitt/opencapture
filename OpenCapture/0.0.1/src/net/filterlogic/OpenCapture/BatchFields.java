@@ -29,6 +29,15 @@ public class BatchFields
 {
     private NamedValueList <String,BatchField> batchFields = new NamedValueList<String,BatchField>();
 
+    /**
+     * Constructor to add batch field.
+     * @param batchField
+     */
+    public BatchFields(BatchField batchField)
+    {
+        batchFields.put(batchField.getName(), batchField);
+    }
+    
     public BatchFields(XMLParser batch,String xPath) throws OpenCaptureException
     {
         try

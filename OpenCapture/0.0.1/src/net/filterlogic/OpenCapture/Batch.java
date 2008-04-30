@@ -36,19 +36,17 @@ public class Batch
     
     private Query query;
     
-    private BatchClass batchClass;
-    private Queues queues;
-    private BatchFields  batchFields;
-    private BatchFields  batchDataFields;
-    private Logging logging;
-    private Log log;
-    private Pages loosePages;
-    
+    private BatchClass batchClass = null;
+    private Queues queues = null;
+    private BatchFields  batchFields = null;
+    private BatchFields  batchDataFields = null;
+    private Logging logging = null;
+    private Log log = null;
+    private Pages loosePages = null;
+    private Documents documents = null;
+    private XMLParser xmlParser = null;    
+
     private DBManager dbm = new DBManager();
-    
-    private Documents documents;
-    
-    private XMLParser xmlParser = null;
     
     private String batchClassXmlFile = "";
     /**
@@ -175,7 +173,7 @@ public class Batch
     protected void logException(String message)
     {
         log.setMessage(message);
-        logging.addLog(log);
+        getLogging().addLog(log);
     }
     
     protected void loadBatch(long batchID) throws OpenCaptureException
@@ -249,19 +247,19 @@ public class Batch
         batchClass = new BatchClass(xmlParser);
 
         String xPath = OpenCaptureCommon.BATCH_FIELDS;
-        batchFields = new BatchFields(xmlParser, xPath);
+        setBatchFields(new BatchFields(xmlParser, xPath));
 
         xPath = OpenCaptureCommon.BATCH_DATA_FIELDS;
-        batchDataFields = new BatchFields(xmlParser, xPath);
+        setBatchDataFields(new BatchFields(xmlParser, xPath));
 
         // get queues
-        queues = new Queues(xmlParser);
+        setQueues(new Queues(xmlParser));
         
         // get pages
         xPath = OpenCaptureCommon.LOOSE_PAGES;
         loosePages = new Pages(xmlParser, xPath);
 
-        documents = new Documents(xmlParser);
+        setDocuments(new Documents(xmlParser));
 
         // lock batch xml file
         OpenCaptureCommon.lockBatchXmlFile(batchID);
@@ -281,40 +279,40 @@ public class Batch
 
         try
         {
-        net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
+            net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
 
-        // move batch to next queue.
-        queues.moveNextQueue();
+            // move batch to next queue.
+            getQueues().moveNextQueue();
 
-        // set end time
-        log.setEndDateTime(DateUtil.getDateTime());
+            // set end time
+            log.setEndDateTime(DateUtil.getDateTime());
 
-        // add log to logging object
-        logging.addLog(log);
+            // add log to logging object
+            getLogging().addLog(log);
 
-        // if no more queues, write output log
-        if(this.currentQueue.getCurrentQueue().length()<1)
-        {
-            // log batch
-            OpenCaptureCommon.writeBatchLog(logging);
+            // if no more queues, write output log
+            if(this.currentQueue.getCurrentQueue().length()<1)
+            {
+                // log batch
+                OpenCaptureCommon.writeBatchLog(getLogging());
 
-            // remove lock file
+                // remove lock file
+                OpenCaptureCommon.unlockBatchXmlFile(batchID);
+
+                // delete batch 
+                dbm.deleteBatch(batchID);
+            }
+            else
+            {
+                // get id of next queue for batch
+                id = dbm.getQueueIDByName(this.currentQueue.getQueueName());
+
+                // set batch to next queue
+                dbm.setBatchQueueByBatchIDQueueID(batchID, id);
+            }
+
+            // unlock batch file.
             OpenCaptureCommon.unlockBatchXmlFile(batchID);
-
-            // delete batch 
-            dbm.deleteBatch(batchID);
-        }
-        else
-        {
-            // get id of next queue for batch
-            id = dbm.getQueueIDByName(this.currentQueue.getQueueName());
-
-            // set batch to next queue
-            dbm.setBatchQueueByBatchIDQueueID(batchID, id);
-        }
-
-        // unlock batch file.
-        OpenCaptureCommon.unlockBatchXmlFile(batchID);
         }
         catch(Exception e)
         {
@@ -424,7 +422,10 @@ public class Batch
      */
     public void addLoosePage(Page page)
     {
-        loosePages.addPage(page);
+        if(loosePages == null)
+                loosePages = new Pages(page);
+        else
+            loosePages.addPage(page);
     }
     
     /**
@@ -447,22 +448,22 @@ public class Batch
             batchXML += this.batchClass.getXML();
             batchXML += "<Batch Name=\"" + this.BatchName + "\" ID=\"" + this.ID + "\" ScanUser=\"\">\n";
             batchXML += "<BatchFields>\n";
-            batchXML += this.batchFields.getXML();
+            batchXML += this.getBatchFields().getXML();
             batchXML += "</BatchFields>\n";
             batchXML += "<BatchDataFields>\n";
-            batchXML += this.batchDataFields.getXML();
+            batchXML += this.getBatchDataFields().getXML();
             batchXML += "</BatchDataFields>\n";
-            batchXML += "<Queues CurrentQueue=\"" + this.queues.getCurrentQueue().getQueueName() + "\">\n";
-            batchXML += this.queues.getXML();
+            batchXML += "<Queues CurrentQueue=\"" + this.getQueues().getCurrentQueue().getQueueName() + "\">\n";
+            batchXML += this.getQueues().getXML();
             batchXML += "</Queues>\n";
             batchXML += "<Logging>\n";
-            batchXML += this.logging.getXML();
+            batchXML += this.getLogging().getXML();
             batchXML += "</Logging>\n";
             batchXML += "<Pages>\n";
             batchXML += this.loosePages.getXML();
             batchXML += "</Pages>\n";
             batchXML += "<Documents>\n";
-            batchXML += this.documents.getXML();
+            batchXML += this.getDocuments().getXML();
             batchXML += "</Documents>\n";
             batchXML += "</Batch>\n";
             batchXML += "</BatchClass>\n";
@@ -477,5 +478,87 @@ public class Batch
         {
             throw new OpenCaptureException("Unable to save batch[" + this.BatchName + "]. " + e.toString());
         }
+    }
+
+    public Queues getQueues() {
+        return queues;
+    }
+
+    public void setQueues(Queues queues) {
+        this.queues = queues;
+    }
+
+    public BatchFields getBatchFields() {
+        return batchFields;
+    }
+
+    public void setBatchFields(BatchFields batchFields) {
+        this.batchFields = batchFields;
+    }
+
+    public BatchFields getBatchDataFields() {
+        return batchDataFields;
+    }
+
+    public void setBatchDataFields(BatchFields batchDataFields) {
+        this.batchDataFields = batchDataFields;
+    }
+
+    public Logging getLogging() {
+        return logging;
+    }
+
+    public void setLogging(Logging logging) {
+        this.logging = logging;
+    }
+
+    public Documents getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Documents documents) {
+        this.documents = documents;
+    }
+    
+    //------------------------------------------------------
+    
+    public void addQueues(Queue queue) 
+    {
+        if(queues == null)
+            queues = new Queues(queue);
+        else
+            this.queues.addQueue(queue);
+    }
+
+    public void addBatchFields(BatchField batchField) 
+    {
+        if(batchFields == null)
+            batchFields = new BatchFields(batchField);
+        else
+            this.batchFields.addBatchField(batchField);
+    }
+
+    public void addBatchDataFields(BatchField batchDataField) 
+    {
+        if(batchDataFields == null)
+            batchDataFields = new BatchFields(batchDataField);
+        else
+            this.batchDataFields.addBatchField(batchDataField);
+    }
+
+    public void addLogging(Log log) 
+    {
+        if(logging == null)
+            logging = new Logging();
+
+        this.logging.addLog(log);
+    }
+
+    public void addDocuments(Document document) 
+    {
+        if(documents == null)
+            documents = new Documents(document);
+        else
+            this.documents.addDocument(document);
     }
 }
