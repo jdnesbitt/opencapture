@@ -31,6 +31,15 @@ public class Documents
     //private Hashtable <String,Document> documents = new Hashtable<String,Document>();
     private NamedValueList<String,Document> documents = new NamedValueList<String,Document>();
     
+    /**
+     * Constructor to add new document.
+     * @param document
+     */
+    public Documents(Document document)
+    {
+        documents.put(document.getName(), document);
+    }
+    
     public Documents(XMLParser batch) throws OpenCaptureException
     {
         try

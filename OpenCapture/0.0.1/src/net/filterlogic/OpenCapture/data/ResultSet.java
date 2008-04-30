@@ -21,7 +21,7 @@ import org.omg.CORBA.NameValuePair;
 
 /**
  *
- * @author d106931
+ * @author Darron Nesbitt
  */
 public class ResultSet
 {

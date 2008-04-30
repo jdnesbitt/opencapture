@@ -29,6 +29,15 @@ public class Queues
     private String currentQueue = "";
     private List queues;
 
+    /**
+     * Coinstructor to add queue.
+     * @param queue
+     */
+    public Queues(Queue queue)
+    {
+        queues.add(queue);
+    }
+    
     public Queues(XMLParser batch) throws OpenCaptureException
     {
         try

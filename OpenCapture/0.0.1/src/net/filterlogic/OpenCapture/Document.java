@@ -16,8 +16,6 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture;
 
-import java.util.HashMap;
-import java.util.List;
 import net.filterlogic.util.xml.XMLParser;
 
 /**
@@ -26,10 +24,10 @@ import net.filterlogic.util.xml.XMLParser;
  */
 public class Document 
 {
-    private IndexFields indexFields;
-    private IndexFields indexDataFields;
-    private Zones zones;
-    private Pages pages;
+    private IndexFields indexFields = null;
+    private IndexFields indexDataFields = null;
+    private Zones zones = null;
+    private Pages pages = null;
 
     private String Name = "";
     private String formID = "";
@@ -153,5 +151,39 @@ public class Document
 
     public void setPages(Pages pages) {
         this.pages = pages;
+    }
+    
+//---------------------------------------------------------------
+    
+    public void addIndexFields(IndexField indexField) 
+    {
+        if(indexField == null)
+            indexFields = new IndexFields();
+        else
+            this.indexFields.addIndexField(indexField);
+    }
+
+    public void addIndexDataFields(IndexField indexDataField) 
+    {
+        if(indexDataFields == null)
+            indexDataFields = new IndexFields();
+        else
+            this.indexDataFields.addIndexField(indexDataField);
+    }
+
+    public void addZones(Zone zone) throws OpenCaptureException
+    {
+        if(zones == null)
+            zones = new Zones(zone);
+        else
+            this.zones.addZone(zone);
+    }
+
+    public void addPages(Page page) 
+    {
+        if(pages == null)
+            pages = new Pages(page);
+        else
+            this.pages.addPage(page);
     }
 }

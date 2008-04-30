@@ -29,6 +29,15 @@ public class Zones
 {
     private NamedValueList <String,Zone> zones = new NamedValueList<String,Zone>();
     
+    /**
+     * Constructor to add zone.
+     * @param zone
+     */
+    public Zones(Zone zone)
+    {
+        zones.put(zone.getName(), zone);
+    }
+    
     public Zones(XMLParser batch,String xPath) throws OpenCaptureException
     {
         try
