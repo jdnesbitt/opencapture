@@ -16,6 +16,7 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import net.filterlogic.util.xml.XMLParser;
 import java.util.List;
@@ -35,6 +36,9 @@ public class Queues
      */
     public Queues(Queue queue)
     {
+        if(queues == null)
+            queues = new ArrayList();
+
         queues.add(queue);
     }
     
@@ -42,10 +46,25 @@ public class Queues
     {
         try
         {
-            queues = batch.getNodeList(OpenCaptureCommon.QUEUES);
+            queues = new ArrayList();
 
+            List list = batch.getNodeList(OpenCaptureCommon.QUEUES);
+
+            for(int i=0;i<list.size();i++)
+            {
+                HashMap map = (HashMap)list.get(i);
+                
+                Queue queue = new Queue();
+                
+                queue.setQueueName((String)map.get("Name"));
+                queue.setID(Long.parseLong((String)map.get("ID")));
+                queue.setPluginID((String)map.get("CustomPlugin"));
+                
+                queues.add(queue);
+            }
+            
             // set current q to first entry in map
-            this.currentQueue = ((HashMap)queues.get(0)).get("Name").toString();
+            this.currentQueue = ((Queue)queues.get(0)).getQueueName();
         }
         catch(Exception e)
         {
@@ -59,13 +78,13 @@ public class Queues
     public void moveNextQueue() throws OpenCaptureException
     {
         // clear out queue name.
-        this.currentQueue = "";
+        //this.currentQueue = "";
 
         try
         {
             for(int i=0;i<queues.size();i++)
             {
-                String qName = ((HashMap)queues.get(i)).get("Name").toString().toLowerCase();
+                String qName = ((Queue)queues.get(i)).getQueueName().toLowerCase();
 
                 if(qName.equals(this.currentQueue.toLowerCase()))
                 {
@@ -76,7 +95,7 @@ public class Queues
                         ++i;
 
                         // set current q = to next q.
-                        this.currentQueue = ((HashMap)queues.get(i)).get("Name").toString().toLowerCase();
+                        this.currentQueue = ((Queue)queues.get(i)).getQueueName().toLowerCase();
 
                         // leave for loop
                         break;
@@ -106,21 +125,19 @@ public class Queues
         {
             for(int i=0;i<queues.size();i++)
             {
-                String qName = ((HashMap)queues.get(i)).get("Name").toString().toLowerCase();
+                String qName = ((Queue)queues.get(i)).getQueueName().toLowerCase();
 
                 if(qName.equals(name.toLowerCase()))
                 {
                         // set current q = to next q.
-                        map = (HashMap)queues.get(i);
+                        queue = (Queue)queues.get(i);
 
                         // leave for loop
                         break;
                 }
             }
             
-            if(map!=null)
-                queue = MapToQueue(map);
-            else
+            if(queue == null)
                 queue = new Queue();
         }
         catch(Exception e)
@@ -146,21 +163,19 @@ public class Queues
         {
             for(int i=0;i<queues.size();i++)
             {
-                String qName = ((HashMap)queues.get(i)).get("Name").toString().toLowerCase();
+                String qName = ((Queue)queues.get(i)).getQueueName().toLowerCase();
 
                 if(qName.equals(this.currentQueue.toLowerCase()))
                 {
                         // set current q = to next q.
-                        map = (HashMap)queues.get(i);
+                        queue = (Queue)queues.get(i);
 
                         // leave for loop
                         break;
                 }
             }
             
-            if(map!=null)
-                queue = MapToQueue(map);
-            else
+            if(queue == null)
                 throw new Exception("Cannot find current queue[" + this.currentQueue + "]");
         }
         catch(Exception e)

@@ -36,10 +36,10 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Batches.findByBatchDesc", query = "SELECT b FROM Batches b WHERE b.batchDesc = :batchDesc"), 
     @NamedQuery(name = "Batches.findByPriority", query = "SELECT b FROM Batches b WHERE b.priority = :priority"), 
     @NamedQuery(name = "Batches.findByQueueId", query = "SELECT b FROM Batches b WHERE b.queueId = :queueId"), 
-    @NamedQuery(name = "Batches.getNextBatchByQueueId", query = "SELECT b FROM Batches where b.queue_id = :queueId and batch_state = 0 order by scan_datetime,priority desc limit 1"),
-    @NamedQuery(name = "Batches.updateBatchQueueByBatchIDQueueID", query = "UPDATE b Batches set b.queue_id = :queueId WHERE b.batchId = :batchId"),
-    @NamedQuery(name = "Batches.updateBatchStateByBatchID", query = "UPDATE b Batches set b.batch_state = :batchState WHERE b.batchId = :batchId"),
-    @NamedQuery(name = "Batches.BatchList", query = "SELECT b.* from batches b order by scan_datetime"),
+    @NamedQuery(name = "Batches.getNextBatchByQueueId", query = "SELECT b FROM Batches b WHERE b.queueId = :queueId and b.batchState = 0"),
+    @NamedQuery(name = "Batches.updateBatchQueueByBatchIDQueueID", query = "UPDATE Batches b set b.queueId = :queueId WHERE b.batchId = :batchId"),
+    @NamedQuery(name = "Batches.updateBatchStateByBatchID", query = "UPDATE Batches b SET b.batchState = :batchState WHERE b.batchId = :batchId"),
+    @NamedQuery(name = "Batches.BatchList", query = "SELECT b from Batches b"),
     @NamedQuery(name = "Batches.removeBatchByBatchID", query = "Delete FROM Batches b WHERE b.batchId = :batchId")
 })
     
