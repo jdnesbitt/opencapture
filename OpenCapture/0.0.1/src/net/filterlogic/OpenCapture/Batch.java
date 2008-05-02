@@ -117,6 +117,9 @@ public class Batch
                                                                             scanDate , 1,OpenCaptureCommon.BATCH_STATUS_READY, 
                                                                             Long.parseLong("1"));
 
+            // save batch id
+            this.batchID = id;
+            
             // set batch xml file name which is also the folder name
             this.rootPath = OpenCaptureCommon.getRootPath();
 
@@ -229,7 +232,7 @@ public class Batch
      * @param batchID ID of batch to open.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    protected void OpenBatch(long batchID) throws OpenCaptureException
+    public void OpenBatch(long batchID) throws OpenCaptureException
     {
         //DBManager dbm = new DBManager();
         
@@ -282,7 +285,7 @@ public class Batch
             net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
 
             // move batch to next queue.
-            getQueues().moveNextQueue();
+            queues.moveNextQueue();
 
             // set end time
             log.setEndDateTime(DateUtil.getDateTime());
@@ -294,7 +297,7 @@ public class Batch
             if(this.currentQueue.getCurrentQueue().length()<1)
             {
                 // log batch
-                OpenCaptureCommon.writeBatchLog(getLogging());
+                OpenCaptureCommon.writeBatchLog(this.logging);
 
                 // remove lock file
                 OpenCaptureCommon.unlockBatchXmlFile(batchID);
@@ -377,7 +380,7 @@ public class Batch
      */
     public String getID()
     {
-        return ID;
+        return String.valueOf(batchID);
     }
 
     /**
@@ -413,7 +416,7 @@ public class Batch
      */
     protected void setID(String ID)
     {
-        this.ID = ID;
+        this.ID = String.valueOf(batchID);
     }
     
     /**

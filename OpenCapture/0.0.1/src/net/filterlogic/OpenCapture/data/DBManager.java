@@ -108,12 +108,16 @@ public class DBManager
         {
             entMgr = entMgrFac.createEntityManager();
             
+            entMgr.getTransaction().begin();
+            
             qry = entMgr.createNamedQuery("Batches.updateBatchStateByBatchID");
             
             qry.setParameter("batchId", batchID);
             qry.setParameter("batchState", stateID);
   
             qry.executeUpdate();
+            
+            entMgr.getTransaction().commit();
         }
         catch(Exception e)
         {
