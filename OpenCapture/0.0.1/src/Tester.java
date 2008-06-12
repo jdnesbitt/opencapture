@@ -15,11 +15,10 @@ public class Tester {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        Batch batch = new Batch();
-        
         try
         {
+            Batch batch = new Batch();
+
             //batch.CreateBatch("FFE Carrier Files","Test");
             batch.getNextBatch("OCDelivery");
             

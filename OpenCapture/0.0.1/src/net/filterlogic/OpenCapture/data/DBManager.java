@@ -20,6 +20,7 @@ import java.util.Date;
 import java.lang.reflect.*;
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import net.filterlogic.OpenCapture.OpenCaptureException;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class DBManager
         {
             entMgr = entMgrFac.createEntityManager();
 
-            qry = entMgr.createNamedQuery("Batches.updateBatchStatusByBatchID");
+            qry = entMgr.createNamedQuery("Batches.removeBatchByBatchID");
             
             qry.setParameter("batchId", batchID);
 
@@ -69,6 +70,16 @@ public class DBManager
         {
             throw new OpenCaptureException("Unable to delete batch! " + e.toString());
         }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
+        }
     }
     
     /**
@@ -77,22 +88,41 @@ public class DBManager
      * @param queueID Id of queue to move batch to.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    public void setBatchQueueByBatchIDQueueID(long batchID, long queueID) throws OpenCaptureException
+    public void setBatchQueueByBatchIDQueueID(long batchID, long queueID, int batchState) throws OpenCaptureException
     {
+        EntityTransaction tx = null;
+                
         try
         {
             entMgr = entMgrFac.createEntityManager();
-            
+
+            tx = entMgr.getTransaction();
+            tx.begin();
+
             qry = entMgr.createNamedQuery("Batches.updateBatchQueueByBatchIDQueueID");
-            
+
             qry.setParameter("batchId", batchID);
             qry.setParameter("queueId", queueID);
-  
+            qry.setParameter("batchState", batchState);
+
             qry.executeUpdate();
+
+            tx.commit();
         }
         catch(Exception e)
         {
+            tx.rollback();
             throw new OpenCaptureException("Unable to set batch queue using queue id. " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
         }
     }
     
@@ -104,11 +134,14 @@ public class DBManager
      */
     public void setBatchStateByBatchID(long batchID, long stateID) throws OpenCaptureException
     {
+        EntityTransaction tx = null;
+        
         try
         {
             entMgr = entMgrFac.createEntityManager();
             
-            entMgr.getTransaction().begin();
+            tx = entMgr.getTransaction();
+            tx.begin();
             
             qry = entMgr.createNamedQuery("Batches.updateBatchStateByBatchID");
             
@@ -117,14 +150,44 @@ public class DBManager
   
             qry.executeUpdate();
             
-            entMgr.getTransaction().commit();
+            tx.commit();
         }
         catch(Exception e)
         {
+            tx.rollback();
             throw new OpenCaptureException("Unable to set batch queue using queue id. " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
         }
     }
     
+    /**
+     * Close entety mangr factory connections
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void CloseConnections() throws OpenCaptureException
+    {
+        try
+        {
+            if(entMgrFac.isOpen())
+                entMgrFac.close();
+
+            entMgrFac = null;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException(e.toString());
+        }
+    }
     /**
      * Get queue id specified by queue name.
      * @param queueName Name of queue to retrieve id.
@@ -160,6 +223,14 @@ public class DBManager
         {
             queues = null;
             list = null;
+            
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+//            
+            entMgr = null;
         }
     }
     
@@ -210,6 +281,14 @@ public class DBManager
             list = null;
             queues = null;
             batches = null;
+            
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
         }
     }
 
@@ -238,6 +317,17 @@ public class DBManager
         {
             throw new OpenCaptureException("Unable to retrieve batch id.  " + e.toString());
         }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
+        }
+        
     }
     
     public List getBatchList() throws OpenCaptureException
@@ -258,6 +348,16 @@ public class DBManager
         {
             throw new OpenCaptureException("Unable to retrieve batch id.  " + e.toString());
         }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
+        }
     }
 
     /**
@@ -275,13 +375,16 @@ public class DBManager
     public long createBatch(Long batchId, String batchName, long batchClassId, Date scanDateTime, int siteId, 
                                                                 int batchState, long queueId) throws OpenCaptureException
     {
+        EntityTransaction tx = null;
+        
         try
         {
             tblBatches = new net.filterlogic.OpenCapture.data.Batches();
 
             entMgr = entMgrFac.createEntityManager();
 
-            entMgr.getTransaction().begin();
+            tx = entMgr.getTransaction();
+            tx.begin();
 
             tblBatches.setBatchName(batchName);
             tblBatches.setBatchClassId(batchClassId);
@@ -292,13 +395,23 @@ public class DBManager
 
             entMgr.persist(tblBatches);
 
-            entMgr.getTransaction().commit();
+            tx.commit();
 
             return tblBatches.getBatchId();
         }
         catch(Exception e)
         {
+            tx.rollback();
             throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
         }
     }
 
@@ -322,6 +435,7 @@ public class DBManager
      */
     public long createBatchClass(long batchClassID, String batchClassName, String batchDescr, String imagePath) throws OpenCaptureException
     {
+        EntityTransaction tx = null;
         
         try
         {
@@ -329,16 +443,30 @@ public class DBManager
             
             entMgr = entMgrFac.createEntityManager();
             
-            entMgr.getTransaction().begin();
+            tx = entMgr.getTransaction();
+            tx.begin();
+            
             entMgr.persist(tblBatchClasses);
-            entMgr.getTransaction().commit();
+            
+            tx.commit();
             //entMgr.flush();
             
             return tblBatchClasses.getBatchClassId();
         }
         catch(Exception e)
         {
+            tx.rollback();
             throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
         }
     }
 }

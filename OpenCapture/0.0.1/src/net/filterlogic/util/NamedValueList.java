@@ -42,6 +42,13 @@ public class NamedValueList<K,V> extends HashMap
     }
 
     @Override
+    public Object remove(Object key) 
+    {
+        //nameList.remove(key);
+        return super.remove(key);
+    }
+
+    @Override
     public void clear() 
     {
         nameList.clear();

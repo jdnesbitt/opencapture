@@ -11,7 +11,6 @@
       <property name="toplink.jdbc.password" value="oc@pture"/>
       <property name="toplink.jdbc.url" value="jdbc:mysql://localhost:3306/opencapture"/>
       <property name="toplink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="toplink.ddl-generation" value="create-tables"/>
     </properties>
   </persistence-unit>
 </persistence>

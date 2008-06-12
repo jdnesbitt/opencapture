@@ -35,11 +35,11 @@ public class Pages
      */
     public Pages(Page page)
     {
-        pages.put(page.getName(),page);
+        pages.put(String.valueOf(page.getPageNumber()),page);
     }
     
     /**
-     * Pagte constructor.
+     * Page constructor.
      * @param batch Batch
      * @param xPath XPath to pages section.
      */
@@ -54,12 +54,14 @@ public class Pages
                 HashMap map = (HashMap)list.get(i);
                 
                 String pageName = (String)map.get("Name");
+                int pageNumber = map.get("PageNumber")!=null ? Integer.parseInt((String)map.get("PageNumber")) : i;
+                int sequenceNumber = map.get("Sequence")!=null ? Integer.parseInt((String)map.get("Sequence")) : i;
 
                 // create and fill ndx field object
-                Page page = new Page(pageName);
+                Page page = new Page(pageName,pageNumber, sequenceNumber);
 
                 // add ndx field to hash
-                pages.put(pageName, page);
+                pages.put(String.valueOf(pageNumber), page);
             }
         }
         catch(Exception e)
@@ -67,7 +69,7 @@ public class Pages
             throw new OpenCaptureException(e.toString());
         }  
     }
-    
+
     /**
      * Move page (change page order);
      * @param currentSequence Current page index.
@@ -92,9 +94,12 @@ public class Pages
      * Add page to pages object.
      * @param page Page to add.
      */
-    public void addPage(Page page)
+    public void addPage(Page page) throws OpenCaptureException
     {
-        pages.put(page.getName(), page);
+        if(page.getPageNumber()<=0)
+            throw new OpenCaptureException("Invalid Page object.  PageNumber must be set.");
+
+        pages.put(String.valueOf(page.getPageNumber()), page);
     }
 
     /**
@@ -106,7 +111,18 @@ public class Pages
     {
         return pages.containsKey(pageName) ? (Page)pages.remove(pageName) : new Page();
     }
-    
+
+    /**
+     * Get specified page number.
+     * @param pageNumber
+     * @return Page object. Null returned if page number doesn't exist.
+     */
+    public Page getPage(int pageNumber)
+    {
+        String v = (String)pages.getOrderedNameList().get(pageNumber);
+        return (Page)pages.get(v);
+    }
+
     /**
      * Number of pages.
      * @return Integer of number of pages.
@@ -131,7 +147,8 @@ public class Pages
             String name = (String)list.get(i);
             Page page = (Page)pages.get(name);
 
-            xml += "<Page Name=\"" + page.getName() + "\" />\n";
+            if(page != null)
+                xml += "<Page Name=\"" + page.getName() + "\" PageNumber=\"" + String.valueOf(page.getPageNumber()) + "\" Sequence=\"" + String.valueOf(page.getSequenceNumber()) + "\" />\n";
         }
 
         return xml;
