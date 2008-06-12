@@ -25,8 +25,6 @@ import net.filterlogic.util.xml.XMLParser;
 public class Document 
 {
     private IndexFields indexFields = null;
-    private IndexFields indexDataFields = null;
-    private Zones zones = null;
     private Pages pages = null;
 
     private String Name = "";
@@ -65,15 +63,15 @@ public class Document
             // get index fields for this document.
             setIndexFields(new IndexFields(batch, xPath));
 
-            xPath = OpenCaptureCommon.INDEX_DATA_FIELDS.replaceAll("<1>",documentName);
-
-            // get index data fields for this document.
-            setIndexDataFields(new IndexFields(batch, xPath));
-
-            xPath = OpenCaptureCommon.ZONES.replaceAll("<1>", documentName);
-
-            // get zones for this document
-            setZones(new Zones(batch, xPath));
+//            xPath = OpenCaptureCommon.INDEX_DATA_FIELDS.replaceAll("<1>",documentName);
+//
+//            // get index data fields for this document.
+//            setIndexDataFields(new IndexFields(batch, xPath));
+//
+//            xPath = OpenCaptureCommon.ZONES.replaceAll("<1>", documentName);
+//
+//            // get zones for this document
+//            setZones(new Zones(batch, xPath));
             
             // get pages
             xPath = OpenCaptureCommon.PAGES.replaceAll("<1>", documentName);
@@ -86,21 +84,35 @@ public class Document
     }
 
     /**
-     * Default Document constructor.
+     * Default Configuration constructor.
      */
     public Document()
     {
         
     }
+    
+    public Document(IndexFields indexFields, Pages pages, String documentName, String formID,int documentNumber)
+    {
+        this.indexFields = indexFields;
+        this.pages = pages;
+        this.Name = documentName;
+        this.formID = formID;
+        this.number = documentNumber;
+    }
+
+    public static Document newInstanceOf()
+    {
+        return new Document();
+    }
+  
+    public static Document newInstanceOf(Document document)
+    {
+        return new Document(document.getIndexFields(),document.getPages(),document.getName(), document.getFormID(), document.getNumber());
+    }
 
     public IndexFields getIndexFields()
     {
         return indexFields;
-    }
-
-    public IndexFields getIndexDataFields()
-    {
-        return indexDataFields;
     }
 
     public String getName()
@@ -113,16 +125,16 @@ public class Document
         this.Name = Name;
     }
 
+    /**
+     * String containng form id value.
+     * @return String
+     */
     public String getFormID() {
         return formID;
     }
 
     public void setFormID(String formID) {
         this.formID = formID;
-    }
-
-    public Zones getZones() {
-        return zones;
     }
 
     public Pages getPages() {
@@ -141,21 +153,13 @@ public class Document
         this.indexFields = indexFields;
     }
 
-    public void setIndexDataFields(IndexFields indexDataFields) {
-        this.indexDataFields = indexDataFields;
-    }
-
-    public void setZones(Zones zones) {
-        this.zones = zones;
-    }
-
     public void setPages(Pages pages) {
         this.pages = pages;
     }
     
 //---------------------------------------------------------------
     
-    public void addIndexFields(IndexField indexField) 
+    public void addIndexField(IndexField indexField) 
     {
         if(indexField == null)
             indexFields = new IndexFields();
@@ -163,23 +167,7 @@ public class Document
             this.indexFields.addIndexField(indexField);
     }
 
-    public void addIndexDataFields(IndexField indexDataField) 
-    {
-        if(indexDataFields == null)
-            indexDataFields = new IndexFields();
-        else
-            this.indexDataFields.addIndexField(indexDataField);
-    }
-
-    public void addZones(Zone zone) throws OpenCaptureException
-    {
-        if(zones == null)
-            zones = new Zones(zone);
-        else
-            this.zones.addZone(zone);
-    }
-
-    public void addPages(Page page) 
+    public void addPage(Page page) throws OpenCaptureException 
     {
         if(pages == null)
             pages = new Pages(page);

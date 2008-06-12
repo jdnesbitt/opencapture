@@ -32,23 +32,26 @@ public class Batch
 {
     net.filterlogic.OpenCapture.data.Batches tblBatch;
     
+    private OpenCaptureConfig ocConfig = null;
+    
     private String rootPath = "";
     
     private Query query;
     
     private BatchClass batchClass = null;
-    private Queues queues = null;
+    //private Queues queues = null;
     private BatchFields  batchFields = null;
-    private BatchFields  batchDataFields = null;
     private Logging logging = null;
     private Log log = null;
     private Pages loosePages = null;
     private Documents documents = null;
+    private Configurations configurations = null;
     private XMLParser xmlParser = null;    
 
     private DBManager dbm = new DBManager();
-    
+
     private String batchClassXmlFile = "";
+
     /**
      * Path and name of xml batch file.
      */
@@ -69,9 +72,11 @@ public class Batch
    
     private String moduleID = "";
 
-    public Batch()
+    public Batch() throws OpenCaptureException
     {
         logging = new Logging();
+
+        ocConfig = new OpenCaptureConfig();
     }
     
     /**
@@ -106,7 +111,7 @@ public class Batch
         }
         
         // set user name
-        this.CreateUser = System.getProperty("user.name");
+        this.CreateUser = OpenCaptureCommon.CURRENT_USER_NAME;
 
         try
         {
@@ -119,7 +124,8 @@ public class Batch
 
             // save batch id
             this.batchID = id;
-            
+            this.setID(String.valueOf(id));
+
             // set batch xml file name which is also the folder name
             this.rootPath = OpenCaptureCommon.getRootPath();
 
@@ -136,6 +142,9 @@ public class Batch
                 throw new OpenCaptureException("Failed to load new copy of batch class[" + this.batchClassXmlFile + "].\n" + e.toString());
             }                
 
+            // create batch class object
+            batchClass = new BatchClass(xmlParser);
+
             // save batch to Batch xml folder
             String batchFolderID = OpenCaptureCommon.toHex8(id);
 
@@ -148,6 +157,16 @@ public class Batch
             // create batch folder
             if(!net.filterlogic.io.Path.createPath(this.batchXmlFilePath))
                 throw new OpenCaptureException("Unable to create batch folder[" + batchFolderID + " @ " + this.batchXmlFilePath);
+
+            // create image file path
+            String imageFolder = getImageFilePath();
+            if(!net.filterlogic.io.Path.createPath(imageFolder))
+                throw new OpenCaptureException("Unable to create image file folder[" + imageFolder + "]");
+
+            // add following to xml
+            xmlParser.setValue(OpenCaptureCommon.BATCH_NAME, this.BatchName);
+            xmlParser.setValue(OpenCaptureCommon.BATCH_ID, this.ID);
+            xmlParser.setValue(OpenCaptureCommon.BATCH_SCAN_USER, this.CreateUser);
 
             try
             {
@@ -175,8 +194,8 @@ public class Batch
      */
     protected void logException(String message)
     {
-        log.setMessage(message);
-        getLogging().addLog(log);
+        getLog().setMessage(message);
+        getLogging().addLog(getLog());
     }
     
     protected void loadBatch(long batchID) throws OpenCaptureException
@@ -214,11 +233,14 @@ public class Batch
 
         try
         {
-            dbm = new DBManager();
+            //dbm = new DBManager();
             
             batchID = dbm.getNextBatch(moduleID);
             
-            OpenBatch(batchID);
+            if(batchID>0)
+                OpenBatch(batchID);
+            else
+                this.BatchName = "";
         }
         catch(Exception e)
         {
@@ -226,7 +248,7 @@ public class Batch
             throw new OpenCaptureException(e.toString());
         }
     }
-    
+
     /**
      * Open specified batch.
      * @param batchID ID of batch to open.
@@ -246,55 +268,62 @@ public class Batch
         // load batch xml
         loadBatch(batchID);
 
+        this.BatchName = xmlParser.getValue(OpenCaptureCommon.BATCH_NAME);
+        this.ID = xmlParser.getValue(OpenCaptureCommon.BATCH_ID);
+        this.CreateUser = xmlParser.getValue(OpenCaptureCommon.BATCH_SCAN_USER);
+
         // create batch class object
         batchClass = new BatchClass(xmlParser);
+
+        // load configuration section
+        configurations = new Configurations(xmlParser);
 
         String xPath = OpenCaptureCommon.BATCH_FIELDS;
         setBatchFields(new BatchFields(xmlParser, xPath));
 
-        xPath = OpenCaptureCommon.BATCH_DATA_FIELDS;
-        setBatchDataFields(new BatchFields(xmlParser, xPath));
-
-        // get queues
-        setQueues(new Queues(xmlParser));
-        
         // get pages
         xPath = OpenCaptureCommon.LOOSE_PAGES;
         loosePages = new Pages(xmlParser, xPath);
 
         setDocuments(new Documents(xmlParser));
 
+        // get current queue
+        this.currentQueue = configurations.getQueues().getCurrentQueue();
+        
+        // set module id
+        this.moduleID = this.currentQueue.getQueueName();
+
         // lock batch xml file
         OpenCaptureCommon.lockBatchXmlFile(batchID);
 
         // make sure this isn't a create batch, then add new log entry.
-        if(moduleID.length()>0)
-            log = new Log(this.moduleID,"");
+        //if(moduleID.length()>0)
+        log = new Log(this.moduleID,"");
+        getLog().setStartDateTime(DateUtil.getDateTime());
     }
 
-    /**
-     * Close batch.
-     * @throws net.filterlogic.OpenCapture.OpenCaptureException
-     */
-    public void CloseBatch() throws OpenCaptureException
+    public void CloseBatch(boolean withException,String msgException) throws OpenCaptureException
     {
         long id = 0;
 
         try
         {
-            net.filterlogic.OpenCapture.data.DBManager dbm = new net.filterlogic.OpenCapture.data.DBManager();
+            //dbm = new net.filterlogic.OpenCapture.data.DBManager();
 
-            // move batch to next queue.
-            queues.moveNextQueue();
+            // move batch to exception q
+            configurations.getQueues().setCurrentQueue("OCException");
 
             // set end time
-            log.setEndDateTime(DateUtil.getDateTime());
+            String batchCloseDate = DateUtil.getDateTime();
+
+            getLog().setMessage(msgException);
+            getLog().setEndDateTime(batchCloseDate);
 
             // add log to logging object
-            getLogging().addLog(log);
+            getLogging().addLog(getLog());
 
             // if no more queues, write output log
-            if(this.currentQueue.getCurrentQueue().length()<1)
+            if(configurations.getQueues().getCurrentQueue().getQueueName().length()<1)
             {
                 // log batch
                 OpenCaptureCommon.writeBatchLog(this.logging);
@@ -310,12 +339,21 @@ public class Batch
                 // get id of next queue for batch
                 id = dbm.getQueueIDByName(this.currentQueue.getQueueName());
 
+                int batchState = 0;
+
+                // if exception occured, set batch state to error
+                if(withException)
+                    batchState = OpenCaptureCommon.BATCH_STATUS_ERROR;
+                else
+                    batchState = OpenCaptureCommon.BATCH_STATUS_READY;
+
                 // set batch to next queue
-                dbm.setBatchQueueByBatchIDQueueID(batchID, id);
+                dbm.setBatchQueueByBatchIDQueueID(batchID, id,batchState);
+
+                // unlock batch file.
+                OpenCaptureCommon.unlockBatchXmlFile(batchID);
             }
 
-            // unlock batch file.
-            OpenCaptureCommon.unlockBatchXmlFile(batchID);
         }
         catch(Exception e)
         {
@@ -324,6 +362,70 @@ public class Batch
         }
         finally
         {
+            dbm.CloseConnections();
+            
+            // save the batch
+            saveBatch();
+        }
+    }
+
+    /**
+     * Close batch.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void CloseBatch() throws OpenCaptureException
+    {
+        long id = 0;
+
+        try
+        {
+            //dbm = new net.filterlogic.OpenCapture.data.DBManager();
+
+            // move batch to next queue.
+            configurations.getQueues().moveNextQueue();
+
+            // set end time
+            String batchCloseDate = DateUtil.getDateTime();
+            getLog().setEndDateTime(batchCloseDate);
+
+            // add log to logging object
+            getLogging().addLog(getLog());
+
+            // if no more queues, write output log
+            if(configurations.getQueues().getCurrentQueue().getQueueName().length()<1)
+            {
+                // log batch
+                OpenCaptureCommon.writeBatchLog(this.logging);
+
+                // remove lock file
+                OpenCaptureCommon.unlockBatchXmlFile(batchID);
+
+                // delete batch 
+                dbm.deleteBatch(batchID);
+            }
+            else
+            {
+                // get id of next queue for batch
+                id = dbm.getQueueIDByName(configurations.getQueues().getCurrentQueue().getQueueName());
+
+                // set batch to next queue
+                dbm.setBatchQueueByBatchIDQueueID(batchID, id,OpenCaptureCommon.BATCH_STATUS_READY);
+            }
+
+            // unlock batch file.
+            OpenCaptureCommon.unlockBatchXmlFile(batchID);
+            
+            
+        }
+        catch(Exception e)
+        {
+            logException("Unable to close batch. " + e.toString());
+            throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            dbm.CloseConnections();
+
             // save the batch
             saveBatch();
         }
@@ -418,19 +520,76 @@ public class Batch
     {
         this.ID = String.valueOf(batchID);
     }
-    
+
+    /**
+     * Get image file path.
+     * @return Returns batch image file path.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public String getImageFilePath() throws OpenCaptureException
+    {
+        String batchXMLFolderName = "";
+
+        try
+        {
+            batchXMLFolderName = batchClass.getImagePath() + OpenCaptureCommon.getBatchFolderName(this.batchID) + OpenCaptureCommon.PATH_SEPARATOR;
+            
+            return batchXMLFolderName;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException(e.toString());
+        }
+    }
+
     /**
      * Add loose page to batch.
      * @param page Page to add.
      */
-    public void addLoosePage(Page page)
+    public void addLoosePage(Page page) throws OpenCaptureException
     {
         if(loosePages == null)
                 loosePages = new Pages(page);
         else
             loosePages.addPage(page);
     }
-    
+
+    /**
+     * Get page.
+     * @param pageNumber
+     * @return Page object.
+     */
+    public Page getPage(int pageNumber)
+    {
+        return loosePages.getPage(pageNumber);
+    }
+
+    /**
+     * Get loose page count.
+     * @return Int containing count of loose pages.
+     */
+    public int getLoosePageCount()
+    {
+        return loosePages.Count();
+    }
+
+    /**
+     * Get page file name.
+     * @param pageNumber
+     * @return String containing file name without page.
+     */
+    public String getPageFileName(int pageNumber)
+    {
+        String pageName = "";
+        
+        Page page = loosePages.getPage(pageNumber);
+
+        if(page!=null)
+            pageName = page.getName();
+
+        return pageName;
+    }
+
     /**
      * Delete loose page from batch.
      * @param pageName Name of loose page.
@@ -449,16 +608,11 @@ public class Batch
         {
             // create batch xml.
             batchXML += this.batchClass.getXML();
-            batchXML += "<Batch Name=\"" + this.BatchName + "\" ID=\"" + this.ID + "\" ScanUser=\"\">\n";
+            batchXML += this.configurations.getXML();
+            batchXML += "<Batch Name=\"" + this.BatchName + "\" ID=\"" + this.ID + "\" ScanUser=\"" + this.CreateUser + "\">\n";
             batchXML += "<BatchFields>\n";
             batchXML += this.getBatchFields().getXML();
             batchXML += "</BatchFields>\n";
-            batchXML += "<BatchDataFields>\n";
-            batchXML += this.getBatchDataFields().getXML();
-            batchXML += "</BatchDataFields>\n";
-            batchXML += "<Queues CurrentQueue=\"" + this.getQueues().getCurrentQueue().getQueueName() + "\">\n";
-            batchXML += this.getQueues().getXML();
-            batchXML += "</Queues>\n";
             batchXML += "<Logging>\n";
             batchXML += this.getLogging().getXML();
             batchXML += "</Logging>\n";
@@ -483,13 +637,13 @@ public class Batch
         }
     }
 
-    public Queues getQueues() {
-        return queues;
-    }
-
-    public void setQueues(Queues queues) {
-        this.queues = queues;
-    }
+//    public Queues getQueues() {
+//        return queues;
+//    }
+//
+//    public void setQueues(Queues queues) {
+//        this.queues = queues;
+//    }
 
     public BatchFields getBatchFields() {
         return batchFields;
@@ -499,13 +653,13 @@ public class Batch
         this.batchFields = batchFields;
     }
 
-    public BatchFields getBatchDataFields() {
-        return batchDataFields;
-    }
-
-    public void setBatchDataFields(BatchFields batchDataFields) {
-        this.batchDataFields = batchDataFields;
-    }
+//    public BatchFields getBatchDataFields() {
+//        return batchDataFields;
+//    }
+//
+//    public void setBatchDataFields(BatchFields batchDataFields) {
+//        this.batchDataFields = batchDataFields;
+//    }
 
     public Logging getLogging() {
         return logging;
@@ -515,25 +669,25 @@ public class Batch
         this.logging = logging;
     }
 
-    public Documents getDocuments() {
-        return documents;
+    public Configurations getConfigurations() {
+        return configurations;
     }
 
-    public void setDocuments(Documents documents) {
-        this.documents = documents;
+    public void setConfigurations(Configurations configurations) {
+        this.configurations = configurations;
     }
     
     //------------------------------------------------------
     
-    public void addQueues(Queue queue) 
-    {
-        if(queues == null)
-            queues = new Queues(queue);
-        else
-            this.queues.addQueue(queue);
-    }
+//    public void addQueues(Queue queue) 
+//    {
+//        if(queues == null)
+//            queues = new Queues(queue);
+//        else
+//            this.queues.addQueue(queue);
+//    }
 
-    public void addBatchFields(BatchField batchField) 
+    public void addBatchField(BatchField batchField) 
     {
         if(batchFields == null)
             batchFields = new BatchFields(batchField);
@@ -541,15 +695,7 @@ public class Batch
             this.batchFields.addBatchField(batchField);
     }
 
-    public void addBatchDataFields(BatchField batchDataField) 
-    {
-        if(batchDataFields == null)
-            batchDataFields = new BatchFields(batchDataField);
-        else
-            this.batchDataFields.addBatchField(batchDataField);
-    }
-
-    public void addLogging(Log log) 
+    public void addLog(Log log) 
     {
         if(logging == null)
             logging = new Logging();
@@ -557,11 +703,35 @@ public class Batch
         this.logging.addLog(log);
     }
 
-    public void addDocuments(Document document) 
+    public void addDocument(Document document) 
     {
-        if(documents == null)
-            documents = new Documents(document);
+        if(getDocuments() == null)
+            setDocuments(new Documents(document));
         else
-            this.documents.addDocument(document);
+            this.getDocuments().addDocument(document);
+    }
+
+    public Documents getDocuments()
+    {
+        return documents;
+    }
+
+    public void setDocuments(Documents documents)
+    {
+        this.documents = documents;
+    }
+
+    /**
+     * Get opencapture configuration.
+     * @return OpenCaptureConfig object.
+     */
+    public OpenCaptureConfig getOcConfig()
+    {
+        return ocConfig;
+    }
+
+    public Log getLog()
+    {
+        return log;
     }
 }

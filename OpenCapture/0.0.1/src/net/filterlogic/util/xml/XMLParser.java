@@ -184,24 +184,24 @@ public class XMLParser
     public void setValue(String xPath,String value) throws Exception
     {
         Element result = null;
-
+        Object elem;
+        
         try
         {
             try
             {
-                XPath xp = new DOMXPath(xPath);
+                XPath xpath = new DOMXPath(xPath);
+                elem = xpath.selectSingleNode(this.doc);
+                if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+                    ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).setNodeValue(value);
+                else
+                    ((Element)elem).getChildNodes().item(0).setNodeValue(value);
 
-                result = (Element)xp.selectSingleNode(this.doc);
             }
             catch(Exception xpe)
             {
                 throw new Exception(xpe.toString());
             }
-            
-            if(result == null)
-                throw new Exception("Unable to locate XPath[" + xPath + "]");
-
-            result.setNodeValue(value);
         }
         catch(Exception e)
         {

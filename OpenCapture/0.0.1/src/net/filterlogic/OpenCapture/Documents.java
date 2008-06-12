@@ -28,8 +28,8 @@ import net.filterlogic.util.NamedValueList;
  */
 public class Documents 
 {
-    //private Hashtable <String,Document> documents = new Hashtable<String,Document>();
-    private NamedValueList<String,Document> documents = new NamedValueList<String,Document>();
+    //private Hashtable <String,Configuration> documents = new Hashtable<String,Configuration>();
+    private NamedValueList<String,Configuration> documents = new NamedValueList<String,Configuration>();
     
     /**
      * Constructor to add new document.
@@ -37,7 +37,7 @@ public class Documents
      */
     public Documents(Document document)
     {
-        documents.put(document.getName(), document);
+        documents.put(String.valueOf(document.getNumber()), document);
     }
     
     public Documents(XMLParser batch) throws OpenCaptureException
@@ -56,7 +56,7 @@ public class Documents
                 int number = ((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)).trim().length()>0 
                         ? Integer.parseInt((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)) : 0;
                 
-                Document document = new Document(batch, documentName, formID,number);
+                Configuration document = new Configuration(batch, documentName, formID,number);
                 
                 // add document obj to documents hash
                 documents.put(documentName, document);
@@ -71,11 +71,11 @@ public class Documents
     /**
      * Get the named document.
      * @param documentName Name of the document.
-     * @return Document object.
+     * @return Configuration object.
      */
-    public Document getDocument(String documentName)
+    public Document getDocument(String documentNumber)
     {
-        Document document = (Document)getDocuments().get(documentName);
+        Document document = (Document)getDocuments().get(documentNumber);
         
         return document;
     }
@@ -105,39 +105,39 @@ public class Documents
             Document document = (Document)getDocuments().get(name);
 
             xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\">\n";
-            xml += "<IndexDataFields>\n";
-            xml += document.getIndexDataFields().getXML();
-            xml += "</IndexDataFields>";
+//            xml += "<IndexDataFields>\n";
+//            xml += document.getIndexDataFields().getXML();
+//            xml += "</IndexDataFields>";
             xml += "<Pages>\n";
             xml += document.getPages().getXML();
             xml += "</Pages>\n";
             xml += "<IndexFields>\n";
             xml += document.getIndexFields().getXML();
             xml += "</IndexFields>\n";
-            xml += "<Zones>\n";
-            xml += document.getZones().getXML();
-            xml += "</Zones>\n";
+//            xml += "<Zones>\n";
+//            xml += document.getZones().getXML();
+//            xml += "</Zones>\n";
             xml += "</Document>";
         }
         
         return xml;
     }
 
-    public NamedValueList<String, Document> getDocuments() {
+    public NamedValueList<String, Configuration> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(NamedValueList<String, Document> documents) {
+    public void setDocuments(NamedValueList<String, Configuration> documents) {
         this.documents = documents;
     }
     
     /**
      * Add document to document collection.
-     * @param document Document to add.
+     * @param document Configuration to add.
      */
     public void addDocument(Document document)
     {
-        documents.put(document.getName(), document);
+        documents.put(String.valueOf(document.getNumber()), document);
     }
     
     /**
@@ -145,8 +145,8 @@ public class Documents
      * @param documentName Name of document to delete.
      * @return Delete document.  Returns an empty document if documentName doesn't exist.
      */
-    public Document deleteDocument(String documentName)
+    public Document deleteDocument(String documentNumber)
     {
-        return documents.containsKey(documentName) ? (Document)documents.remove(documentName) : new Document();
+        return documents.containsKey(documentNumber) ? (Document)documents.remove(documentNumber) : new Document();
     }
 }
