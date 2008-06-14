@@ -24,6 +24,24 @@ import net.filterlogic.io.Path;
 import net.filterlogic.io.ReadWriteTextFile;
 import net.filterlogic.util.DateUtil;
 
+import java.io.FilenameFilter;
+import java.io.FileFilter;
+
+class FileNameFilter implements FilenameFilter 
+{
+    String ext;
+
+    public FileNameFilter(String ext) 
+    {
+        this.ext = ext;
+    }
+
+    public boolean accept(File dir, String name) 
+    {
+        return (name.endsWith(this.ext));
+    }
+}
+
 /**
  *
  * @author dnesbitt
@@ -31,34 +49,45 @@ import net.filterlogic.util.DateUtil;
 public class OpenCaptureCommon 
 {
     public static String PATH_SEPARATOR = System.getProperty("file.separator");
+    public static String CURRENT_USER_NAME = System.getProperty("user.name");
     public static String BATCH_CLASS_NAME = "//BatchClass/@Name";
     public static String BATCH_CLASS_IMAGE_PATH = "//BatchClass/@ImagePath";
     public static String BATCH_CLASS_VERSION = "//BatchClass/@version";
     public static String BATCH_CLASS_PRIORITY = "//BatchClass/@Priority";
 
     public static String BATCH_NAME = "//BatchClass/Batch/@Name";
+    public static String BATCH_ID = "//BatchClass/Batch/@ID";
+    public static String BATCH_SCAN_USER = "//BatchClass/Batch/@ScanUser";
+
+    public static String CONF_BATCH_FIELDS = "//BatchClass/Configuration/BatchFields/BatchField";
+    public static String CONF_BATCH_FIELD = "//BatchClass/Configuration/BatchFields/BatchField[@Name=\"<1>\"]";
+    public static String CONF_DOCUMENTS = "//BatchClass/Configuration/Documents/Document";
+    public static String CONF_DOCUMENT = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]";
+    public static String CONF_INDEX_FIELDS = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField";
+    public static String CONF_INDEX_FIELD = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
+    public static String ZONES = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/Zones/Zone";
+    public static String ZONE = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/Zones/Zone[@Name=\"<2>\"]";
+
+    public static String QUEUES = "//BatchClass/Configuration/Queues/*";
+    public static String CURRENT_QUEUE = "//BatchClass/Configuration/Queues/@CurrentQueue";
+    public static String QUEUE = "//BatchClass/Configuration/Queues/Queue[@Name=\"<1>\"]";
+    
+    public static String LOG_FIELDS = "//BatchClass/Batch/Logging";
 
     public static String BATCH_FIELDS = "//BatchClass/Batch/BatchFields/BatchField";
     public static String BATCH_FIELD = "//BatchClass/Batch/BatchFields/BatchField[@Name=\"<1>\"]";
-    public static String BATCH_DATA_FIELDS = "//BatchClass/Batch/BatchDataFields/BatchField";
-    public static String BATCH_DATA_FIELD = "//BatchClass/Batch/BatchDataFields/BatchField[@Name=\"<1>\"]";
 
-    public static String QUEUES = "//BatchClass/Batch/Queues/*";
+    // Document tag that contains batch class configuration.
     public static String DOCUMENTS = "//BatchClass/Batch/Documents/Document";
     public static String DOCUMENT = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]";
-    
     public static String INDEX_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField";
     public static String INDEX_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
-    public static String INDEX_DATA_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexField";
-    public static String INDEX_DATA_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexDataFields/IndexField[@Name=\"<2>\"]";
-    public static String ZONES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone";
-    public static String ZONE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Zones/Zone[@Name=\"<2>\"]";
-    public static String PAGES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page";
-    public static String PAGE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page[@Name=\"<2>\"]";
     public static String LOOSE_PAGES = "//BatchClass/Batch/Pages/Page";
     public static String LOOSE_PAGE = "//BatchClass/Batch/Pages/Page[@Name=\"<1>\"]";
 
-    public static String LOG_FIELDS = "//BatchClass/Batch/Logging";
+    // Document tag that contains actual index data
+    public static String PAGES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page";
+    public static String PAGE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page[@Name=\"<2>\"]";
 
     public static String OC_NAME_TAG = "Name";
     public static String OC_DOCUMENT_FORMID_TAG = "FormID";
@@ -76,6 +105,11 @@ public class OpenCaptureCommon
 
     public static String BATHCXML_FOLDER_NAME = "BatchXML";
 
+    /**
+     * Returns the application root path.  Appends a slash at the end.
+     * @return Root application path.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public static String getRootPath() throws OpenCaptureException
     {
         String rootPath = "";
@@ -133,7 +167,13 @@ public class OpenCaptureCommon
         return batchFile;
     }
     
-        public static String getBatchFilePath(long batchID) throws OpenCaptureException
+    /**
+     * Get path to batch xml file.
+     * @param batchID
+     * @return Path to batch xml file.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public static String getBatchFilePath(long batchID) throws OpenCaptureException
     {
         String folderID = toHex8(batchID);
         
@@ -150,7 +190,22 @@ public class OpenCaptureCommon
         
         return batchFile;
     }
-    
+
+    /**
+     * Return batch folder name.
+     * @param batchID
+     * @return Batch folder name (00000034).
+     */
+    public static String getBatchFolderName(long batchID)
+    {
+        return toHex8(batchID);
+    }
+
+    /**
+     * 
+     * @param batchID
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public static void lockBatchXmlFile(long batchID) throws OpenCaptureException
     {
         String batchFile = "";
@@ -266,5 +321,45 @@ public class OpenCaptureCommon
         {
             rwt = null;
         }
+    }
+    
+    /**
+     * Retrieves file list.  Directories are not returned.
+     * @param path Path to directory.
+     * @return File array.
+     */
+    public static File[] getFileList(String path)
+    {
+        if(!new File(path).exists())
+            return null;
+
+        // This filter only returns directories
+        FileFilter dirFilter = new FileFilter() 
+        {
+            public boolean accept(File file) 
+            {
+                return !file.isDirectory();
+            }
+        };
+
+        File[] files = new File(path).listFiles(dirFilter);
+
+        return files;
+    }
+    
+    /**
+     * Get file list with matching extension.
+     * @param path Path to search.
+     * @param ext Extension to search for.
+     * @return Returns an array of File objects.
+     */
+    public static File[] getFileList(String path,String ext)
+    {
+        if(!new File(path).exists())
+            return null;
+
+        File[] files = new File(path).listFiles(new FileNameFilter(ext));
+
+        return files;
     }
 }

@@ -48,15 +48,18 @@ public class BatchFields
             {
                 HashMap map = (HashMap)list.get(i);
                 
-                String batchFieldName = (String)map.get("Name");
-                String type = map.get("Type") != null ? (String)map.get("Type") : "";
-                String value = (String)map.get("Value");
+                if(map.size()>0)
+                {
+                    String batchFieldName = (String)map.get("Name");
+                    String type = map.get("Type") != null ? (String)map.get("Type") : "";
+                    String value = (String)map.get("Value");
 
-                // create and fill ndx field object
-                BatchField batchField = new BatchField(batchFieldName,type,value);
+                    // create and fill ndx field object
+                    BatchField batchField = new BatchField(batchFieldName,type,value);
 
-                // add ndx field to hash
-                batchFields.put(batchFieldName, batchField);
+                    // add ndx field to hash
+                    batchFields.put(batchFieldName, batchField);
+                }
             }
         }
         catch(Exception e)
