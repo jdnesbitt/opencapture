@@ -74,15 +74,16 @@ public class ReadWriteTextFile {
     if (aFile == null) {
       throw new IllegalArgumentException("File should not be null.");
     }
-    if (!aFile.exists()) {
-      throw new FileNotFoundException ("File does not exist: " + aFile);
-    }
-    if (!aFile.isFile()) {
+//    if (!aFile.exists()) {
+//      throw new FileNotFoundException ("File does not exist: " + aFile);
+//    }
+    if (aFile.isDirectory()) {
       throw new IllegalArgumentException("Should not be a directory: " + aFile);
     }
-    if (!aFile.canWrite()) {
+    if (aFile.exists() && !aFile.canWrite()) {
       throw new IllegalArgumentException("File cannot be written: " + aFile);
     }
+    
     //declared here only to make visible to finally clause; generic reference
     Writer output = null;
     try {
