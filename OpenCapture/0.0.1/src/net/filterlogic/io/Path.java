@@ -17,6 +17,7 @@ Copyright 2008 Filter Logic
 package net.filterlogic.io;
 
 import java.io.File;
+//import net.filterlogic.OpenCapture.OpenCaptureCommon;
         
 /**
  *
@@ -24,6 +25,11 @@ import java.io.File;
  */
 public class Path 
 {
+    /**
+     * Validates path.
+     * @param path Path to validate.
+     * @return True if path exists, otherwise false.
+     */
     public static boolean ValidatePath(String path)
     {
         if(!new java.io.File(path).exists())
@@ -49,7 +55,7 @@ public class Path
     
     public static boolean createPath(String path)
     {
-        boolean ok = false;
+        boolean ok = true;
         
         if(!ValidatePath(path))
             ok = (new java.io.File(path)).mkdir();
@@ -57,6 +63,11 @@ public class Path
         return ok;
     }
 
+    /**
+     * Get filename without extension
+     * @param fileName
+     * @return String containing file path without extension.
+     */
     public static String getFileNameWithoutExtension(String fileName)
     {
         File tmpFile = new File(fileName);
@@ -67,11 +78,25 @@ public class Path
         if (0 < whereDot && whereDot <= tmpFile.getName().length() - 2 ) 
         {
             return tmpFile.getName().substring(0, whereDot);
-
-            //extension = filename.substring(whereDot+1);
         }
 
         return "";
     }
+    
+    /**
+     * Get filename without path
+     * @param fileName
+     * @return String containing filename.
+     */
+    public static String getFileName(String fileName)
+    {
+        File tmpFile = new File(fileName);
 
+        if(tmpFile.exists())
+        {
+            return tmpFile.getName();
+        }
+        else
+            return "";
+    }
 }
