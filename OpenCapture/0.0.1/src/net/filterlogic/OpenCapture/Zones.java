@@ -43,11 +43,11 @@ public class Zones
         try
         {
             List list = batch.getNodeList(xPath);
-            
+
             for(int i=0;i<list.size();i++)
             {
                 HashMap map = (HashMap)list.get(i);
-                
+
                 String zoneName = (String)map.get("Name");
                 String type = map.get("Type") != null ? (String)map.get("Type") : "";
                 String x = ((String)map.get("X")).trim().length()>0 ? (String)map.get("X") : "0";
@@ -69,17 +69,31 @@ public class Zones
             throw new OpenCaptureException(e.toString());
         }   
     }
-    
+
     public Zone getZone(String zoneName)
     {
         Zone zone = (Zone)zones.get(zoneName);
-        
+
         if(zone == null)
             zone = new Zone();
-        
+
         return zone;
     }
-    
+
+    /**
+     * Get list of zone names.
+     * @return Return List.
+     */
+    public List getZoneNames()
+    {
+        return zones.getOrderedNameList();
+    }
+
+    /**
+     * Add a zone to zones list.
+     * @param zone Zone object.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public void addZone(Zone zone) throws OpenCaptureException
     {
         String zoneName = zone.getName();

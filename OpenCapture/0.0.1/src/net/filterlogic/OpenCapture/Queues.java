@@ -63,8 +63,13 @@ public class Queues
                 queues.add(queue);
             }
             
-            // set current q to first entry in map
-            this.currentQueue = ((Queue)queues.get(0)).getQueueName();
+            currentQueue = batch.getValue(OpenCaptureCommon.CURRENT_QUEUE).trim();
+
+            if(currentQueue.trim().length()<1)
+            {
+                // set current q to first entry in map
+                currentQueue = ((Queue)queues.get(0)).getQueueName();
+            }
         }
         catch(Exception e)
         {
@@ -95,7 +100,7 @@ public class Queues
                         ++i;
 
                         // set current q = to next q.
-                        this.currentQueue = ((Queue)queues.get(i)).getQueueName().toLowerCase();
+                        this.setCurrentQueue(((Queue) queues.get(i)).getQueueName().toLowerCase());
 
                         // leave for loop
                         break;
@@ -252,5 +257,10 @@ public class Queues
         }
 
         return xml;
+    }
+
+    protected void setCurrentQueue(String currentQueue)
+    {
+        this.currentQueue = currentQueue;
     }
 }

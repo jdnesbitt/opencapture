@@ -142,7 +142,7 @@ public class IndexFields
     {
         indexFields.put(indexField.getName(), indexField);
     }
-    
+
     /**
      * Delete index field.
      * @param indexFieldName Name of index field to delete.

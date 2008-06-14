@@ -30,6 +30,8 @@ public class Zone
     private int H = 0;
     private byte MinAccuracy = 25;
     private String FieldType = "";
+    private String IDValue = "";
+    private String DocumentName = "";
 
     public Zone(String Name,String Type,int X, int Y, int W, int H, byte MinAccuracy, String FieldType)
     {
@@ -125,5 +127,33 @@ public class Zone
     public void setFieldType(String FieldType)
     {
         this.FieldType = FieldType;
+    }
+
+    /**
+     * Get form id value.
+     * @return String
+     */
+    public String getFormIDValue()
+    {
+        return IDValue;
+    }
+
+    /**
+     * Set form id value.
+     * @param IDValue
+     */
+    protected void setFormIDValue(String IDValue)
+    {
+        this.IDValue = IDValue;
+    }
+
+    public String getDocumentName()
+    {
+        return DocumentName;
+    }
+
+    public void setDocumentName(String DocumentName)
+    {
+        this.DocumentName = DocumentName;
     }
 }
