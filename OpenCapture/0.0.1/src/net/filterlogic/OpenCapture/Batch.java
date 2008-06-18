@@ -277,7 +277,11 @@ public class Batch
 
         // load configuration section
         configurations = new Configurations(xmlParser);
+        
+        // load batch log entries
+        logging = new Logging(xmlParser, OpenCaptureCommon.LOG_FIELDS);
 
+        // load batch fields
         String xPath = OpenCaptureCommon.BATCH_FIELDS;
         setBatchFields(new BatchFields(xmlParser, xPath));
 
@@ -285,6 +289,7 @@ public class Batch
         xPath = OpenCaptureCommon.LOOSE_PAGES;
         loosePages = new Pages(xmlParser, xPath);
 
+        // load separated documents
         setDocuments(new Documents(xmlParser));
 
         // get current queue
@@ -298,7 +303,7 @@ public class Batch
 
         // make sure this isn't a create batch, then add new log entry.
         //if(moduleID.length()>0)
-        log = new Log(this.moduleID,"");
+        log  = new Log(this.moduleID,OpenCaptureCommon.getLocalHostName());
         getLog().setStartDateTime(DateUtil.getDateTime());
     }
 

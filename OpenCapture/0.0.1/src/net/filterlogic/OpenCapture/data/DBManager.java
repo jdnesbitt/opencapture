@@ -401,13 +401,16 @@ public class DBManager
         }
         catch(Exception e)
         {
-            tx.rollback();
+            if(tx!=null)
+                if(tx.isActive())
+                    tx.rollback();
             throw new OpenCaptureException(e.toString());
         }
         finally
         {
-            if(entMgr.isOpen())
-                entMgr.close();
+            if(entMgr!=null)
+                if(entMgr.isOpen())
+                    entMgr.close();
 //            if(entMgrFac.isOpen())
 //                entMgrFac.close();
             
