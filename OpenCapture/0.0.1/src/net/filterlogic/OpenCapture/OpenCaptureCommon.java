@@ -202,11 +202,11 @@ public class OpenCaptureCommon
     }
 
     /**
-     * 
-     * @param batchID
+     * Lock a batch xml file.
+     * @param batchID ID of batch file to lock.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    public static void lockBatchXmlFile(long batchID) throws OpenCaptureException
+    protected static void lockBatchXmlFile(long batchID) throws OpenCaptureException
     {
         String batchFile = "";
         
@@ -225,7 +225,12 @@ public class OpenCaptureCommon
         }
     }
     
-    public static void unlockBatchXmlFile(long batchID) throws OpenCaptureException
+    /**
+     * Unlock a batch xml file.
+     * @param batchID ID of batch file to unlock.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    protected static void unlockBatchXmlFile(long batchID) throws OpenCaptureException
     {
         String batchFile = "";
 
@@ -240,6 +245,12 @@ public class OpenCaptureCommon
         }
     }
     
+    /**
+     * Checks to see if the batch xml file is locked.
+     * @param batchID ID of batch to check.
+     * @return Returns true if file is locked, else false.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public static boolean isBatchXmlFileLocked(long batchID) throws OpenCaptureException
     {
         boolean ok = false;
@@ -258,7 +269,16 @@ public class OpenCaptureCommon
         return ok;
     }
     
-    public static String getBatchClassXmlFile(String batchClassName) throws OpenCaptureException
+    /**
+     * Gets the path to the batch class xml definition file.
+     * 
+     * @param batchClassName
+     * 
+     * @return Returns a string containing the path to the definition file.
+     * 
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    protected static String getBatchClassXmlFile(String batchClassName) throws OpenCaptureException
     {
         String batchClassXmlFile = "";
         
@@ -283,6 +303,13 @@ public class OpenCaptureCommon
         return batchClassXmlFile;
     }
     
+    /**
+     * Write batch log to history log when batch completes all queues
+     * or is deleted.
+     * @param logging Logging object that contains all log data.
+     * 
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     protected static void writeBatchLog(Logging logging) throws OpenCaptureException
     {
         List logs = logging.getLogs();
@@ -361,5 +388,24 @@ public class OpenCaptureCommon
         File[] files = new File(path).listFiles(new FileNameFilter(ext));
 
         return files;
+    }
+    
+    /**
+     * Get this computer's name.
+     * @return String containing computer name.  Empty string returned if exception occurs.
+     */
+    public static String getLocalHostName()
+    {
+        try 
+        {
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            return localMachine.getHostName();
+        }
+        catch (java.net.UnknownHostException uhe) 
+        {
+            System.out.println(uhe.toString());
+            
+            return "";
+        }
     }
 }
