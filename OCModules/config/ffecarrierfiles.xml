@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BatchClass Name="FFE Carrier Files" ImagePath="C:\Test\OpenCapture\FFE\Images" version="0.0.1" Priority="7">
+<BatchClass Name="FFE Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/ffe/Images" version="0.0.1" Priority="7">
     <Configuration>
         <Queues CurrentQueue="">
             <Queue Name="OCImport" ID="1" CustomPlugin="" />
