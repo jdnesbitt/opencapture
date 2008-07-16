@@ -39,6 +39,8 @@ import net.filterlogic.OpenCapture.interfaces.IZoneReader;
 public class OCCognizance 
 {
     static Logger myLogger = Logger.getLogger(OCImport.class.getName( ));
+    
+    private IndexFields stickeyFields = new IndexFields();
 
     private String configFile = "";
     private String log4j = "";
@@ -170,10 +172,13 @@ public class OCCognizance
 
                                 // read index fields from image
                                 Configuration config = batch.getConfigurations().getDocument(zone.getDocumentName());
+                                IndexFields confIndexFields = batch.getConfigurations().getIndexFields();
 
                                 // get zones for zone reader
-                                IndexFields ndxFields = readIndexFields(zr, config.getZones(), config);
+                                IndexFields ndxFields = readIndexFields(zr, config.getZones(), confIndexFields);
 
+                                // TODO: Add Sticky Value code here
+                                
                                 // add read index field values.
                                 document.setIndexFields(ndxFields);
 
@@ -207,11 +212,13 @@ public class OCCognizance
                 // if docs found, add last separated document to batch
                 if(docFound)
                 {
+                    // add loose page to document
                     document.addPage(page);
 
                     // delete loose page
                     batch.deleteLoosePage(String.valueOf(loosePageCount));
 
+                    // add document to batch
                     batch.addDocument(document);
                 }
 
@@ -234,7 +241,16 @@ public class OCCognizance
         }
     }
 
-    public IndexFields readIndexFields(IZoneReader zr,Zones zones,Configuration document)
+    /**
+     * Read defined index fields using the configured zones.
+     * 
+     * @param zr Reader that implements the IZoneReader Interface.
+     * @param zones Zones object that contains all zones to be read.
+     * @param document Configuration object.
+     * 
+     * @return Returns an IndexFields object containing read index field values.
+     */
+    public IndexFields readIndexFields(IZoneReader zr,Zones zones,IndexFields confIndexFields)
     {
         IndexFields indexFields = new IndexFields();
 
@@ -263,7 +279,7 @@ public class OCCognizance
                 }
 
                 // grab config'd index field
-                IndexField configIndexField = document.getIndexFields().getIndexField(zoneName);
+                IndexField configIndexField = confIndexFields.getIndexField(zoneName);
 
                 // create new index field object with config'd values
                 IndexField indexField = new IndexField(zoneName,configIndexField.getType() , zoneValue, configIndexField.isStickey());
