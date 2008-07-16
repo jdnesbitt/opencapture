@@ -37,6 +37,9 @@ public class Logging
     {
         try
         {
+            if(logging == null)
+                logging = new ArrayList<Log>();
+
             List list = batch.getNodeList(xPath);
             
             for(int i=0;i<list.size();i++)
@@ -49,7 +52,7 @@ public class Logging
                 String host = (String)map.get("Host");
                 String message = (String)map.get("Message");
 
-                // create and fill ndx field object
+                // create and fill log object
                 logging.add(new Log(queueName, startDateTime, endDateTime, host, message));
             }
         }
