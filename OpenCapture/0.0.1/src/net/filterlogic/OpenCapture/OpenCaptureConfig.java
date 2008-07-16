@@ -24,7 +24,8 @@ import net.filterlogic.util.xml.XMLParser;
 import net.filterlogic.util.NamedValueList;
 
 /**
- *
+ * Configuration class for OpenCapture core.  
+ * 
  * @author Darron Nesbitt
  */
 public class OpenCaptureConfig 
@@ -48,6 +49,15 @@ public class OpenCaptureConfig
     private NamedValueList<String,HashMap> readerPlugins;
     private NamedValueList<String,HashMap> deliveryPlugins;
     
+    /**
+     * Default constructor for OpenCapture Configuration class.
+     * 
+     * This class called when instantiating any core OpenCapture class.
+     * Core OpenCapture configuration settings are loaded when this class
+     * is instantiated.
+     * 
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     protected OpenCaptureConfig() throws OpenCaptureException
     {
         // save oc path

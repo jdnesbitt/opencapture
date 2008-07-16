@@ -33,6 +33,7 @@ public class Configurations
     private NamedValueList<String,Document> documents = new NamedValueList<String,Document>();
     private Queues queues = null;
     private BatchFields  batchFields = null;
+    private IndexFields indexFields = null;
 
     /**
      * Constructor to add new document.
@@ -51,6 +52,11 @@ public class Configurations
             String xPath = OpenCaptureCommon.CONF_BATCH_FIELDS;
             setBatchFields(new BatchFields(batch, xPath));
 
+            xPath = OpenCaptureCommon.CONF_INDEX_FIELDS;
+
+            // get index fields for this document.
+            setIndexFields(new IndexFields(batch, xPath));
+            
             // set queues
             setQueues(new Queues(batch));
 
@@ -131,6 +137,13 @@ public class Configurations
     {
         String xml = "<Configuration>\n";
         
+        xml += "<CustomProperties />\n";
+        
+        // get config index fields
+        xml += "<IndexFields>\n";
+        xml += getIndexFields().getXML();
+        xml += "</IndexFields>\n";
+
         // add queues
         xml += "<Queues CurrentQueue=\"" + this.getQueues().getCurrentQueue().getQueueName() + "\">\n";
         xml += queues.getXML() + "\n";
@@ -151,9 +164,6 @@ public class Configurations
             Configuration document = (Configuration)getDocuments().get(name);
 
             xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\">\n";
-            xml += "<IndexFields>\n";
-            xml += document.getIndexFields().getXML();
-            xml += "</IndexFields>\n";
             xml += "<Zones>\n";
             xml += document.getZones().getXML();
             xml += "</Zones>\n";
@@ -238,4 +248,22 @@ public class Configurations
 
         return zones;
     }
+    
+    public IndexFields getIndexFields()
+    {
+        return indexFields;
+    }
+
+    public void setIndexFields(IndexFields indexFields) {
+        this.indexFields = indexFields;
+    }
+    
+    public void addIndexField(IndexField indexField) 
+    {
+        if(indexField == null)
+            indexFields = new IndexFields();
+        else
+            this.indexFields.addIndexField(indexField);
+    }
+
 }

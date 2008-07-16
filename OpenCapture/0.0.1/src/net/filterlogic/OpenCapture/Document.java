@@ -63,16 +63,6 @@ public class Document
             // get index fields for this document.
             setIndexFields(new IndexFields(batch, xPath));
 
-//            xPath = OpenCaptureCommon.INDEX_DATA_FIELDS.replaceAll("<1>",documentName);
-//
-//            // get index data fields for this document.
-//            setIndexDataFields(new IndexFields(batch, xPath));
-//
-//            xPath = OpenCaptureCommon.ZONES.replaceAll("<1>", documentName);
-//
-//            // get zones for this document
-//            setZones(new Zones(batch, xPath));
-            
             // get pages
             xPath = OpenCaptureCommon.PAGES.replaceAll("<1>", documentName);
             setPages(new Pages(batch, xPath));
@@ -93,7 +83,7 @@ public class Document
     
     public Document(IndexFields indexFields, Pages pages, String documentName, String formID,int documentNumber)
     {
-        this.indexFields = indexFields;
+        //this.indexFields = indexFields;
         this.pages = pages;
         this.Name = documentName;
         this.formID = formID;

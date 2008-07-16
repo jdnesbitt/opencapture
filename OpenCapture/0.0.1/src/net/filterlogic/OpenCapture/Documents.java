@@ -105,18 +105,12 @@ public class Documents
             Document document = (Document)getDocuments().get(name);
 
             xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\">\n";
-//            xml += "<IndexDataFields>\n";
-//            xml += document.getIndexDataFields().getXML();
-//            xml += "</IndexDataFields>";
             xml += "<Pages>\n";
             xml += document.getPages().getXML();
             xml += "</Pages>\n";
             xml += "<IndexFields>\n";
             xml += document.getIndexFields().getXML();
             xml += "</IndexFields>\n";
-//            xml += "<Zones>\n";
-//            xml += document.getZones().getXML();
-//            xml += "</Zones>\n";
             xml += "</Document>";
         }
         

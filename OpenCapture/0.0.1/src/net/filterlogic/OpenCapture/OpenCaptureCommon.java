@@ -63,8 +63,8 @@ public class OpenCaptureCommon
     public static String CONF_BATCH_FIELD = "//BatchClass/Configuration/BatchFields/BatchField[@Name=\"<1>\"]";
     public static String CONF_DOCUMENTS = "//BatchClass/Configuration/Documents/Document";
     public static String CONF_DOCUMENT = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]";
-    public static String CONF_INDEX_FIELDS = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField";
-    public static String CONF_INDEX_FIELD = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
+    public static String CONF_INDEX_FIELDS = "//BatchClass/Configuration/IndexFields/IndexField";
+    public static String CONF_INDEX_FIELD = "//BatchClass/Configuration/IndexFields/IndexField[@Name=\"<1>\"]";
     public static String ZONES = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/Zones/Zone";
     public static String ZONE = "//BatchClass/Configuration/Documents/Document[@Name=\"<1>\"]/Zones/Zone[@Name=\"<2>\"]";
 
