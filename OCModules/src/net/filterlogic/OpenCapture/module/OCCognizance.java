@@ -5,7 +5,7 @@ Copyright 2008 Filter Logic
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       http://wwwthis.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -284,8 +284,77 @@ public class OCCognizance
                 // create new index field object with config'd values
                 IndexField indexField = new IndexField(zoneName,configIndexField.getType() , zoneValue, configIndexField.isStickey());
 
+                // if no stickey fields exists and current is stickey, add to stickey fields
+                if(stickeyFields.Count()<1 && indexField.isStickey())
+                    stickeyFields.addIndexField(indexField);
+                
+                IndexField stickeyZone = stickeyFields.getIndexField(zoneName);
+                
+                // if index field is stickey and stickey zone name is empty, add to stickey.
+                if(indexField.isStickey() && stickeyZone.getName().length()<1)
+                    stickeyFields.addIndexField(indexField);
+                else
+                {
+                    // update stickey value
+                    if(stickeyZone.getName().equals(zoneName) && 
+                            stickeyZone.isStickey())
+                    {
+                        // delete old stickey field
+                        stickeyFields.deleteIndexField(zoneName);
+
+                        // set new stickey field value
+                        stickeyZone.setValue(zoneValue);
+
+                        // add new stickey field zone
+                        stickeyFields.addIndexField(stickeyZone);
+                    }
+                }
+                
                 // add index field to list
                 indexFields.addIndexField(indexField);
+            }
+        }
+
+        // add the rest of the fields values from stickey values.
+        for(int i=0;i<confIndexFields.Count();i++)
+        {
+            IndexField confField = confIndexFields.get(i);
+            
+            String fieldName = confField.getName();
+            
+            IndexField ndxField = indexFields.getIndexField(fieldName);
+            
+            if(ndxField.getName().length()>0)
+            {
+                if(ndxField.getValue().length()<1)
+                {
+                    IndexField stickeyFld = stickeyFields.getIndexField(fieldName);
+                    
+                    if(stickeyFld.getName().length()>0)
+                    {
+                        indexFields.getIndexField(fieldName).setValue(stickeyFld.getValue());
+                    }
+                }
+            }
+            else
+            {
+                // if configured field is stickey
+                if(confField.isStickey())
+                {
+                    // get stickey field from list
+                    IndexField stickeyFld = stickeyFields.getIndexField(fieldName);
+                    
+                    // if valid stickey field
+                    if(stickeyFld.getName().length()>0)
+                        // add to index fields list for document
+                        indexFields.addIndexField(stickeyFld);
+                    else
+                        // else add configured index field to index list for document
+                        indexFields.addIndexField(confField);
+                }
+                else
+                    // else just add configured index field to index list for document
+                    indexFields.addIndexField(confField);
             }
         }
 
