@@ -24,7 +24,7 @@ import net.filterlogic.util.xml.XMLParser;
  */
 public class Configuration 
 {
-    private IndexFields indexFields = null;
+    //private IndexFields indexFields = null;
     //private IndexFields indexDataFields = null;
     private Zones zones = null;
     //private Pages pages = null;
@@ -60,17 +60,17 @@ public class Configuration
     {
         try
         {
-            String xPath = (OpenCaptureCommon.CONF_INDEX_FIELDS).replaceAll("<1>",documentName);
-
-            // get index fields for this document.
-            setIndexFields(new IndexFields(batch, xPath));
+//            String xPath = (OpenCaptureCommon.CONF_INDEX_FIELDS).replaceAll("<1>",documentName);
+//
+//            // get index fields for this document.
+//            setIndexFields(new IndexFields(batch, xPath));
 
 //            xPath = OpenCaptureCommon.INDEX_DATA_FIELDS.replaceAll("<1>",documentName);
 //
 //            // get index data fields for this document.
 //            setIndexDataFields(new IndexFields(batch, xPath));
 
-            xPath = OpenCaptureCommon.ZONES.replaceAll("<1>", documentName);
+            String xPath = OpenCaptureCommon.ZONES.replaceAll("<1>", documentName);
 
             // get zones for this document
             setZones(new Zones(batch, xPath));
@@ -93,10 +93,10 @@ public class Configuration
         
     }
 
-    public IndexFields getIndexFields()
-    {
-        return indexFields;
-    }
+//    public IndexFields getIndexFields()
+//    {
+//        return indexFields;
+//    }
 
     public String getName()
     {
@@ -128,9 +128,15 @@ public class Configuration
         this.number = number;
     }
 
-    public void setIndexFields(IndexFields indexFields) {
-        this.indexFields = indexFields;
-    }
+//    public void setIndexFields(IndexFields indexFields) {
+//            public void addIndexFields(IndexField indexField) 
+//    {
+//        if(indexField == null)
+//            indexFields = new IndexFields();
+//        else
+//            this.indexFields.addIndexField(indexField);
+//    }this.indexFields = indexFields;
+//    }
 
     public void setZones(Zones zones) {
         this.zones = zones;
@@ -138,13 +144,13 @@ public class Configuration
 
 //---------------------------------------------------------------
     
-    public void addIndexFields(IndexField indexField) 
-    {
-        if(indexField == null)
-            indexFields = new IndexFields();
-        else
-            this.indexFields.addIndexField(indexField);
-    }
+//    public void addIndexFields(IndexField indexField) 
+//    {
+//        if(indexField == null)
+//            indexFields = new IndexFields();
+//        else
+//            this.indexFields.addIndexField(indexField);
+//    }
 
     public void addZones(Zone zone) throws OpenCaptureException
     {
