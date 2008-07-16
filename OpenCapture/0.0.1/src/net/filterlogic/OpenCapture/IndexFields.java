@@ -72,7 +72,7 @@ public class IndexFields
         }
     }
   
-    /**
+    /**List
      * Get index field.
      * @param indexFieldName Index field name.
      * @return
@@ -151,5 +151,12 @@ public class IndexFields
     public IndexField deleteIndexField(String indexFieldName)
     {
         return indexFields.containsKey(indexFieldName) ? (IndexField)indexFields.remove(indexFieldName) : new IndexField();
+    }
+    
+    public IndexField get(int index)
+    {
+        List list = indexFields.getOrderedNameList();
+        
+        return index >= 0 ? index < list.size() ? (IndexField)list.get(index) : new IndexField() : new IndexField();
     }
 }
