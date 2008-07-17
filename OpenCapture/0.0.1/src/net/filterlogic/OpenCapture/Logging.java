@@ -47,8 +47,8 @@ public class Logging
                 HashMap map = (HashMap)list.get(i);
                 
                 String queueName = (String)map.get("QueueName");
-                String startDateTime = (String)map.get("StartDateTime=");
-                String endDateTime = (String)map.get("EndDateTime=");
+                String startDateTime = (String)map.get("StartDateTime");
+                String endDateTime = (String)map.get("EndDateTime");
                 String host = (String)map.get("Host");
                 String message = (String)map.get("Message");
 
@@ -58,7 +58,7 @@ public class Logging
         }
         catch(Exception e)
         {
-            throw new OpenCaptureException(e.toString());
+            throw new OpenCaptureException("Logging constructor w/ parsing: " + e.toString());
         } 
     }
     
