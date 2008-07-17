@@ -83,7 +83,7 @@ public class Document
     
     public Document(IndexFields indexFields, Pages pages, String documentName, String formID,int documentNumber)
     {
-        //this.indexFields = indexFields;
+        this.indexFields = IndexFields.newInstanceOf(indexFields);
         this.pages = pages;
         this.Name = documentName;
         this.formID = formID;
@@ -139,8 +139,13 @@ public class Document
         this.number = number;
     }
 
-    public void setIndexFields(IndexFields indexFields) {
-        this.indexFields = indexFields;
+    /**
+     * Create new instance (clone) of passed index fields object.
+     * @param indexFields
+     */
+    public void setIndexFields(IndexFields indexFields) 
+    {
+        this.indexFields =  IndexFields.newInstanceOf(indexFields);
     }
 
     public void setPages(Pages pages) {

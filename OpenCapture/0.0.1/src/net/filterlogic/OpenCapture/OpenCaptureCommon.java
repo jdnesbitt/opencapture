@@ -72,7 +72,7 @@ public class OpenCaptureCommon
     public static String CURRENT_QUEUE = "//BatchClass/Configuration/Queues/@CurrentQueue";
     public static String QUEUE = "//BatchClass/Configuration/Queues/Queue[@Name=\"<1>\"]";
     
-    public static String LOG_FIELDS = "//BatchClass/Batch/Logging";
+    public static String LOG_FIELDS = "//BatchClass/Batch/Logging/Log";
 
     public static String BATCH_FIELDS = "//BatchClass/Batch/BatchFields/BatchField";
     public static String BATCH_FIELD = "//BatchClass/Batch/BatchFields/BatchField[@Name=\"<1>\"]";

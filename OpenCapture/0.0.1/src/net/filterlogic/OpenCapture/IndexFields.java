@@ -37,6 +37,34 @@ public class IndexFields
     }
     
     /**
+     * Constructor using IndexFields object
+     * 
+     * @param indexFields Object containing all index fields
+     */
+    public IndexFields(IndexFields indexFields)
+    {
+        
+        for(int i=0;i<indexFields.Count();i++)
+        {
+            IndexField ndxField = (IndexField)indexFields.get(i);
+            
+            addIndexField(new IndexField(ndxField.getName(), ndxField.getType(), ndxField.getValue(), ndxField.isStickey()));
+        }
+    }
+    
+    /**
+     * Create a new instance of IndexFields object (clone)
+     * 
+     * @param indexFields
+     * 
+     * @return IndexFields object.
+     */
+    public static IndexFields newInstanceOf(IndexFields indexFields)
+    {
+        return new IndexFields(indexFields);        
+    }
+    
+    /**
      * Constructor 
      * @param batch XMLParser object.
      * @param xPath Path to index fields.
@@ -157,6 +185,6 @@ public class IndexFields
     {
         List list = indexFields.getOrderedNameList();
         
-        return index >= 0 ? index < list.size() ? (IndexField)list.get(index) : new IndexField() : new IndexField();
+        return index >=0 ? index < list.size() ? (IndexField)indexFields.get((String)list.get(index)) : new IndexField() : new IndexField();
     }
 }

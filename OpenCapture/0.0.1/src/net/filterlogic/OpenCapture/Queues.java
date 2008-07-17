@@ -159,21 +159,22 @@ public class Queues
      * @return Current queue object.  If not found, exception thrown.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    public Queue getCurrentQueue() throws OpenCaptureException
+    public net.filterlogic.OpenCapture.Queue getCurrentQueue() throws OpenCaptureException
     {
-        Queue queue = null;
+        net.filterlogic.OpenCapture.Queue queue = null;
         HashMap map = null;
         
         try
         {
             for(int i=0;i<queues.size();i++)
             {
-                String qName = ((Queue)queues.get(i)).getQueueName().toLowerCase();
+                queue = (Queue)queues.get(i);
+                String qName = queue.getQueueName().toLowerCase();
 
                 if(qName.equals(this.currentQueue.toLowerCase()))
                 {
                         // set current q = to next q.
-                        queue = (Queue)queues.get(i);
+                        //queue = (net.filterlogic.OpenCapture.Queue)queues.get(i);
 
                         // leave for loop
                         break;
