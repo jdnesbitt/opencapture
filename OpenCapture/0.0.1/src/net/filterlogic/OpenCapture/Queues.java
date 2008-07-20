@@ -28,7 +28,7 @@ import java.util.List;
 public class Queues 
 {
     private String currentQueue = "";
-    private List queues;
+    private List<Queue> queues;
 
     /**
      * Coinstructor to add queue.
@@ -37,7 +37,7 @@ public class Queues
     public Queues(Queue queue)
     {
         if(queues == null)
-            queues = new ArrayList();
+            queues = new ArrayList<Queue>();
 
         queues.add(queue);
     }
@@ -46,7 +46,7 @@ public class Queues
     {
         try
         {
-            queues = new ArrayList();
+            queues = new ArrayList<Queue>();
 
             List list = batch.getNodeList(OpenCaptureCommon.QUEUES);
 

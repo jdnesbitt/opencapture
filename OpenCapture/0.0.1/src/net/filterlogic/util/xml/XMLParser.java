@@ -205,7 +205,7 @@ public class XMLParser
         }
         catch(Exception e)
         {
-            throw new Exception(e.toString());
+            throw new Exception("Error setting value @ " + xPath + "\n" + e.toString());
         }
     }
     
@@ -225,7 +225,7 @@ public class XMLParser
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            System.out.println("Error retrieving values @ "+ xPath + "\n" + e.toString());
             result = new ArrayList();
         }
         for(int i=0;i<result.size();i++)
@@ -251,6 +251,7 @@ public class XMLParser
             System.out.println(e);
             result = new ArrayList();
         }
+        
         for(int i=0;i<result.size();i++)
         {
             Node elem = (Node)result.get(i);
@@ -289,7 +290,7 @@ public class XMLParser
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            System.out.println("Error retrieving data @ " + xPath + "\n" + e.toString());
             result = "";
         }
         return result;
@@ -297,11 +298,17 @@ public class XMLParser
     
     public Element getNode(String xPath) throws Exception
     {
-        Element elem;
-
-        XPath xpath = new DOMXPath(xPath);
-        elem = (Element)xpath.selectSingleNode(this.doc);
-
+        Element elem = null;
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            elem = (Element)xpath.selectSingleNode(this.doc);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error retrieving node @ " + xPath + "\n" + e.toString());
+        }
+        
         return elem;
     }
     
