@@ -1,7 +1,7 @@
 # OCImport runs until there's no more work then exits.
 
 # Import config file.
-IMPORT_CONFIG=./config/ocimport.properties
+COGNIZANCE_CONFIG=./config/occognizance.properties
 
 FILE_LIST=`find ./dist/lib -true`
 CNTR="0"
@@ -17,4 +17,4 @@ done
 
 CLASS_PATH=./dist/OpenCapture.jar:./dist/OCModules.jar:$CP
 
-java -cp $CLASS_PATH net.filterlogic.OpenCapture.module.OCImport $IMPORT_CONFIG
+jdb -classpath $CLASS_PATH net.filterlogic.OpenCapture.module.OCCognizance $COGNIZANCE_CONFIG
