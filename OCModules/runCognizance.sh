@@ -1,10 +1,23 @@
-echo off
+#!/bin/bash
 
-REM OCCognizance runs until there's no more work then exits.
+# OCCognizance runs until there's no more work then exits.
 
-REM Cognizance config file.
-set COGNZANCE_CONFIG=.\config\occognizance.properties
+# Cognizance config file.
+COGNZANCE_CONFIG=./config/occognizance.properties
 
-set CLASS_PATH=%CLASS_PATH%;.\dist\OCModules.jar
+FILE_LIST=`find ./dist/lib -true`
+CNTR="0"
 
-java -cp %CLASS_PATH% net.filterlogic.OpenCapture.module.OCCognizance %COGNZANCE_CONFIG%
+for file in `echo $FILE_LIST`; do
+	if [ "$CNTR" = "0" ]; then
+		CNTR="1"
+		CP=$file
+	else
+		CP=$CP:$file
+	fi
+done
+
+CLASS_PATH=./dist/OpenCapture.jar:./dist/OCModules.jar:$CP
+
+java -cp $CLASS_PATH -verbose:gc net.filterlogic.OpenCapture.module.OCCognizance $COGNZANCE_CONFIG
+
