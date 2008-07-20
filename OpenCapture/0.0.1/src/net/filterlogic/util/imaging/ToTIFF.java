@@ -137,7 +137,7 @@ public class ToTIFF
 
         NumberFormat formatter = new DecimalFormat(pattern);
 
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<String>();
 
         for(int i=0;i<srcFiles.length;i++)
         {
@@ -205,7 +205,7 @@ public class ToTIFF
 
                     file = null;
 
-                    System.out.println("Add file!");
+                    //System.out.println("Add file!");
 
                     list.add(tifName);
                 }
