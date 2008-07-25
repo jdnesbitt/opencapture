@@ -34,7 +34,7 @@ import net.filterlogic.OpenCapture.interfaces.IZoneReader;
 
 /**
  *
- * @author dnesbitt
+ * @author Darron Nesbitt
  */
 public class OCCognizance 
 {
@@ -66,8 +66,9 @@ public class OCCognizance
     }
 
     /**
+     * Process batches in this queue.
      * 
-     * @throws java.lang.Exception
+     * @throws OpenCaptureException
      */
     public void ProcessBatches() throws OpenCaptureException
     {
