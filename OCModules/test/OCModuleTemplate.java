@@ -47,7 +47,11 @@ public class OCModuleTemplate
     private String log4j = "";
     private Properties prop = new Properties();
     private String OC_HOME = "";
-    private String moduleID = "OCDelivery";
+
+    /* TODO: VERY IMPORTANT -  Change the following line and replace value with registered name of you module.  
+       This is used to pickup batches from this modules queue.
+    */
+    private String moduleID = "OCModuleTemplate";
 
     /**
      * Default constructor must be passed a properties style config file.  Look
