@@ -96,30 +96,28 @@ public class OCModuleTemplate
         
         try
         {
-        // while more batches to process
-        while(moreWork)
-        {
-            batch = new Batch();
-
-            // get next batch
-            batch.getNextBatch(moduleID);
-            
-            // batchname empty, no more work
-            if(batch.getBatchName().length()>0)
+            // while more batches to process
+            while(moreWork)
             {
-                // TODO: Add module code here to process batch
+                batch = new Batch();
 
-                // close batch
-                batch.CloseBatch();
+                // get next batch
+                batch.getNextBatch(moduleID);
+
+                // batchname empty, no more work
+                if(batch.getBatchName().length()>0)
+                {
+                    // TODO: Add module code here to process batch
+
+                    // close batch
+                    batch.CloseBatch();
+                }
+                else
+                {
+                        moreWork = false;
+                        batch = null;
+                }
             }
-            else
-            {
-                    moreWork = false;
-                    batch = null;
-            }
-            
-            
-        }
         }
         catch(OpenCaptureException oce2)
         {
