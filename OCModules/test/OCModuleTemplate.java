@@ -14,8 +14,6 @@ Copyright 2008 Filter Logic
    limitations under the License.
 */
 
-package net.filterlogic.OpenCapture.module;
-
 import net.filterlogic.OpenCapture.*;
 
 import net.filterlogic.io.Path;
@@ -31,12 +29,17 @@ import java.io.File;
 import java.awt.image.BufferedImage;
 
 /**
- *
+ * This is a template for creating OpenCapture modules.  There are TODOs that
+ * define what needs to be changed.  The default constructor javadoc contains 
+ * info. about configuration files required and minimum properties on the 
+ * module configuration file.
+ * 
  * @author Darron Nesbitt
  */
-public class OCConverter 
+public class OCModuleTemplate 
 {
-    static Logger myLogger = Logger.getLogger(OCConverter.class.getName( ));
+    // TODO: Change class name in following line from OCModuleTemplate to your class name.
+    static Logger myLogger = Logger.getLogger(OCModuleTemplate.class.getName( ));
     
     private IndexFields stickeyFields = new IndexFields();
 
@@ -44,9 +47,19 @@ public class OCConverter
     private String log4j = "";
     private Properties prop = new Properties();
     private String OC_HOME = "";
-    private String moduleID = "OCConverter";
+    private String moduleID = "OCDelivery";
 
-    public OCConverter(String configFile) throws Exception
+    /**
+     * Default constructor must be passed a properties style config file.  Look
+     * at the configuration files for the other modules.  Minimum properties are:
+     * 
+     * oc_home: Path to OpenCapture home directory.
+     * log4j:   Path to log4j configuration file for this module.
+     * 
+     * @param configFile
+     * @throws java.lang.Exception
+     */
+    public OCModuleTemplate(String configFile) throws Exception
     {
         this.configFile = configFile;
 
@@ -60,7 +73,8 @@ public class OCConverter
 
         PropertyConfigurator.configure(log4j);
 
-        myLogger.info("OCConverter started..");
+        // TODO:  Change the following line for the startup message in the log file.
+        myLogger.info("OCModuleTemplate started..");
     }
 
     /**
