@@ -39,10 +39,10 @@
             <BatchField />
         </BatchFields>
         <Document Name="" FormID="" Number="">
-                <IndexFields>
-                </IndexFields>
-                <Pages>
-                </Pages>
+            <IndexFields>
+            </IndexFields>
+            <Pages>
+            </Pages>
         </Document>
     </Batch>
 </BatchClass>
