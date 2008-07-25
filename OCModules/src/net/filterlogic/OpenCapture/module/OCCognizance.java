@@ -143,7 +143,7 @@ public class OCCognizance
                             }
                             catch(OpenCaptureReaderException ocre)
                             {
-                                myLogger.error("Error reading zone[" + zone.getName() + "].  " + ocre.toString());
+                                myLogger.error("Error reading zone[" + zone.getName() + "] in batch[" + batch.getBatchName() + "].  " + ocre.toString());
                                 zoneValue = "";
                             }
 
