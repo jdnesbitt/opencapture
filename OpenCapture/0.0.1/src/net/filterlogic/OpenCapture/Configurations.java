@@ -30,10 +30,11 @@ import net.filterlogic.util.NamedValueList;
 public class Configurations 
 {
     //private Hashtable <String,Document> documents = new Hashtable<String,Document>();
-    private NamedValueList<String,Document> documents = new NamedValueList<String,Document>();
+    private NamedValueList<String,Configuration> documents = new NamedValueList<String,Configuration>();
     private Queues queues = null;
     private BatchFields  batchFields = null;
     private IndexFields indexFields = null;
+    private CustomProperties customProperties = null;
 
     /**
      * Constructor to add new document.
@@ -56,14 +57,18 @@ public class Configurations
 
             // get index fields for this document.
             setIndexFields(new IndexFields(batch, xPath));
-            
+
+            // get custom config properties
+            xPath = OpenCaptureCommon.CUSTOM_CONFIGURATION_PROPERTIES;
+            customProperties = new CustomProperties(batch, xPath);
+
             // set queues
             setQueues(new Queues(batch));
 
             // get document elements back
             List docs = batch.getNodeList(OpenCaptureCommon.CONF_DOCUMENTS);
             
-            // loop through documents and create document obj.
+            // loop through config documents and create document obj.
             for(int i=0;i<docs.size();i++)
             {
                 HashMap map = (HashMap)docs.get(i);
@@ -136,9 +141,11 @@ public class Configurations
     public String getXML() throws OpenCaptureException
     {
         String xml = "<Configuration>\n";
-        
-        xml += "<CustomProperties />\n";
-        
+
+        xml += "<CustomProperties>\n";
+        xml += getCustomProperties().getXML();
+        xml += "</CustomProperties>";
+
         // get config index fields
         xml += "<IndexFields>\n";
         xml += getIndexFields().getXML();
@@ -185,11 +192,11 @@ public class Configurations
         return documents.getOrderedNameList();
     }
     
-    public NamedValueList<String, Document> getDocuments() {
+    public NamedValueList<String, Configuration> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(NamedValueList<String, Document> documents) {
+    public void setDocuments(NamedValueList<String, Configuration> documents) {
         this.documents = documents;
     }
     
@@ -264,6 +271,14 @@ public class Configurations
             indexFields = new IndexFields();
         else
             this.indexFields.addIndexField(indexField);
+    }
+
+    public CustomProperties getCustomProperties() {
+        return customProperties;
+    }
+
+    public void setCustomProperties(CustomProperties customProperties) {
+        this.customProperties = customProperties;
     }
 
 }

@@ -5,7 +5,7 @@ Copyright 2008 Filter Logic
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0Document
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ public class Document
 {
     private IndexFields indexFields = null;
     private Pages pages = null;
+    private CustomProperties customProperties = null;
 
     private String Name = "";
     private String formID = "";
@@ -44,7 +45,7 @@ public class Document
         this.formID = formID;
         this.number = number;
 
-        loadDocument(batch, documentName);
+        loadDocument(batch, number);
     }
 
     /**
@@ -63,8 +64,44 @@ public class Document
             // get index fields for this document.
             setIndexFields(new IndexFields(batch, xPath));
 
+            // get custom config properties
+            xPath = OpenCaptureCommon.CUSTOM_DOCUMENT_PROPERTIES;
+            setCustomProperties(new CustomProperties(batch, xPath));
+
             // get pages
             xPath = OpenCaptureCommon.PAGES.replaceAll("<1>", documentName);
+            setPages(new Pages(batch, xPath));
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException(e.toString());
+        }
+    }
+    
+    /**
+     * Load document method is used to parse batch xml and load document related
+     * data.
+     * @param batch XML batch document.
+     * @param documentName Name of document to be loaded.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void loadDocument(XMLParser batch, int documentNumber) throws OpenCaptureException
+    {
+        try
+        {
+            String docNumber = String.valueOf(documentNumber);
+
+            String xPath = (OpenCaptureCommon.INDEX_FIELDS).replaceAll("<1>",docNumber);
+
+            // get index fields for this document.
+            setIndexFields(new IndexFields(batch, xPath));
+
+            // get custom config properties
+            xPath = OpenCaptureCommon.CUSTOM_DOCUMENT_PROPERTIES;
+            setCustomProperties(new CustomProperties(batch, xPath));
+
+            // get pages
+            xPath = OpenCaptureCommon.PAGES.replaceAll("<1>", docNumber);
             setPages(new Pages(batch, xPath));
         }
         catch(Exception e)
@@ -88,6 +125,7 @@ public class Document
         this.Name = documentName;
         this.formID = formID;
         this.number = documentNumber;
+        customProperties = new CustomProperties();
     }
 
     public static Document newInstanceOf()
@@ -140,6 +178,16 @@ public class Document
     }
 
     /**
+     * Adds a custom property that represents document exception.
+     * 
+     * @param value
+     */
+    public void setException(String value)
+    {
+        this.customProperties.addProperty(new Property(OpenCaptureCommon.DOCUMENT_EXCEPTION_PROPERTY, value, true));
+    }
+
+    /**
      * Create new instance (clone) of passed index fields object.
      * @param indexFields
      */
@@ -168,5 +216,13 @@ public class Document
             pages = new Pages(page);
         else
             this.pages.addPage(page);
+    }
+
+    public CustomProperties getCustomProperties() {
+        return customProperties;
+    }
+
+    public void setCustomProperties(CustomProperties customProperties) {
+        this.customProperties = customProperties;
     }
 }

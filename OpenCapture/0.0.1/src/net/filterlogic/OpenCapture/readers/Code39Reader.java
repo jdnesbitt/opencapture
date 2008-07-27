@@ -56,7 +56,8 @@ public class Code39Reader implements IZoneReader
                 value = ReadZone(m_Snapshot);
             }
             else
-                throw new OpenCaptureReaderException("SetImage or setZoneSnapshot must be called!");
+                throw new OpenCaptureReaderException("ReadZone(Zone) exception.  SetImage or setZoneSnapshot " +
+                                                        "must be called prior to calling ReadZone!");
         }
 
         return value;

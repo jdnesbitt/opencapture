@@ -80,7 +80,7 @@ public class CustomProperties
      */
     public Property getProperty(String name)
     {
-        return (Property)this.properties.get(name);
+        return this.properties.get(name) != null ? (Property)this.properties.get(name) : new Property();
     }
 
     /**
@@ -88,8 +88,32 @@ public class CustomProperties
      * 
      * @param property Property object to add.
      */
-    public void setProperty(Property property)
+    public void addProperty(Property property)
     {
         this.properties.put(property.getName(), property);
+    }
+
+    /**
+     * Get XML representation of object.
+     * 
+     * @return String containing XML.
+     */
+    public String getXML()
+    {
+        String xml = "";
+
+        List list = properties.getOrderedNameList();
+        
+        for(int i=0;i<list.size();i++)
+        {
+            String name = (String)list.get(i);
+            Property property = (Property)properties.get(name);
+            String volital = !property.isVolital() ? "N" : "Y";
+            
+            xml += "<Property Name=\"" + property.getName() + 
+                    "\" Value=\"" + property.getValue() + "\" Volital=\"" + volital + "\" />\n";
+        }
+
+        return xml;
     }
 }

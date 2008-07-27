@@ -124,6 +124,26 @@ public class Pages
     }
 
     /**
+     * Get page using page number as an id.
+     * 
+     * @return Populated page object if id exists, else empty page object.
+     */
+    public Page getPage(String pageID)
+    {
+        return pages.get(pageID)!=null ? (Page)pages.get(pageID) : new Page();
+    }
+    
+    /**
+     * Get list of file names
+     * 
+     * @return List of file names without path.
+     */
+    public List getPageFileList()
+    {
+        return pages.getOrderedNameList();
+    }
+    
+    /**
      * Number of pages.
      * @return Integer of number of pages.
      */

@@ -51,7 +51,7 @@ public class Batch
     private DBManager dbm = new DBManager();
 
     private String batchClassXmlFile = "";
-
+    private boolean hasException = false;
     /**
      * Path and name of xml batch file.
      */
@@ -290,7 +290,7 @@ public class Batch
         loosePages = new Pages(xmlParser, xPath);
 
         // load separated documents
-        setDocuments(new Documents(xmlParser));
+        this.documents = new Documents(xmlParser);
 
         // get current queue
         this.currentQueue = configurations.getQueues().getCurrentQueue();
@@ -738,5 +738,24 @@ public class Batch
     public Log getLog()
     {
         return log;
+    }
+
+    /**
+     * Batch has an exception.
+     * 
+     * @return True, if batch exception has occured.
+     */
+    public boolean hasException() 
+    {
+        return hasException;
+    }
+
+    /**
+     * 
+     * @param hasException
+     */
+    public void setException(boolean hasException) 
+    {
+        this.hasException = hasException;
     }
 }
