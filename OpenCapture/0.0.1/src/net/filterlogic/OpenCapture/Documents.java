@@ -55,11 +55,11 @@ public class Documents
                 String formID = (String)map.get(OpenCaptureCommon.OC_DOCUMENT_FORMID_TAG);
                 int number = ((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)).trim().length()>0 
                         ? Integer.parseInt((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)) : 0;
-                
-                Configuration document = new Configuration(batch, documentName, formID,number);
+
+                Document document = new Document(batch, documentName, formID,number);
                 
                 // add document obj to documents hash
-                documents.put(documentName, document);
+                documents.put(String.valueOf(number), document);
             }
         }
         catch(Exception e)
@@ -67,7 +67,7 @@ public class Documents
             throw new OpenCaptureException(e.toString());
         }
     }
-    
+
     /**
      * Get the named document.
      * @param documentName Name of the document.
@@ -105,6 +105,9 @@ public class Documents
             Document document = (Document)getDocuments().get(name);
 
             xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\">\n";
+            xml += "<CustomProperties>\n";
+            xml += document.getCustomProperties().getXML();
+            xml += "</CustomProperties>";
             xml += "<Pages>\n";
             xml += document.getPages().getXML();
             xml += "</Pages>\n";
@@ -113,14 +116,42 @@ public class Documents
             xml += "</IndexFields>\n";
             xml += "</Document>";
         }
-        
+
         return xml;
     }
 
+    /**
+     * Get documents collection.
+     * 
+     * @return NamedValueList containing all documents.
+     */
     public NamedValueList<String, Configuration> getDocuments() {
         return documents;
     }
 
+    /**
+     * Get document at index.
+     * 
+     * @param Index int to document.  This is not a zero based index.
+     * 
+     * @return Document object.  Empty document object if index doesn't exist.
+     */
+    public Document getDocument(int index)
+    {
+        --index;
+
+        String name = documents.getOrderedNameList().get(index) != null ? (String)documents.getOrderedNameList().get(index) : "";
+
+        Document document = documents.get(name) != null ? (Document)documents.get(name) : new Document();
+
+        return document;
+    }
+
+    /**
+     * Set documents
+     * 
+     * @param documents
+     */
     public void setDocuments(NamedValueList<String, Configuration> documents) {
         this.documents = documents;
     }

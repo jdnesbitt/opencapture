@@ -62,7 +62,7 @@ public class ToPDF
                 }
                 catch (Throwable e) 
                 {
-                    throw new Exception("Exception in " + tiff_file + " " + e.getMessage());
+                    throw new Exception("Exception in " + tiff_file + " " + e.toString());
                     //continue;
                 }
 

@@ -59,6 +59,8 @@ public class OpenCaptureCommon
     public static String BATCH_ID = "//BatchClass/Batch/@ID";
     public static String BATCH_SCAN_USER = "//BatchClass/Batch/@ScanUser";
 
+    public static String CUSTOM_CONFIGURATION_PROPERTIES = "//BatchClass/Configuration/CustomProperties/Property";
+    public static String CUSTOM_CONFIGURATION_PROPERTY = "//BatchClass/Configuration/CustomProperties/Property[@Name=\"<1>\"]";
     public static String CONF_BATCH_FIELDS = "//BatchClass/Configuration/BatchFields/BatchField";
     public static String CONF_BATCH_FIELD = "//BatchClass/Configuration/BatchFields/BatchField[@Name=\"<1>\"]";
     public static String CONF_DOCUMENTS = "//BatchClass/Configuration/Documents/Document";
@@ -79,16 +81,19 @@ public class OpenCaptureCommon
 
     // Document tag that contains batch class configuration.
     public static String DOCUMENTS = "//BatchClass/Batch/Documents/Document";
-    public static String DOCUMENT = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]";
-    public static String INDEX_FIELDS = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField";
-    public static String INDEX_FIELD = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
+    public static String DOCUMENT = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]";
+    public static String INDEX_FIELDS = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/IndexFields/IndexField";
+    public static String INDEX_FIELD = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/IndexFields/IndexField[@Name=\"<2>\"]";
     public static String LOOSE_PAGES = "//BatchClass/Batch/Pages/Page";
     public static String LOOSE_PAGE = "//BatchClass/Batch/Pages/Page[@Name=\"<1>\"]";
 
+    public static String CUSTOM_DOCUMENT_PROPERTIES = "//BatchClass/Batch/Documents/CustomProperties/Property";
+    public static String CUSTOM_DOCUMENT_PROPERTY = "//BatchClass/Batch/Documents/CustomProperties/Property[@Name=\"<1>\"]";
+    
     // Document tag that contains actual index data
-    public static String PAGES = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page";
-    public static String PAGE = "//BatchClass/Batch/Documents/Document[@Name=\"<1>\"]/Pages/Page[@Name=\"<2>\"]";
-
+    public static String PAGES = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/Pages/Page";
+    public static String PAGE = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/Pages/Page[@Name=\"<2>\"]";
+    
     public static String OC_NAME_TAG = "Name";
     public static String OC_DOCUMENT_FORMID_TAG = "FormID";
     public static String OC_DOCUMENT_NUMBER_TAG = "Number";
@@ -98,6 +103,8 @@ public class OpenCaptureCommon
     public static int BATCH_STATUS_PROCESSING = 10;
     public static int BATCH_STATUS_ERROR = 20;
     public static int BATCH_STATUS_HOLD = 30;
+
+    public static String DOCUMENT_EXCEPTION_PROPERTY = "OC_DOCUMENT_EXCEPTION";
 
     public static String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
@@ -147,6 +154,28 @@ public class OpenCaptureCommon
         }
         
         return s;
+    }
+    
+    /**
+     * Convert a List to a String array.
+     * 
+     * @param list List containing strings.
+     * 
+     * @return String array.
+     */
+    public static String[] ListToStringArray(List list)
+    {
+        if(list!=null)
+        {
+            String[] strings = new String[list.size()];
+
+            for(int i=0;i<list.size();i++)
+                strings[i] = (String)list.get(i);
+
+            return strings;
+        }
+        else
+            return null;
     }
     
     public static String getBatchFileName(long batchID) throws OpenCaptureException

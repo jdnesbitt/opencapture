@@ -47,7 +47,7 @@ public class Path
     {
         String sep = System.getProperty("file.separator");
         
-        if(path.lastIndexOf(sep) != path.length())
+        if(path.lastIndexOf(sep) != path.length()-1)
             path += sep;
         
         return path;

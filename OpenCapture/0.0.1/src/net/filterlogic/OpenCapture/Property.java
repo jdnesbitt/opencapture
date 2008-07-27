@@ -25,7 +25,7 @@ public class Property
 {
     private String name = "";
     private String value = "";
-    private boolean volitile = false;
+    private boolean volital = false;
 
     /**
      * Default property constructor.
@@ -39,11 +39,11 @@ public class Property
      * @param value Value of property
      * @param volitile Volitile
      */
-    public Property(String name, String value, boolean volitile)
+    public Property(String name, String value, boolean volital)
     {
         this.name = name;
         this.value = value;
-        this.volitile = volitile;
+        this.volital = volital;
     }
 
     /**
@@ -82,15 +82,15 @@ public class Property
      * Is property volitile.
      * @return Boolean
      */
-    public boolean isVolitile() {
-        return volitile;
+    public boolean isVolital() {
+        return volital;
     }
 
     /**
      * Set property volitility.
      * @param volitile True or false.
      */
-    public void setVolitile(boolean volitile) {
-        this.volitile = volitile;
+    public void setVolitile(boolean volital) {
+        this.volital = volital;
     }
 }
