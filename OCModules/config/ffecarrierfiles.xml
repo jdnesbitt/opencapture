@@ -35,14 +35,11 @@
         </Documents>
     </Configuration>
     <Batch Name="" ID="" CreateDateTime="" ScanUser="">
-        <BatchFields>
-            <BatchField />
-        </BatchFields>
+        <BatchFields />
         <Document Name="" FormID="" Number="">
-            <IndexFields>
-            </IndexFields>
-            <Pages>
-            </Pages>
+            <CustomProperties />
+            <IndexFields />
+            <Pages />
         </Document>
     </Batch>
 </BatchClass>

@@ -36,6 +36,9 @@ import java.awt.image.BufferedImage;
  */
 public class OCConverter 
 {
+    // property name for OCConverter generated PDF.
+    private static String OCPDF = "OC_PDF";
+    
     static Logger myLogger = Logger.getLogger(OCConverter.class.getName( ));
     
     private IndexFields stickeyFields = new IndexFields();
@@ -74,38 +77,154 @@ public class OCConverter
         Batch batch = null;
 
         boolean moreWork = true;
-        boolean coverFound = false;
-        
+        boolean docConverted = false;
+
         try
         {
-        // while more batches to process
-        while(moreWork)
-        {
-            batch = new Batch();
-
-            // get next batch
-            batch.getNextBatch(moduleID);
-            
-            // batchname empty, no more work
-            if(batch.getBatchName().length()>0)
+            // while more batches to process
+            while(moreWork)
             {
-                // TODO: Add module code here to process batch
+                batch = new Batch();
 
-                // close batch
-                batch.CloseBatch();
+                try
+                {
+                    // get next batch
+                    batch.getNextBatch(moduleID);
+
+                    // batchname empty, no more work
+                    if(batch.getBatchName().length()>0)
+                    {
+                        myLogger.info("NextBatch: " + batch.getBatchName());
+
+                        int docCount = batch.getDocuments().Count();
+                        myLogger.info("Documents: " + docCount);
+
+                        for(int docs=1;docs<=docCount;docs++)
+                        {
+                            // get document
+                            Document document = batch.getDocuments().getDocument(docs);
+                            myLogger.info("Document type: " + document.getName());
+
+                            // check doc custom props to seeif pdf already exists.
+                            Property property = document.getCustomProperties().getProperty(OCPDF);
+                            myLogger.info("PDFProperty: " + property.getName());
+
+                            // if PDF property doesn't exist, process document
+                            if(property.getName().length()<1)
+                            {
+                                // get list of page file names for this document
+                                List pageList = document.getPages().getPageFileList();
+
+                                String[] files = new String[pageList.size()];
+
+                                myLogger.info("Pages to convert into PDF document: " + files);
+
+                                String imagePath = Path.FixPath(batch.getImageFilePath());
+
+                                myLogger.info("ImagePath: " + imagePath);
+
+                                for(int i=0;i<pageList.size();i++)
+                                {
+                                    String pageNum = (String)pageList.get(i);
+
+                                    Page page = (Page)document.getPages().getPage(pageNum);
+                                    
+                                    files[i] = imagePath + page.getName();
+                                }
+                                            
+                                // set path to pdf folder
+                                String pdfOutPath = Path.FixPath(imagePath + "PDF");
+
+                                myLogger.info("PDFOutputPath: " + pdfOutPath);
+
+                                // create PDF folder
+                                if(!Path.ValidatePath(pdfOutPath))
+                                    if(!Path.createPath(pdfOutPath))
+                                        throw new OpenCaptureException("Can't create PDF folder for batch[" + batch.getBatchName() + "]: " + pdfOutPath);
+
+                                String pdfFileName = String.valueOf(docs) + ".pdf";
+
+                                myLogger.info("PDF file: " + pdfOutPath + pdfFileName);
+
+                                try
+                                {
+                                    ToPDF.ToPDF(files, pdfOutPath + pdfFileName);
+
+                                    docConverted = true;
+                                }
+                                catch(OpenCaptureImagingException oce)
+                                {
+                                    docConverted = false;
+
+                                    myLogger.error("Error creating PDF document in batch[" + batch.getBatchName() + "] document[" + 
+                                            document.getNumber() + "/" + document.getName() + "]: " + oce.toString());
+                                }
+
+                                if(docConverted)
+                                {
+                                    myLogger.info("Document converted to PDF.");
+                                    // create new volital property to document
+                                    document.getCustomProperties().addProperty(new Property(OCPDF, pdfFileName, true));
+                                }
+                                else
+                                {
+                                    // add doc exception
+                                    document.setException("Failed to convert document to PDF format.");
+                                    batch.setException(true);
+                                    myLogger.info("Document failed to converted to PDF.");
+                                }
+                            }
+
+                        }
+
+                        // close batch
+                        if(batch.hasException())
+                            batch.CloseBatch(true, "Error occured converting a document to PDF format.");
+                        else
+                            batch.CloseBatch();
+                    }
+                    else
+                    {
+                            moreWork = false;
+                            batch = null;
+                    }
+                }
+
+                catch(Exception e)
+                {
+                     myLogger.error(e.toString());
+                    batch.CloseBatch(true, e.toString());              
+                }
             }
-            else
-            {
-                    moreWork = false;
-                    batch = null;
-            }
-            
-            
-        }
         }
         catch(OpenCaptureException oce2)
         {
             myLogger.error(oce2.toString());
+            batch.CloseBatch(true, oce2.toString());
+        }
+    }
+    
+    public static void main(String[] args) 
+    {
+        try
+        {
+            if(args.length<1)
+            {
+                System.out.println("Must pass path to configuration file.");
+                System.exit(0);
+            }
+
+            OCConverter ocConverter = new OCConverter(args[0]);
+
+            ocConverter.ProcessBatches();
+        }
+        catch(OpenCaptureException oce)
+        {
+            myLogger.fatal(oce.toString());
+        }
+        catch(Exception e)
+        {
+            myLogger.fatal(e.toString());
         }
     }
 }
