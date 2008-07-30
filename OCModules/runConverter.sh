@@ -3,7 +3,7 @@
 # OCCognizance runs until there's no more work then exits.
 
 # Cognizance config file.
-COGNZANCE_CONFIG=./config/occognizance.properties
+COGNZANCE_CONFIG=./config/occonverter.properties
 
 FILE_LIST=`find ./dist/lib -true`
 CNTR="0"
@@ -19,5 +19,5 @@ done
 
 CLASS_PATH=./:./dist/OCModules.jar:$CP
 
-java -cp $CLASS_PATH net.filterlogic.OpenCapture.module.OCCognizance $COGNZANCE_CONFIG
+java -cp $CLASS_PATH net.filterlogic.OpenCapture.module.OCConverter $COGNZANCE_CONFIG
 

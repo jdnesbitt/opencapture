@@ -15,6 +15,6 @@ for file in `echo $FILE_LIST`; do
 	fi
 done
 
-CLASS_PATH=./dist/OpenCapture.jar:./dist/OCModules.jar:$CP
+CLASS_PATH=./:./dist/OCModules.jar:$CP
 
 java -cp $CLASS_PATH net.filterlogic.OpenCapture.module.OCImport $IMPORT_CONFIG
