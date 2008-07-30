@@ -115,7 +115,9 @@ public class Document
      */
     public Document()
     {
-        
+         indexFields = new IndexFields();
+         pages = new Pages();
+         customProperties = new CustomProperties();
     }
     
     public Document(IndexFields indexFields, Pages pages, String documentName, String formID,int documentNumber)
