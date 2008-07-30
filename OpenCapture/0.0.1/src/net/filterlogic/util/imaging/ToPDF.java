@@ -24,6 +24,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
 import com.lowagie.text.pdf.codec.TiffImage;
+import java.util.zip.DeflaterOutputStream;
 
 
 /**
@@ -45,6 +46,7 @@ public class ToPDF
 
             PdfWriter writer = PdfWriter.getInstance(document,
                             new FileOutputStream(pdf_file));
+            writer.setFullCompression();
             int pages = 0;
             document.open();
             PdfContentByte cb = writer.getDirectContent();

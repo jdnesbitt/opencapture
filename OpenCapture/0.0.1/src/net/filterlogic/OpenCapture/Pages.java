@@ -38,6 +38,11 @@ public class Pages
         pages.put(String.valueOf(page.getPageNumber()),page);
     }
     
+    public Pages()
+    {
+        
+    }
+    
     /**
      * Page constructor.
      * @param batch Batch
