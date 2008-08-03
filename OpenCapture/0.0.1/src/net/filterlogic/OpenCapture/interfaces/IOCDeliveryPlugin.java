@@ -38,7 +38,7 @@ public interface IOCDeliveryPlugin
      * information about where plugin is configured to deliver documents.
      * @return String description of plugin configuration.
      */
-    public String getDeliveryDescription();
+    public String getDescription();
     
     /**
      * Set batch object in plugin.  This method makes batch available to plugin.

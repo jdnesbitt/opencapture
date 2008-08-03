@@ -37,6 +37,9 @@ public class OpenCaptureConfig
     private static String OC_DELIVERY_PLUGINS = "//OpenCapture/DeliveryPlugins/Plugin";
     private static String OC_DELIVERY_PLUGIN = "//OpenCapture/DeliveryPlugins/Plugin[PluginID=\"<1>\"]";
 
+    private static String OC_CONVERTER_PLUGINS = "//OpenCapture/ConverterPlugins/Plugin";
+    private static String OC_CONVERTER_PLUGIN = "//OpenCapture/ConverterPlugins/Plugin[PluginID=\"<1>\"]";
+    
     private static String OC_CLASS_ATTR = "Class";
     private static String OC_NAME_ATTR = "Name";
     private static String OC_DESCRIPTION_ATTR = "Description";
@@ -48,6 +51,7 @@ public class OpenCaptureConfig
     
     private NamedValueList<String,HashMap> readerPlugins;
     private NamedValueList<String,HashMap> deliveryPlugins;
+    private NamedValueList<String,HashMap> converterPlugins;
     
     /**
      * Default constructor for OpenCapture Configuration class.
@@ -92,6 +96,9 @@ public class OpenCaptureConfig
 
         // load delivery plugins
         deliveryPlugins = readConfiguration(OC_DELIVERY_PLUGINS, "PluginID");
+        
+        // load converter plugins
+        converterPlugins = readConfiguration(OC_CONVERTER_PLUGINS, "PluginID");
     }
     
     /**
@@ -136,7 +143,7 @@ public class OpenCaptureConfig
             list = null;
         }
     }
-    
+
     /**
      * Get reader plugin class.
      * @param pulginID
@@ -147,7 +154,7 @@ public class OpenCaptureConfig
         HashMap map = (HashMap)readerPlugins.get(pluginID);
         return (String)map.get(OC_CLASS_ATTR);
     }
-    
+
     /**
      * Get reader name.
      * @param pluginID
@@ -158,7 +165,7 @@ public class OpenCaptureConfig
         HashMap map = (HashMap)readerPlugins.get(pluginID);
         return (String)map.get(OC_NAME_ATTR);
     }
-    
+
     /**
      * Get reader description.
      * @param pluginID
@@ -200,6 +207,45 @@ public class OpenCaptureConfig
     public String getDeliveryDescription(String pluginID)
     {
         HashMap map = (HashMap)deliveryPlugins.get(pluginID);
+        return (String)map.get(OC_DESCRIPTION_ATTR);
+    }
+    
+    /**
+     * Get converter classs name.
+     * 
+     * @param pluginID
+     * 
+     * @return String containing converter class name.
+     */
+    public String getConverterClass(String pluginID)
+    {
+        HashMap map = (HashMap)converterPlugins.get(pluginID);
+        return (String)map.get(OC_CLASS_ATTR);        
+    }
+    
+    /**
+     * Get converter name.
+     * 
+     * @param pluginID
+     * 
+     * @return String containing converter name.
+     */
+    public String getConverterName(String pluginID)
+    {
+        HashMap map = (HashMap)converterPlugins.get(pluginID);
+        return (String)map.get(OC_NAME_ATTR);
+    }
+    
+    /**
+     * Get converter desctiption.
+     * 
+     * @param pluginID
+     * 
+     * @return String containing converter description.
+     */
+    public String getConverterDescription(String pluginID)
+    {
+        HashMap map = (HashMap)converterPlugins.get(pluginID);
         return (String)map.get(OC_DESCRIPTION_ATTR);
     }
 }
