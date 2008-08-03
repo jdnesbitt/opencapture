@@ -19,7 +19,6 @@ package net.filterlogic.OpenCapture.module;
 import net.filterlogic.OpenCapture.*;
 
 import net.filterlogic.io.Path;
-import net.filterlogic.util.imaging.*;
 
 import org.apache.log4j.*;
 
@@ -28,7 +27,7 @@ import java.util.List;
 
 import java.io.FileInputStream;
 import java.io.File;
-import java.awt.image.BufferedImage;
+import net.filterlogic.OpenCapture.interfaces.IOCDeliveryPlugin;
 
 /**
  *
@@ -37,8 +36,6 @@ import java.awt.image.BufferedImage;
 public class OCDelivery 
 {
     static Logger myLogger = Logger.getLogger(OCDelivery.class.getName( ));
-    
-    private IndexFields stickeyFields = new IndexFields();
 
     private String configFile = "";
     private String log4j = "";
@@ -78,30 +75,48 @@ public class OCDelivery
         
         try
         {
-        // while more batches to process
-        while(moreWork)
-        {
-            batch = new Batch();
-
-            // get next batch
-            batch.getNextBatch(moduleID);
-            
-            // batchname empty, no more work
-            if(batch.getBatchName().length()>0)
+            // while more batches to process
+            while(moreWork)
             {
-                // TODO: Add module code here to process batch
+                batch = new Batch();
 
-                // close batch
-                batch.CloseBatch();
+                try
+                {
+                    // get next batch
+                    batch.getNextBatch(moduleID);
+
+                    // batchname empty, no more work
+                    if(batch.getBatchName().length()>0)
+                    {
+                        myLogger.info("NextBatch: " + batch.getBatchName());
+
+                        // load converter plugin
+                        String converterID = batch.getConfigurations().getQueues().getCurrentQueue().getPluginID();
+                        String className = batch.getOcConfig().getConverterClass(converterID);
+                        // load converter plugin
+                        Class c = Class.forName(className);
+                        // create converter object.
+                        IOCDeliveryPlugin deliveryPlugin = (IOCDeliveryPlugin)c.newInstance();
+
+                        // TODO: Add module code here to process batch
+                        
+
+                        // close batch
+                        batch.CloseBatch();
+                    }
+                    else
+                    {
+                            moreWork = false;
+                            batch = null;
+                    }
+                }
+                catch(Exception e)
+                {
+                    myLogger.error(e.toString());
+                    batch.CloseBatch(true, e.toString());
+                }
+
             }
-            else
-            {
-                    moreWork = false;
-                    batch = null;
-            }
-            
-            
-        }
         }
         catch(OpenCaptureException oce2)
         {

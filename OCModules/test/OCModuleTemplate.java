@@ -18,6 +18,7 @@ import net.filterlogic.OpenCapture.*;
 
 import net.filterlogic.io.Path;
 import net.filterlogic.util.imaging.*;
+import net.filterlogic.OpenCapture.interfaces.*;
 
 import org.apache.log4j.*;
 
@@ -101,22 +102,41 @@ public class OCModuleTemplate
             {
                 batch = new Batch();
 
-                // get next batch
-                batch.getNextBatch(moduleID);
-
-                // batchname empty, no more work
-                if(batch.getBatchName().length()>0)
+                try
                 {
-                    // TODO: Add module code here to process batch
+                    // get next batch
+                    batch.getNextBatch(moduleID);
 
-                    // close batch
-                    batch.CloseBatch();
+                    // batchname empty, no more work
+                    if(batch.getBatchName().length()>0)
+                    {
+                        // TODO: Add module code here to process batch
+
+                        myLogger.info("NextBatch: " + batch.getBatchName());
+
+                        // load converter plugin
+                        String converterID = batch.getConfigurations().getQueues().getCurrentQueue().getPluginID();
+                        String className = batch.getOcConfig().getConverterClass(converterID);
+                        // load converter plugin
+                        Class c = Class.forName(className);
+                        // create converter object.
+                        IOCDeliveryPlugin deliveryPlugin = (IOCDeliveryPlugin)c.newInstance();
+
+                        // close batch
+                        batch.CloseBatch();
+                    }
+                    else
+                    {
+                            moreWork = false;
+                            batch = null;
+                    }
                 }
-                else
+                catch(Exception e)
                 {
-                        moreWork = false;
-                        batch = null;
+                    myLogger.error(e.toString());
+                    batch.CloseBatch(true, e.toString());
                 }
+
             }
         }
         catch(OpenCaptureException oce2)
