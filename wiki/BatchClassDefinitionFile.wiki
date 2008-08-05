@@ -9,7 +9,7 @@ This page explains the layout of the batch class XML definition file.  We'll att
 
 The purpose of this document is to describe the XML definition file used for both batch classes and batches.  This file is the key to importing and processing batches.
 
-==BatchClass Tag==
+==BatchClass==
 
 A batch class is an organizational unit used to define or describe a group of documents that are similar.  These documents may be stored in the same repository or may be used by the same department or organization.
 The batch class tag has several attributes.  The following is sample batch class tag:
@@ -23,7 +23,7 @@ BatchClass attributes:
 *Version:	The version of the xml file.
 *Priority:	Priority of batches created using this batch class.
 
-===2.1.1  Configuration Tag===
+===2.1.1  Configuration===
 
 The Configuration tag encapsulates all the batch class configuration. 
 
