@@ -72,8 +72,8 @@ Queues attributes:
 
 Queue attributes:
 
-*Name:			Name of the queue.
-*ID:			Unique ID of the queue.
+*Name:	        Name of the queue.
+*ID:		Unique ID of the queue.
 *CustomPlugin:	Java class of the custom plugin the module should call during processing.
 
 ===2.1.1.4  BatchFields/BatchField Tags===
@@ -86,7 +86,7 @@ BatchFields are used to define a set of fields that are relevant to all the docu
 
 BatchField attributes:
 
-*Name:	Name of the batch field.
+*Name:	        Name of the batch field.
 *Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).
 *Value:		Default value of field.
 
@@ -143,7 +143,7 @@ Logging is an enclosing tag for the Log tag.  The Log tag is used to show the da
 Log attributes:
 
 *QueueName:		Name of queue batch was processed in.
-*StartDateTime:	Date/Time stamp of when the batch started processing in the named queue.
+*StartDateTime:	        Date/Time stamp of when the batch started processing in the named queue.
 *EndDateTime:		Date/Time stamp of when the batch complete processing in the named queue.
 *Host:			The name of the computer the batch was processed on.
 *Message:		Infomational message pertaining to the batch (error message).
