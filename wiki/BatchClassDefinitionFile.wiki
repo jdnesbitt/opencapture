@@ -39,9 +39,9 @@ The Property tag is used to define a custom property.  The Property tag has the 
 
 In the Configuration section of the XML definition file CustomProperties should be non-volitile (N). 
 
-{{{<CustomProperties>
-	<Property Name=”TEST” Value=”TEST1” Volital=”N” />
-</CustomProperties>}}}
+{{{<CustomProperties>}}}
+	{{{<Property Name=”TEST” Value=”TEST1” Volital=”N” />}}}
+{{{</CustomProperties>}}}
 
 ===2.1.1.2 IndexFields and IndexField Tags===
 
