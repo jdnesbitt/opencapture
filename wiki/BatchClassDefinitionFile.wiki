@@ -9,7 +9,7 @@ This page explains the layout of the batch class XML definition file.  We'll att
 
 The purpose of this document is to describe the XML definition file used for both batch classes and batches.  This file is the key to importing and processing batches.
 
-==BatchClass==
+== BatchClass Tag ==
 
 A batch class is an organizational unit used to define or describe a group of documents that are similar.  These documents may be stored in the same repository or may be used by the same department or organization.
 The batch class tag has several attributes.  The following is sample batch class tag:
@@ -23,19 +23,19 @@ BatchClass attributes:
 *Version:	The version of the xml file.
 *Priority:	Priority of batches created using this batch class.
 
-===2.1.1  Configuration===
+=== 2.1.1  Configuration Tag ===
 
 The Configuration tag encapsulates all the batch class configuration. 
 
-===2.1.1.1 CustomProperties and Property Tags===
+=== 2.1.1.1 CustomProperties and Property Tags ===
 
 The CustomProperties tag encapsulates configuration properties related to custom components built to plugin to OpenCapture.
 
 The Property tag is used to define a custom property.  The Property tag has the following attributes:
 
-*Name:		Name of the property.  This is key to retrieving the property at runtime.
-*Value:		Value of the property.
-*Volital:		Defines whether or not the property is volitile or non-volitile.  
+*Name:          Name of the property.  This is key to retrieving the property at runtime.
+*Value:         Value of the property.
+*Volital:       Defines whether or not the property is volitile or non-volitile.  
 
 In the Configuration section of the XML definition file CustomProperties should be non-volitile (N). 
 
@@ -43,7 +43,7 @@ In the Configuration section of the XML definition file CustomProperties should 
 	{{{<Property Name=”TEST” Value=”TEST1” Volital=”N” />}}}
 {{{</CustomProperties>}}}
 
-===2.1.1.2 IndexFields and IndexField Tags===
+=== 2.1.1.2 IndexFields and IndexField Tags ===
 
 The IndexFields tag encapsulates the IndexField tag.  The IndexField tag in the configuration section if used to configure the names and types of IndexFields.  IndexFields apply to all document types defined in the batch class.  The following attributes exist in the IndexField tag:
 
