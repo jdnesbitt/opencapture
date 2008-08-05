@@ -47,10 +47,10 @@ In the Configuration section of the XML definition file CustomProperties should 
 
 The IndexFields tag encapsulates the IndexField tag.  The IndexField tag in the configuration section if used to configure the names and types of IndexFields.  IndexFields apply to all document types defined in the batch class.  The following attributes exist in the IndexField tag:
 
-*Name:	Name of index field.
-*Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).  NOTE:  Not currently used.  All data types are confidered String.
-*Value:		Value of field.  If populated, typed value used.  NOTE:  Typed value not currently used.
-*Stickey:	This identifies whether or not the field's value should be copied to the next document if a value isn't read for that field.
+*Name:*	        Name of index field.
+*Type:*		Type of field(S = String, N = Numeric, A = Amount, D = Date).  NOTE:  Not currently used.  All data types are confidered String.
+*Value:*	Value of field.  If populated, typed value used.  NOTE:  Typed value not currently used.
+*Stickey:*	This identifies whether or not the field's value should be copied to the next document if a value isn't read for that field.
 
 {{{<IndexFields>}}}
     {{{<IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />}}}
@@ -68,13 +68,13 @@ Queues is an enclosing tag for the Queue tag.  The Queue tag is used to define t
 
 Queues attributes:
 
-*CurrentQueue:	The name of the queue the batch is currently being processed in or the next queue the batch will be provessed through.
+*CurrentQueue:*	The name of the queue the batch is currently being processed in or the next queue the batch will be provessed through.
 
 Queue attributes:
 
-*Name:	        Name of the queue.
-*ID:		Unique ID of the queue.
-*CustomPlugin:	Java class of the custom plugin the module should call during processing.
+*Name:*	        Name of the queue.
+*ID:*		Unique ID of the queue.
+*CustomPlugin:*	Java class of the custom plugin the module should call during processing.
 
 ===2.1.1.4  BatchFields/BatchField Tags===
 
