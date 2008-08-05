@@ -142,11 +142,11 @@ Logging is an enclosing tag for the Log tag.  The Log tag is used to show the da
 
 Log attributes:
 
-*QueueName:		Name of queue batch was processed in.
-*StartDateTime:	        Date/Time stamp of when the batch started processing in the named queue.
-*EndDateTime:		Date/Time stamp of when the batch complete processing in the named queue.
-*Host:			The name of the computer the batch was processed on.
-*Message:		Infomational message pertaining to the batch (error message).
+*QueueName		Name of queue batch was processed in.
+*StartDateTime	        Date/Time stamp of when the batch started processing in the named queue.
+*EndDateTime		Date/Time stamp of when the batch complete processing in the named queue.
+*Host			The name of the computer the batch was processed on.
+*Message		Infomational message pertaining to the batch (error message).
 
 ===2.2.2  BatchFields/BatchField Tags===
 
