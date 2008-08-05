@@ -16,7 +16,7 @@ The batch class tag has several attributes.  The following is sample batch class
 
 {{{<BatchClass Name="FFE Carrier Files" ImagePath="C:\Temp" version="0.0.1" Priority=”7”>}}}
 
-*BatchClass attributes:*
+BatchClass attributes:
 
 *Name:		Name of the batch class.  This is also used to as the filename of the batch class xml config file.
 *ImagePath:	This is the page to where the imported or scanned images will be stored.
@@ -52,19 +52,19 @@ The IndexFields tag encapsulates the IndexField tag.  The IndexField tag in the 
 *Value:		Value of field.  If populated, typed value used.  NOTE:  Typed value not currently used.
 *Stickey:	This identifies whether or not the field's value should be copied to the next document if a value isn't read for that field.
 
-{{{<IndexFields>
-    <IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />
-</IndexFields>}}}
+{{{<IndexFields>}}}
+    {{{<IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />}}}
+{{{</IndexFields>}}}
 
 ===2.1.1.3 Queues/Queue Tags===
 
 Queues is an enclosing tag for the Queue tag.  The Queue tag is used to define the queues the batch will be processed through.  The first queue is usually Scan/Import queue where the batch is scanned or imported into the system.  Below is an example of the Queues/Queue definition:
 
-{{{<Queues CurrentQueue="">
-	<Queue Name="OCImport" ID="1" CustomPlugin=""/>
-	<Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
-	<Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery"/>
-</Queues>}}}
+{{{<Queues CurrentQueue="">}}}
+	{{{<Queue Name="OCImport" ID="1" CustomPlugin=""/>}}}
+	{{{<Queue Name="OCCognizance" ID="2" CustomPlugin=""/>}}}
+	{{{<Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery"/>}}}
+{{{</Queues>}}}
 
 Queues attributes:
 
@@ -80,9 +80,9 @@ Queue attributes:
 
 BatchFields are used to define a set of fields that are relevant to all the documents in the batch.  The BatchFields tag encloses the BatchField tag which is used to define each field.  The BatchFields/BatchField tags are shown below.  Each BatchField tag has several attributes.
 
-{{{<BatchFields>
-	<BatchField Name="" Type="S" Value=""/>
-</BatchFields>}}}
+{{{<BatchFields>}}}
+	{{{<BatchField Name="" Type="S" Value=""/>}}}
+{{{</BatchFields>}}}
 
 BatchField attributes:
 
@@ -106,9 +106,9 @@ Document attributes:
 
 Zones and Zone tags exist at the document configuration level.  A set of zone tags is setup to define the coordinates of the area of an image to read.  The following attributes make up the Zone tag:
 
-{{{<Zones>
-	<Zone FieldType="FormID" H="1637" MinAccuracy="0" Name="FORMID" Type="CODE39" W="299" X="30" Y="253"/>
-</Zones>}}}
+{{{<Zones>}}}
+	{{{<Zone FieldType="FormID" H="1637" MinAccuracy="0" Name="FORMID" Type="CODE39" W="299" X="30" Y="253"/>}}}
+{{{</Zones>}}}
 
 *Name:	Name of zone.  The name FORMID should be used to identify the location of the form identification area of the zone.
 *Type:			Type of zone.  Specify the PluginID for the reader that will be used to read the zone.
@@ -136,9 +136,9 @@ Batch attributes:
 
 Logging is an enclosing tag for the Log tag.  The Log tag is used to show the date/time the batch was processed in a Queue.  Below is an example of the Logging/Log entry:
 
-{{{<Logging>
-	<Log QueueName="" StartDateTime="" EndDateTime="" Host="" Message=""/>
-</Logging>}}}
+{{{<Logging>}}}
+	{{{<Log QueueName="" StartDateTime="" EndDateTime="" Host="" Message=""/>}}}
+{{{</Logging>}}}
 
 Log attributes:
 
@@ -152,9 +152,9 @@ Log attributes:
 
 BatchFields are used to define a set of fields that are relevant to all the documents in the batch.  The BatchFields tag encloses the BatchField tag which is used to define each field.  The BatchFields/BatchField tags are shown below.  Each BatchField tag has several attributes.
 
-{{{<BatchFields>
-	<BatchField Name="" Type="S" Value=""/>
-</BatchFields>}}}
+{{{<BatchFields>}}}
+	{{{<BatchField Name="" Type="S" Value=""/>}}}
+{{{</BatchFields>}}}
 
 BatchField attributes:
 
@@ -166,9 +166,9 @@ BatchField attributes:
 
 The Pages tag encapsulates the Page tag.  Under the Batch tag, loose pages (pages not in a document) are stored here.  The following is an example of the Pages and Page tags:
 
-{{{<Pages>
-	<Page Name="00000000.tif" PageNumber="1" Sequence="1"/>
-</Pages>}}}
+{{{<Pages>}}}
+	{{{<Page Name="00000000.tif" PageNumber="1" Sequence="1"/>}}}
+{{{</Pages>}}}
 
 Page attributes:
 
