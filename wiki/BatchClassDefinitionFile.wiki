@@ -65,9 +65,9 @@ The IndexFields tag encapsulates the IndexField tag.  The IndexField tag in the 
 Queues is an enclosing tag for the Queue tag.  The Queue tag is used to define the queues the batch will be processed through.  The first queue is usually Scan/Import queue where the batch is scanned or imported into the system.  Below is an example of the Queues/Queue definition:
 
 <Queues CurrentQueue="">
-	<Queue Name="OCImport" ID="1" CustomPlugin=""/>
-	<Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
-	<Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery"/>
+    <Queue Name="OCImport" ID="1" CustomPlugin=""/>
+    <Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
+    <Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery"/>
 </Queues>
 
 Queues attributes:
