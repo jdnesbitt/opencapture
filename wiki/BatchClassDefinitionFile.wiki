@@ -90,7 +90,7 @@ BatchField attributes:
 *Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).
 *Value:		Default value of field.
 
-===2.1.1.5  Document Tag===
+===2.1.1.5  Document Tag=== 
 
 The Document tag has several uses.  The first is it serves as a definition of the type of document being searched for.  The second is it acts as enclosing tag holding all the specific information about a specific document type.  Within the batch, the Document tag also contains all the read data from the zones.  Below is a sample of a Document definition:
 
@@ -118,68 +118,3 @@ Zones and Zone tags exist at the document configuration level.  A set of zone ta
 *H:			Height of the zone to read.
 *MinAccuracy:	Minimum accuracy in order for content to be accepted.  NOTE:  Not currently operational.
 *FieldType:		Type of field to populate (Index, Batch).  NOTE:  Not currently operational.  Only Index fields populated.
-
-==2.2 Batch Tag==
-
-A batch is a unit of work.  A batch can contain multiple documents.  These documents can be the same or different types.  The batch tag is used when a new batch is created.  There are several attributes that make up the batch tag.  The Name of the batch is what’s visible to users of the system.  The following is a sample batch tag:
-
-{{{<Batch Name="" ID="" CreateDateTime="" ScanUser="">}}}}
-
-Batch attributes:
-
-*Name:			Name of the batch.
-*CreateDateTime:	Date/Time the batch was created.
-*ScanUser:		The user id of the user that created the batch.
-*ID:			The system ID of the batch.
-
-===2.2.1  Logging/Log Tags===
-
-Logging is an enclosing tag for the Log tag.  The Log tag is used to show the date/time the batch was processed in a Queue.  Below is an example of the Logging/Log entry:
-
-{{{<Logging>}}}
-	{{{<Log QueueName="" StartDateTime="" EndDateTime="" Host="" Message=""/>}}}
-{{{</Logging>}}}
-
-Log attributes:
-
-*QueueName		Name of queue batch was processed in.
-*StartDateTime	        Date/Time stamp of when the batch started processing in the named queue.
-*EndDateTime		Date/Time stamp of when the batch complete processing in the named queue.
-*Host			The name of the computer the batch was processed on.
-*Message		Infomational message pertaining to the batch (error message).
-
-===2.2.2  BatchFields/BatchField Tags===
-
-BatchFields are used to define a set of fields that are relevant to all the documents in the batch.  The BatchFields tag encloses the BatchField tag which is used to define each field.  The BatchFields/BatchField tags are shown below.  Each BatchField tag has several attributes.
-
-{{{<BatchFields>}}}
-	{{{<BatchField Name="" Type="S" Value=""/>}}}
-{{{</BatchFields>}}}
-
-BatchField attributes:
-
-*Name:	Name of the batch field.
-*Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).
-*Value:		Default value of field.
-
-===2.2.3  Pages and Page Tags===
-
-The Pages tag encapsulates the Page tag.  Under the Batch tag, loose pages (pages not in a document) are stored here.  The following is an example of the Pages and Page tags:
-
-{{{<Pages>}}}
-	{{{<Page Name="00000000.tif" PageNumber="1" Sequence="1"/>}}}
-{{{</Pages>}}}
-
-Page attributes:
-
-*Name:		Name of file that contains the page.
-*PageNumber:	Number of the page.
-*Sequence:	Order in which the page appears.
-
-===2.2.4  Documents Tag===
-
-The documents tag encapsulates all documents found.
-
-2.2.4.1  Document Tag
-
-The document tag contains all information relevant to the recognized document type (document name in the configuration section).
