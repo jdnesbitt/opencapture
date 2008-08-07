@@ -1,0 +1,12 @@
+#summary CustomProperties are used to define name value pairs.
+
+= Introduction =
+
+CustomProperties are used at both the BatchClass and Batch levels.  A custom property might be used to define a name value pair used by a custom plugin.
+
+
+= Details =
+
+CustomProperties at the BatchClass level are used to define values for custom plugins.  If a delivery plugin was developed to deliver documents to Alfresco, the CustomProperties secion in the BatchClass might contain a property for hostname, userid, password, etc.  These values could be retrieved from the CustomProperties section of the BatchClass Configuration and used for delivery.
+
+CustomProperties at the Batch level are used in the Document section.  They define information about a specific document.  These name value pairs can also be created and/or used by custom plugins.
