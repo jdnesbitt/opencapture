@@ -1,4 +1,4 @@
- #summary Open Capture Batch Class XML Definition File.
+#summary Open Capture Batch Class XML Definition File.
 
 = Introduction =
 
