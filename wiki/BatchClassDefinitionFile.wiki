@@ -9,7 +9,7 @@ This page explains the layout of the batch class XML definition file.  We'll att
 
 The purpose of this document is to describe the XML definition file used for both batch classes and batches.  This file is the key to importing and processing batches.
 
-== BatchClass Tag ==
+==BatchClass Tag==
 
 A batch class is an organizational unit used to define or describe a group of documents that are similar.  These documents may be stored in the same repository or may be used by the same department or organization.
 The batch class tag has several attributes.  The following is sample batch class tag:
@@ -18,24 +18,24 @@ The batch class tag has several attributes.  The following is sample batch class
 
 BatchClass attributes:
 
-*Name:		Name of the batch class.  This is also used to as the filename of the batch class xml config file.
-*ImagePath:	This is the page to where the imported or scanned images will be stored.
-*Version:	The version of the xml file.
-*Priority:	Priority of batches created using this batch class.
+* Name:		Name of the batch class.  This is also used to as the filename of the batch class xml config file.
+* ImagePath:	This is the page to where the imported or scanned images will be stored.
+* Version:	The version of the xml file.
+* Priority:	Priority of batches created using this batch class.
 
-=== 2.1.1  Configuration Tag ===
+===2.1.1  Configuration Tag===
 
 The Configuration tag encapsulates all the batch class configuration. 
 
-=== 2.1.1.1 CustomProperties and Property Tags ===
+===2.1.1.1 CustomProperties and Property Tags===
 
 The CustomProperties tag encapsulates configuration properties related to custom components built to plugin to OpenCapture.
 
 The Property tag is used to define a custom property.  The Property tag has the following attributes:
 
-*Name:          Name of the property.  This is key to retrieving the property at runtime.
-*Value:         Value of the property.
-*Volital:       Defines whether or not the property is volitile or non-volitile.  
+* Name:		Name of the property.  This is key to retrieving the property at runtime.
+* Value:	Value of the property.
+* Volital:	Defines whether or not the property is volitile or non-volitile.  
 
 In the Configuration section of the XML definition file CustomProperties should be non-volitile (N). 
 
@@ -43,14 +43,14 @@ In the Configuration section of the XML definition file CustomProperties should 
 	{{{<Property Name=”TEST” Value=”TEST1” Volital=”N” />}}}
 {{{</CustomProperties>}}}
 
-=== 2.1.1.2 IndexFields and IndexField Tags ===
+===2.1.1.2 IndexFields and IndexField Tags===
 
 The IndexFields tag encapsulates the IndexField tag.  The IndexField tag in the configuration section if used to configure the names and types of IndexFields.  IndexFields apply to all document types defined in the batch class.  The following attributes exist in the IndexField tag:
 
-*Name:*	        Name of index field.
-*Type:*		Type of field(S = String, N = Numeric, A = Amount, D = Date).  NOTE:  Not currently used.  All data types are confidered String.
-*Value:*	Value of field.  If populated, typed value used.  NOTE:  Typed value not currently used.
-*Stickey:*	This identifies whether or not the field's value should be copied to the next document if a value isn't read for that field.
+* Name:	        Name of index field.
+* Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).  NOTE:  Not currently used.  All data types are confidered String.
+* Value:	Value of field.  If populated, typed value used.  NOTE:  Typed value not currently used.
+* Stickey:	This identifies whether or not the field's value should be copied to the next document if a value isn't read for that field.
 
 {{{<IndexFields>}}}
     {{{<IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />}}}
@@ -68,13 +68,13 @@ Queues is an enclosing tag for the Queue tag.  The Queue tag is used to define t
 
 Queues attributes:
 
-*CurrentQueue:*	The name of the queue the batch is currently being processed in or the next queue the batch will be provessed through.
+* CurrentQueue:	The name of the queue the batch is currently being processed in or the next queue the batch will be provessed through.
 
 Queue attributes:
 
-*Name:*	        Name of the queue.
-*ID:*		Unique ID of the queue.
-*CustomPlugin:*	Java class of the custom plugin the module should call during processing.
+* Name:	        Name of the queue.
+* ID:		Unique ID of the queue.
+* CustomPlugin:	Java class of the custom plugin the module should call during processing.
 
 ===2.1.1.4  BatchFields/BatchField Tags===
 
@@ -86,11 +86,11 @@ BatchFields are used to define a set of fields that are relevant to all the docu
 
 BatchField attributes:
 
-*Name:	        Name of the batch field.
-*Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).
-*Value:		Default value of field.
+* Name:	        Name of the batch field.
+* Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).
+* Value:	Default value of field.
 
-===2.1.1.5  Document Tag=== 
+===2.1.1.5  Document Tag===
 
 The Document tag has several uses.  The first is it serves as a definition of the type of document being searched for.  The second is it acts as enclosing tag holding all the specific information about a specific document type.  Within the batch, the Document tag also contains all the read data from the zones.  Below is a sample of a Document definition:
 
@@ -98,9 +98,9 @@ The Document tag has several uses.  The first is it serves as a definition of th
 
 Document attributes:
 
-*Name:		Name of the document type.
-*FormID:	Form identification value.  This is the value used when scanning for separators in the batch.
-*Number:	Document number is set at runtime.
+* Name:		Name of the document type.
+* FormID:	Form identification value.  This is the value used when scanning for separators in the batch.
+* Number:	Document number is set at runtime.
 
 ===2.1.1.6 Zones and Zone Tags===
 
@@ -110,11 +110,76 @@ Zones and Zone tags exist at the document configuration level.  A set of zone ta
 	{{{<Zone FieldType="FormID" H="1637" MinAccuracy="0" Name="FORMID" Type="CODE39" W="299" X="30" Y="253"/>}}}
 {{{</Zones>}}}
 
-*Name:	Name of zone.  The name FORMID should be used to identify the location of the form identification area of the zone.
-*Type:			Type of zone.  Specify the PluginID for the reader that will be used to read the zone.
-*X:			X coordinate for the zone to read.
-*Y:			Y coordinate for the zone to read.
-*W:			Width of the zone to read.
-*H:			Height of the zone to read.
-*MinAccuracy:	Minimum accuracy in order for content to be accepted.  NOTE:  Not currently operational.
-*FieldType:		Type of field to populate (Index, Batch).  NOTE:  Not currently operational.  Only Index fields populated.
+* Name:		Name of zone.  The name FORMID should be used to identify the location of the form identification area of the zone.
+* Type:		Type of zone.  Specify the PluginID for the reader that will be used to read the zone.
+* X:		X coordinate for the zone to read.
+* Y:		Y coordinate for the zone to read.
+* W:		Width of the zone to read.
+* H:		Height of the zone to read.
+* MinAccuracy:	Minimum accuracy in order for content to be accepted.  NOTE:  Not currently operational.
+* FieldType:	Type of field to populate (Index, Batch).  NOTE:  Not currently operational.  Only Index fields populated.
+
+==2.2 Batch Tag==
+
+A batch is a unit of work.  A batch can contain multiple documents.  These documents can be the same or different types.  The batch tag is used when a new batch is created.  There are several attributes that make up the batch tag.  The Name of the batch is what’s visible to users of the system.  The following is a sample batch tag:
+
+{{{<Batch Name="" ID="" CreateDateTime="" ScanUser="">}}}}
+
+Batch attributes:
+
+* Name:			Name of the batch.
+* CreateDateTime:	Date/Time the batch was created.
+* ScanUser:		The user id of the user that created the batch.
+* ID:			The system ID of the batch.
+
+===2.2.1  Logging/Log Tags===
+
+Logging is an enclosing tag for the Log tag.  The Log tag is used to show the date/time the batch was processed in a Queue.  Below is an example of the Logging/Log entry:
+
+{{{<Logging>}}}
+	{{{<Log QueueName="" StartDateTime="" EndDateTime="" Host="" Message=""/>}}}
+{{{</Logging>}}}
+
+Log attributes:
+
+* QueueName:		Name of queue batch was processed in.
+* StartDateTime:	Date/Time stamp of when the batch started processing in the named queue.
+* EndDateTime:		Date/Time stamp of when the batch complete processing in the named queue.
+* Host:			The name of the computer the batch was processed on.
+* Message:		Infomational message pertaining to the batch (error message).
+
+===2.2.2  BatchFields/BatchField Tags===
+
+BatchFields are used to define a set of fields that are relevant to all the documents in the batch.  The BatchFields tag encloses the BatchField tag which is used to define each field.  The BatchFields/BatchField tags are shown below.  Each BatchField tag has several attributes.
+
+{{{<BatchFields>}}}
+	{{{<BatchField Name="" Type="S" Value=""/>}}}
+{{{</BatchFields>}}}
+
+BatchField attributes:
+
+* Name:		Name of the batch field.
+* Type:		Type of field(S = String, N = Numeric, A = Amount, D = Date).
+* Value:	Default value of field.
+
+===2.2.3  Pages and Page Tags===
+
+The Pages tag encapsulates the Page tag.  Under the Batch tag, loose pages (pages not in a document) are stored here.  The following is an example of the Pages and Page tags:
+
+{{{<Pages>}}}
+	{{{<Page Name="00000000.tif" PageNumber="1" Sequence="1"/>}}}
+{{{</Pages>}}}
+
+Page attributes:
+
+* Name:		Name of file that contains the page.
+* PageNumber:	Number of the page.
+* Sequence:	Order in which the page appears.
+
+===2.2.4  Documents Tag===
+
+The documents tag encapsulates all documents found.
+
+2.2.4.1  Document Tag
+
+The document tag contains all information relevant to the recognized document type (document name in the configuration section).
