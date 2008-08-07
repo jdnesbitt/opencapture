@@ -18,7 +18,7 @@ The batch class tag has several attributes.  The following is sample batch class
 
 BatchClass attributes:
 
-* Name: 	Name of the batch class.  This is also used to as the filename of the batch class xml config file.
+* Name: Name of the batch class.  This is also used to as the filename of the batch class xml config file.
 * ImagePath:	This is the page to where the imported or scanned images will be stored.
 * Version:	The version of the xml file.
 * Priority:	Priority of batches created using this batch class.
