@@ -32,3 +32,19 @@ conf\ocimport.properties - Change the following settings in the OCImport propert
     importfilesonly - set to yes to import only image files (only tiffs).
     importtrigger   - extension to trigger on.  Signifies image is ready to import.  Not functional in OC 0.0.1
 }}}
+
+
+=== Setting up database connection ===
+
+Java persistence classes are used for database access.  Be sure to change the persistence.xml file in the META-INF directory.  This file defines the database connection properties as follows:
+
+{{{
+    <properties>
+      <property name="toplink.jdbc.user" value="<dbuser name>"/>
+      <property name="toplink.jdbc.password" value="<dbuser password>"/>
+      <property name="toplink.jdbc.url" value="jdbc:derby://localhost:1527/OpenCapture"/>
+      <property name="toplink.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+    </properties>
+}}}
+
+Each value should be changed according to the database system being used.  In the above example the url and driver identify Derby as the database being used.  You can also use other databases like MySQL, Oracle, PostgreSQL, etc.
