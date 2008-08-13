@@ -1,0 +1,34 @@
+#summary How to get OpenCapture up and running.
+
+= Introduction =
+
+The following are simple instructions for getting OpenCatpure up and running.  This is the same information found in the README that is distributed with OC.
+
+
+= Details =
+
+{{{
+Extract to folder of choice.  The rest of filesystem is there.  
+
+Need to change settings in the following files:
+
+config\carrierfiles.xml - This is an example batch class.  To use change BatchClass ImagePath attribute to point to location where source images will be imported into OC.
+
+conf\log4j-ocimport.properties - There is a lo4j file for each module.  Change log4j.appender.myAppender.File setting to point to location log should be written to.  Include log file name.
+
+conf\occognizance.properties - There is a properties file for each module.  Change the following settings in the OCCognizance and OCConverter property files:
+
+    oc_home     - Point to location OC main folder (Zip contains OCM folder)
+    log4j       - Path and name of cognizance log4j properties file.
+
+conf\ocimport.properties - Change the following settings in the OCImport properties file:
+
+    oc_home     - Point to location OC main folder (Zip contains OCM folder)
+    log4j           - Path and name of import log4j properties file.
+    archivepath - Path where original images that have been imported will be moved to.
+    polldir     - Path to directory that contains images to be imported into oc.
+    batchclass  - Name of batch class that images being imported will be associated with.  This is the name of the batch class xml file in the conf directory.  It will have the same batch class without spaces.  If the [BatchClass] name is *Carrier Files* then the [BatchClassDefinition] XML file will be *carrierfiles.xml*.
+
+    importfilesonly - set to yes to import only image files (only tiffs).
+    importtrigger   - extension to trigger on.  Signifies image is ready to import.  Not functional in OC 0.0.1
+}}}
