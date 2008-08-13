@@ -27,7 +27,7 @@ conf\ocimport.properties - Change the following settings in the OCImport propert
     log4j           - Path and name of import log4j properties file.
     archivepath - Path where original images that have been imported will be moved to.
     polldir     - Path to directory that contains images to be imported into oc.
-    batchclass  - Name of batch class that images being imported will be associated with.  This is the name of the batch class xml file in the conf directory.  It will have the same batch class without spaces.  If the [BatchClass] name is *Carrier Files* then the [BatchClassDefinition] XML file will be *carrierfiles.xml*.
+    batchclass  - Name of batch class that images being imported will be associated with.  This is the name of the batch class xml file in the conf directory.  It will have the same batch class without spaces.  If the [BatchClass] name is Carrier Files then the BatchClass Definition XML file will be carrierfiles.xml.
 
     importfilesonly - set to yes to import only image files (only tiffs).
     importtrigger   - extension to trigger on.  Signifies image is ready to import.  Not functional in OC 0.0.1
