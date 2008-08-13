@@ -131,7 +131,7 @@ Zones and Zone tags exist at the document configuration level.  A set of zone ta
 
 {{{
 <?xml version="1.0" encoding="UTF-8"?>
-<BatchClass Name="FFE Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/Images" version="0.0.1" Priority="7">
+<BatchClass Name="Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/Images" version="0.0.1" Priority="7">
     <Configuration>
 	<CustomProperties />
         <IndexFields>
