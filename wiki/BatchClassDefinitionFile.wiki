@@ -158,9 +158,7 @@ Zones and Zone tags exist at the document configuration level.  A set of zone ta
             <Queue Name="OCImport" ID="1" CustomPlugin="" />
             <Queue Name="OCCognizance" ID="2" CustomPlugin="" />
 	    <Queue Name="OCConverter" ID="4" CustomPlugin="" />
-            <Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery" >
-                <CustomData Name="" Value="" />
-            </Queue>
+            <Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery" />
         </Queues>
         <BatchFields />
         <Documents>
