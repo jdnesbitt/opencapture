@@ -7,7 +7,7 @@ The Import module is used to perform file system imports.  A configuration file 
 
 = Details =
 
-The OCImport.properties file should contain the following properties:
+OCImport currently supports TIFF files only.  Future releases will support other formats such as PDF.  Trigger files are used only as a triggering mechanism to identify files ready for import.  The Import module uses a configuration file.  The startup script points to a configuration file named ocimport.properties.  The ocimport.properties file should contain the following properties:
 
 || oc_home || OC Home property should point to the root OpenCapture directory. ||
 || log4j || Path to the log4j property file. ||
