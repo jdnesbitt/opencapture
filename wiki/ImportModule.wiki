@@ -13,7 +13,7 @@ The OCImport.properties file should contain the following properties:
 || log4j || Path to the log4j property file. ||
 || polldircount || Number of directories to poll.  Each direcotry will have an associated number. ||
 || polldir.n || Directory to poll. N represent the directory number to poll. ||
-|| archivepath || Path to the directory where imported files should be stored once imported. ||
+|| archivepath.n || Path to the directory where imported files should be stored once imported. ||
 || batchclass.n || Batch Class the documents should be assigned to. ||
 || importfilesonly.n || If importing files only meaning there are no trigger files to signify a file can be imported. ||
 || importtrigger.n || Use this if importfilesonly=no.  This will be the extension of the trigger file( ex: xml) ||
