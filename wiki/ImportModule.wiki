@@ -53,3 +53,7 @@ importtrigger.1=
 === How it Works ===
 
 Import takes the name of the TIFF file and uses that as the batch name in OC.  The multi-page TIFF is split into single page TIFFs during the import process.  Once the split is complete the batch is closed and import moves to the next file in the import folder.
+
+We use packbits compression as the java JPEG compression has a memory leak.  *If anyone has a work-around for this please let us know.*
+
+NOTE: *The current version of import does not support using mutiple single page TIFFs to create a batch.*
