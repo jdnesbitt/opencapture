@@ -48,3 +48,8 @@ importfilesonly.1=yes
 # of the trigger file( ex: xml)
 importtrigger.1=
 }}}
+
+
+=== How it Works ===
+
+Import takes the name of the TIFF file and uses that as the batch name in OC.  The multi-page TIFF is split into single page TIFFs during the import process.  Once the split is complete the batch is closed and import moves to the next file in the import folder.
