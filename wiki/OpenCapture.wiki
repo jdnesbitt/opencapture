@@ -8,7 +8,7 @@ OpenCapture is a document capture system.
 = Details =
 
 OpenCapture consists of the following modules:
-  * Import module.
+  * [Import] module.
   * [Cognizance] module.
   * Converter module.
   * Delivery module.
