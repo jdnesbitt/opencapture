@@ -16,15 +16,15 @@ The OpenCapture XML configuration file is primarily used for plugin registration
  -->
  
 <OpenCapture version="1.0">
- <ReaderPlugins>
-   <Plugin Name="ZXing 3 of 9 Reader" PluginID="CODE39" Class="net.filterlogic.OpenCapture.readers.Code39Reader" Description="Reads 3 of 9 Barcodes." />
- </ReaderPlugins>
- <ConverterPlugins>
-   <Plugin Name="PDF Converter" PluginID="PDF" Class="net.filterlogic.OpenCapture.converters.ToPDF" Description="Converts TIFFs to PDF format." />
- </ConverterPlugins>
- <DeliveryPlugins>
-   <Plugin Name="Alfresco Delivery" PluginID="AlfrescoDelivery" Class="net.filterlogic.OpenCapture.alfresco.delivery" Description="Deliverys documents to Alfresco document repository." />
- </DeliveryPlugins>
+   <ReaderPlugins>
+      <Plugin Name="ZXing 3 of 9 Reader" PluginID="CODE39" Class="net.filterlogic.OpenCapture.readers.Code39Reader" Description="Reads 3 of 9 Barcodes." />
+   </ReaderPlugins>
+   <ConverterPlugins>
+      <Plugin Name="PDF Converter" PluginID="PDF" Class="net.filterlogic.OpenCapture.converters.ToPDF" Description="Converts TIFFs to PDF format." />
+   </ConverterPlugins>
+   <DeliveryPlugins>
+      <Plugin Name="Alfresco Delivery" PluginID="AlfrescoDelivery" Class="net.filterlogic.OpenCapture.alfresco.delivery" Description="Deliverys documents to Alfresco document repository." />
+   </DeliveryPlugins>
 </OpenCapture>
 }}}
 
