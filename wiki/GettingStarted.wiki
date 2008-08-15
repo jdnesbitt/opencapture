@@ -49,3 +49,7 @@ Java persistence classes are used for database access.  Be sure to change the pe
 }}}
 
 Each value should be changed according to the database system being used.  In the above example the url and driver identify Derby as the database being used.  You can also use other databases like MySQL, Oracle, PostgreSQL, etc.
+
+=== Creating Batch Class Definition File ===
+
+See [BatchClassDefinitionFile] for information on the layout of the file.
