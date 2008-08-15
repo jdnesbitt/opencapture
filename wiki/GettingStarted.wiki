@@ -1,4 +1,5 @@
 #summary How to get OpenCapture up and running.
+#labels Featured
 
 = Introduction =
 
