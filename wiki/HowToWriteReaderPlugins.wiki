@@ -194,3 +194,7 @@ public class Code39Reader implements IZoneReader
 }
 
 }}}
+
+=== Registering A Custom Plugin ===
+
+To register a custom plugin it must be added to the OpenCaptureConfigurationFile.
