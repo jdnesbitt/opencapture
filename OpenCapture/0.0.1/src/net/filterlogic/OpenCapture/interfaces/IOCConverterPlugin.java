@@ -57,7 +57,10 @@ public interface IOCConverterPlugin
      * @param inputFiles String array of files.
      * @param outputFile String containing name of output file.
      * 
+     * @return Returns a string value that is stored in the custom property created for the converted document. The returned 
+     * value is stored in the Value attribute.
+     * 
      * @throws OpenCaptureConversionException 
      */
-    public void Convert(String[] inputFiles, String outputFile) throws OpenCaptureConversionException;
+    public String Convert(String[] inputFiles, String outputFile) throws OpenCaptureConversionException;
 }

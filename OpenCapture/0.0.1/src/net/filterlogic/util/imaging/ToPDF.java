@@ -34,7 +34,7 @@ import java.util.zip.DeflaterOutputStream;
 public class ToPDF 
 {
     
-    public static void ToPDF(String[] files,String pdfOutFile) throws OpenCaptureImagingException
+    public static void FromTIFF(String[] files,String pdfOutFile) throws OpenCaptureImagingException
     {
         String tiff_file;
         String pdf_file = pdfOutFile;
@@ -123,7 +123,7 @@ public class ToPDF
             String filelist = path + "00000003.tif|" + path + "00000004.tif|" + path + "00000005.tif|" + path + "00000006.tif";
             String[] sfile = filelist.split("\\|");
             
-            ToPDF(sfile,path + "document2.pdf");
+            FromTIFF(sfile,path + "document2.pdf");
             
         }
         catch (Throwable e) 
