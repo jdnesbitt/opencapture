@@ -1,0 +1,179 @@
+#summary Writing custom convert plugins for the Converter module.
+
+= Introduction =
+
+The Converter module iterates through each Document in the batch.  It uses the information in the Document tag of the XML batch file to convert each single page TIFF to the configured file format.  To write custom Converter plugins the *IOCConverterPlugin* interface must be implemented.  The interface class can be found at *net.filterlogic.OpenCapture.interfaces* package.
+
+= Details =
+
+The IOCConverterPlugin interface contains the following methods that must be implemented:
+
+{{{
+    /**
+     * Get name of OC Converter plugin.
+     * @return String name of plugin.
+     */
+    public String getName();
+
+    /**
+     * Get plugin id.
+     * 
+     * @return String containing ID.
+     */
+    public String getPluginID();
+
+    /**
+     * Get descriptconverterIDion of OC Converter plugin.
+     * 
+     * @return String containing description.
+     */
+    public String getDescription();
+    
+    /**
+     * Get output file's extension.
+     * 
+     * @return String containing what the output file's extension should be set to.
+     */
+    public String getOutputExtension();
+    
+    /**
+     * Convert method converts files passed to method to the plugins output
+     * file type.
+     * 
+     * @param inputFiles String array of files.
+     * @param outputFile String containing name of output file.
+     * 
+     * @throws OpenCaptureConversionException 
+     */
+    public void Convert(String[] inputFiles, String outputFile) throws OpenCaptureConversionException;
+}}}
+
+At runtime the Converter module loads the correct converter plugin and calls the Convert method.  Once the plugin converts the images in the document, a CustomProperty is added.  The property name attribute is set to the plugin id.  The value attribute is set to the name of the generated file.  The output filename passed to the Convert method is the document number attribute. 
+
+*NOTE:*  When dealing with single page image formats, the plugin should obviously ignore the output filename passed to the Convert method.  The return value should also be meaningfull for the single page format (maybe the name of a folder the document images are in).
+
+The Converter module gets the plugin id from Queue configuration tag in the BatchClassDefinitionFile.  The following is an example of a Converter Queue tag:
+
+{{{
+<Queue Name="OCConverter" ID="4" CustomPlugin="PDF" />
+}}}
+
+Notice the CustomPlugin attribute is set to PDF.  This id is used at runtime to load the correct plugin.  When converting documents, the converter module uses the output extension from the getOutputExtension method of the plugin as the name of the directory to write the converted document in.  The Document tag has the following format:
+
+{{{
+<Document FormID="DOCUMENT" Name="Document Header" Number="2">
+    <Pages>
+	<Page Name="00000001.tif" PageNumber="2" Sequence="2"/>
+	<Page Name="00000002.tif" PageNumber="3" Sequence="3"/>
+    </Pages>
+    <IndexFields>
+	<IndexField Name="DOC_TYPE" Stickey="N" Type="S" Value="NOTE"/>
+	<IndexField Name="CUSTOMER_NAME" Stickey="Y" Type="S" Value="MY CUSTOMER"/>
+	<IndexField Name="CUSTOMER_ID" Stickey="Y" Type="N" Value="123456"/>
+	<IndexField Name="MC_NUMBER" Stickey="Y" Type="N" Value="7890"/>
+    </IndexFields>
+</Document>
+}}}
+
+When the Converter module completes processing a document the XML looks like the following.  Notice the CustomProperties tag that was added.  This is added when a document is successfully converted.  Also notice that the Volital attribute is set to Y.  All document properties are set to volital as the document may change and volital properties can be deleted.
+
+{{{
+<Document FormID="DOCUMENT" Name="Document Header" Number="2">
+    <CustomProperties>
+	<Property Name="OC_PDF" Value="2.pdf" Volital="Y"/>
+    </CustomProperties>
+    <Pages>
+	<Page Name="00000001.tif" PageNumber="2" Sequence="2"/>
+	<Page Name="00000002.tif" PageNumber="3" Sequence="3"/>
+    </Pages><Queue CustomPlugin="PDF" ID="4" Name="OCConverter"/>
+    <IndexFields>
+	<IndexField Name="DOC_TYPE" Stickey="N" Type="S" Value="CHECK LIST"/>
+	<IndexField Name="CUSTOMER_NAME" Stickey="Y" Type="S" Value=""/>
+	<IndexField Name="CUSTOMER_ID" Stickey="Y" Type="N" Value="FBT INC"/>
+	<IndexField Name="MC_NUMBER" Stickey="Y" Type="N" Value="15718"/>
+    </IndexFields>
+</Document>
+}}}
+
+The following code is from the PDF converter plugin that ships with OpenCapture:
+
+{{{
+/*
+Copyright 2008 Filter Logic
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+package net.filterlogic.OpenCapture.converters;
+
+import net.filterlogic.OpenCapture.interfaces.IOCConverterPlugin;
+import net.filterlogic.OpenCapture.interfaces.OpenCaptureConversionException;
+import net.filterlogic.util.imaging.OpenCaptureImagingException;
+import net.filterlogic.util.imaging.ToPDF;
+
+import net.filterlogic.io.Path;
+
+/**
+ *
+ * @author Darron Nesbitt
+ */
+public class PDFConversion implements IOCConverterPlugin
+{
+    private String name = "OpenCapture PDF Converter";
+    private String description = "This plugin converts TIFFs to PDF.";
+    private String pluginID = "PDF";
+    private String outputExtension = "PDF";
+
+    public String getName() 
+    {
+        return name;
+    }
+
+    public String getPluginID() 
+    {
+        return pluginID;
+    }
+
+    public String getDescription() 
+    {
+        return description;
+    }
+
+    public String getOutputExtension() 
+    {
+        return outputExtension;
+    }
+
+    public String Convert(String[] inputFiles, String outputFile) throws OpenCaptureConversionException 
+    {
+        String result = "";
+        
+        try
+        {
+            // call to pdf 
+            ToPDF.FromTIFF(inputFiles, outputFile);
+            
+            // get filename without path
+            result = Path.getFileName(outputFile);
+
+            // return the name of the PDF file created.  This will be stored in
+            // the custom property
+            return result;
+        }
+        catch(OpenCaptureImagingException e)
+        {
+            throw new OpenCaptureConversionException(e.toString());
+        }
+    }
+}
+}}}
