@@ -112,11 +112,11 @@ public class OCConverter
                             Document document = batch.getDocuments().getDocument(docs);
                             myLogger.info("Document type: " + document.getName());
 
-                            // check doc custom props to seeif pdf already exists.
+                            // check doc custom props to see if converterID property already exists.
                             Property property = document.getCustomProperties().getProperty(converterID);
                             myLogger.info(converterID + " Property: " + property.getName());
 
-                            // if PDF property doesn't exist, process document
+                            // if property doesn't exist, process document
                             if(property.getName().length()<1)
                             {
                                 // get list of page file names for this document
