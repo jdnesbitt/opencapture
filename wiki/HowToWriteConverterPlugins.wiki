@@ -87,10 +87,10 @@ When the Converter module completes processing a document the XML looks like the
 	<Page Name="00000002.tif" PageNumber="3" Sequence="3"/>
     </Pages><Queue CustomPlugin="PDF" ID="4" Name="OCConverter"/>
     <IndexFields>
-	<IndexField Name="DOC_TYPE" Stickey="N" Type="S" Value="CHECK LIST"/>
-	<IndexField Name="CUSTOMER_NAME" Stickey="Y" Type="S" Value=""/>
-	<IndexField Name="CUSTOMER_ID" Stickey="Y" Type="N" Value="FBT INC"/>
-	<IndexField Name="MC_NUMBER" Stickey="Y" Type="N" Value="15718"/>
+	<IndexField Name="DOC_TYPE" Stickey="N" Type="S" Value="NOTE"/>
+	<IndexField Name="CUSTOMER_NAME" Stickey="Y" Type="S" Value="MY CUSTOMER"/>
+	<IndexField Name="CUSTOMER_ID" Stickey="Y" Type="N" Value="123456"/>
+	<IndexField Name="MC_NUMBER" Stickey="Y" Type="N" Value="7890"/>
     </IndexFields>
 </Document>
 }}}
