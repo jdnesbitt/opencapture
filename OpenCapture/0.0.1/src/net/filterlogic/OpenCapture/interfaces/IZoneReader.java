@@ -38,7 +38,9 @@ public interface IZoneReader
     public String getName();
 
     /**
-     * Set the image to be read.
+     * Set the image to be read.  Use this method to pass the entire image.  Especially usefull when multiple zones
+     * exist on the same image.
+     * 
      * @param image BufferedImage
      */
     public void setImage(java.awt.image.BufferedImage image);
@@ -51,6 +53,7 @@ public interface IZoneReader
 
     /**
      * Get a snapshot of the zone being read.
+     * 
      * @return BufferedImage containing a snapshot of the zone.
      */
     public java.awt.image.BufferedImage getZoneSnapshot();

@@ -21,6 +21,8 @@ import net.filterlogic.OpenCapture.interfaces.OpenCaptureConversionException;
 import net.filterlogic.util.imaging.OpenCaptureImagingException;
 import net.filterlogic.util.imaging.ToPDF;
 
+import net.filterlogic.io.Path;
+
 /**
  *
  * @author Darron Nesbitt
@@ -52,11 +54,21 @@ public class PDFConversion implements IOCConverterPlugin
         return outputExtension;
     }
 
-    public void Convert(String[] inputFiles, String outputFile) throws OpenCaptureConversionException 
+    public String Convert(String[] inputFiles, String outputFile) throws OpenCaptureConversionException 
     {
+        String result = "";
+        
         try
         {
-            ToPDF.ToPDF(inputFiles, outputFile);
+            // call to pdf 
+            ToPDF.FromTIFF(inputFiles, outputFile);
+            
+            // get filename without path
+            result = Path.getFileName(outputFile);
+
+            // return the name of the PDF file created.  This will be stored in
+            // the custom property
+            return result;
         }
         catch(OpenCaptureImagingException e)
         {
