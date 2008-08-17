@@ -174,7 +174,7 @@ public class OCCognizance
                                         document.setName(zone.getDocumentName());
 
                                         // read index fields from image
-                                        Configuration config = batch.getConfigurations().getDocument(zone.getDocumentName());
+                                        Configuration config = batch.getConfigurations().getConfiguration(zone.getDocumentName());
                                         IndexFields confIndexFields = batch.getConfigurations().getIndexFields();
 
                                         // get zones for zone reader

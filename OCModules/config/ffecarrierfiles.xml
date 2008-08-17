@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BatchClass Name="FFE Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/ffe/Images" version="0.0.1" Priority="7">
     <Configuration>
-	<CustomProperties />
+	<CustomProperties>
+            <Property Name="OC_TIFF_DELIVERY" Value="N" Volital="N" />
+            <Property Name="OC_PDF_DELIVERY" Value="Y" Volital="N" />
+            <Property Name="OC_WORKING_PATH" Value="/tmp" Volital="N" />
+            <Property Name="OC_DELIVERY_PATH" Value="/home/dnesbitt/Test/OpenCapture/ffe/XML" Volital="N" />
+        </CustomProperties>
         <IndexFields>
             <IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />
             <IndexField Name="CUSTOMER_ID" Type="N" Value="" Stickey="Y" />
