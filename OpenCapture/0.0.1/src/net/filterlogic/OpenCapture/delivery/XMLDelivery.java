@@ -17,8 +17,13 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture.delivery;
 
 import net.filterlogic.OpenCapture.Batch;
-import net.filterlogic.OpenCapture.Configuration;
+import net.filterlogic.OpenCapture.CustomProperties;
+import net.filterlogic.OpenCapture.Document;
 import net.filterlogic.OpenCapture.interfaces.IOCDeliveryPlugin;
+
+import net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException;
+import net.filterlogic.io.Path;
+import net.filterlogic.OpenCapture.OpenCaptureCommon;
 
 /**
  *
@@ -31,20 +36,56 @@ public class XMLDelivery implements IOCDeliveryPlugin
     private Batch batch;
     private String description = "XML delivery plugin writes XML index data file and image file to the filesystem.";
     
-
-    public boolean OpenRepository() 
+    private boolean isPdfDelivery=false;
+    private boolean isTiffDelivery=false;
+    private String workingPath = "";
+    private String deliveryPath = "";
+    
+    private String batchID = "";
+    private int docCount = 0;
+    
+    public void OpenRepository() throws OpenCaptureDeliveryException
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try
+        {
+            // check if working and deliery path exist.
+            CustomProperties customProps = batch.getConfigurations().getCustomProperties();
+            String tempPath = System.getProperty("java.io.tmpdir");
+
+            this.isPdfDelivery = customProps.getProperty("OC_PDF_DELIVERY").getValue().equals("Y") ? true : false;
+            this.isTiffDelivery = customProps.getProperty("OC_TIFF_DELIVERY").getValue().equals("Y") ? true : false;
+            this.workingPath = customProps.getProperty("OC_WORKING_PATH").getValue().length()>0 ? customProps.getProperty("OC_WORKING_PATH").getValue() : tempPath;
+            this.deliveryPath = customProps.getProperty("OC_DELIVERY_PATH").getValue();
+
+            // validate delivery path
+            if(!Path.ValidatePath(deliveryPath))
+                throw new OpenCaptureDeliveryException("Invalid delivery path set for XMLDelivery[" + deliveryPath + "]");
+
+            long id = Long.parseLong(batch.getID());
+            batchID = OpenCaptureCommon.getBatchFolderName(id);
+        }
+        catch(OpenCaptureDeliveryException ocde)
+        {
+            throw new OpenCaptureDeliveryException(ocde.toString());
+        }
+
     }
 
-    public boolean CloseRepository() 
+    public void CloseRepository() throws OpenCaptureDeliveryException
     {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean DeliverDocument(Configuration document) 
+    public void DeliverDocument(Document document) throws OpenCaptureDeliveryException
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        try
+        {
+            
+        }
+        catch(Exception e)
+        {
+            
+        }
     }
 
     public String getDescription() 
