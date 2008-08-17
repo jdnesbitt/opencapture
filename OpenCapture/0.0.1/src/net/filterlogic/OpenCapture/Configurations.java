@@ -118,13 +118,25 @@ public class Configurations
      * @param documentName Name of the document.
      * @return Document object.
      */
-    public Configuration getDocument(String documentName)
+    protected Configuration getDocument(String documentName)
     {
         Configuration document = (Configuration)getDocuments().get(documentName);
         
         return document;
     }
 
+    /**
+     * Get the named document.
+     * @param documentName Name of the document.
+     * @return Document object.
+     */
+    public Configuration getConfiguration(String documentName)
+    {
+        Configuration document = (Configuration)getDocuments().get(documentName);
+        
+        return document;
+    }
+    
     /**
      * Get count of documents.
      * @return Count of documents.
@@ -192,10 +204,14 @@ public class Configurations
         return documents.getOrderedNameList();
     }
     
-    public NamedValueList<String, Configuration> getDocuments() {
+    protected NamedValueList<String, Configuration> getDocuments() {
         return documents;
     }
 
+    public NamedValueList<String, Configuration> getConfigurations() {
+        return documents;
+    }
+    
     public void setDocuments(NamedValueList<String, Configuration> documents) {
         this.documents = documents;
     }

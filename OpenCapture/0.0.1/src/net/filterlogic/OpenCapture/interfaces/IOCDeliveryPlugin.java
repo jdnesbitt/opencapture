@@ -51,20 +51,19 @@ public interface IOCDeliveryPlugin
      * module loads the delivery plugin.
      * @return Boolean set to true if connection to repository is opened successfully, else false.
      */
-    public boolean OpenRepository();
+    public void OpenRepository() throws OpenCaptureDeliveryException;
     
     /**
      * Deliver document is called for each document in the batch.  This method is called
      * once for each document in the batch.
-     * @param document Configuration to be delivered.
+     * @param document Document to be delivered.
      * @return Boolean set to true if document delivered successfully, else false.
      */
-    public boolean DeliverDocument(net.filterlogic.OpenCapture.Configuration document);
+    public void DeliverDocument(net.filterlogic.OpenCapture.Document document) throws OpenCaptureDeliveryException;
     
     /**
      * Closes the connection to the repository.  This method is called once when all documents have
      * been delivered or exception occurs.
-     * @return Boolean set to true if connection to repository is closed successfully.
      */
-    public boolean CloseRepository();
+    public void CloseRepository() throws OpenCaptureDeliveryException;
 }
