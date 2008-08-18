@@ -20,6 +20,7 @@ import net.filterlogic.util.xml.XMLParser;
 import net.filterlogic.util.NamedValueList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -137,5 +138,18 @@ public class BatchFields
     public BatchField deleteBatchField(String batchFieldName)
     {
         return batchFields.containsKey(batchFieldName) ? (BatchField)batchFields.remove(batchFieldName) : new BatchField();
+    }
+    
+    /**
+     * Get a list of batch field names.
+     * 
+     * @return List containing list of BatchField name.
+     */
+    public List getNameList()
+    {
+        if(this.batchFields!=null)
+            return this.batchFields.getOrderedNameList();
+        else
+            return new ArrayList<String>();
     }
 }
