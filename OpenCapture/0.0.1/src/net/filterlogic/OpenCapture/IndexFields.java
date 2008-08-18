@@ -20,6 +20,7 @@ import net.filterlogic.util.xml.XMLParser;
 import net.filterlogic.util.NamedValueList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -186,5 +187,18 @@ public class IndexFields
         List list = indexFields.getOrderedNameList();
         
         return index >=0 ? index < list.size() ? (IndexField)indexFields.get((String)list.get(index)) : new IndexField() : new IndexField();
+    }
+    
+    /**
+     * Get a list of index field names.
+     * 
+     * @return List containing IndexField names.
+     */
+    public List getNameList()
+    {
+        if(this.indexFields!=null)
+            return this.indexFields.getOrderedNameList();
+        else
+            return new ArrayList<String>();
     }
 }

@@ -16,9 +16,20 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.io;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
- *
- * @author dnesbitt
+ * The FileAccess class is a set of file io utility methods for performing various
+ * functions.
+ * 
+ * @author Darron Nesbitt
  */
 public class FileAccess 
 {
@@ -47,5 +58,44 @@ public class FileAccess
         boolean success = file.renameTo(new java.io.File(dir, file.getName()));
 
         return success;
+    }
+
+    /**
+     * CopyFile from source to destination.
+     * 
+     * @param srFile Source file name.
+     * @param dtFile Destination file name.
+     * 
+     * @throws java.lang.Exception
+     */
+    public static void CopyFile(String srFile, String dtFile) throws Exception
+    {
+        try
+        {
+            File f1 = new File(srFile);
+            File f2 = new File(dtFile);
+            InputStream in = new FileInputStream(f1);
+
+            OutputStream out = new FileOutputStream(f2);
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0)
+            {
+                out.write(buf, 0, len);
+            }
+
+            in.close();
+            out.close();
+
+        }
+        catch(FileNotFoundException ex)
+        {
+            throw new Exception("File not found: " + ex.toString());
+        }
+        catch(IOException e)
+        {
+            throw new Exception(e.toString());
+        }
     }
 }

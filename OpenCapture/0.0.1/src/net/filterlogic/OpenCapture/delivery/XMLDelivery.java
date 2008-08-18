@@ -16,34 +16,60 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture.delivery;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import net.filterlogic.OpenCapture.Batch;
+import net.filterlogic.OpenCapture.BatchField;
+import net.filterlogic.OpenCapture.IndexField;
 import net.filterlogic.OpenCapture.CustomProperties;
+import net.filterlogic.OpenCapture.Property;
 import net.filterlogic.OpenCapture.Document;
 import net.filterlogic.OpenCapture.interfaces.IOCDeliveryPlugin;
 
 import net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException;
 import net.filterlogic.io.Path;
+import net.filterlogic.io.FileAccess;
 import net.filterlogic.OpenCapture.OpenCaptureCommon;
 
+import java.util.List;
+import net.filterlogic.OpenCapture.OpenCaptureException;
+
 /**
- *
+ * The XMLDelivery plugin writes images and XML index data files to the 
+ * configured destination path.
+ * 
  * @author Darron Nesbitt
  */
 public class XMLDelivery implements IOCDeliveryPlugin
 {
+    // the following 3 values are based on what this plugin supports.
+    private final int DELIVER_TIFF_MULTI = 1;
+    private final int DELIVER_TIFF_SINGLE = 2;
+    private final int DELIVER_PDF = 3;
+    
+    /**
+     * PDF_PROPERTY_NAME comes from knowing the Converter plugin that created the documents.
+     */
+    private final String PDF_PROPERTY_NAME = "OC_PDF";
 
     private String name = "XMLDelivery";
     private Batch batch;
     private String description = "XML delivery plugin writes XML index data file and image file to the filesystem.";
     
-    private boolean isPdfDelivery=false;
-    private boolean isTiffDelivery=false;
+    private int deliveryFileFormat=-1;
     private String workingPath = "";
     private String deliveryPath = "";
     
     private String batchID = "";
     private int docCount = 0;
     
+    private Document document;
+    
+    /**
+     * Open connection to repository.
+     * 
+     * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
+     */
     public void OpenRepository() throws OpenCaptureDeliveryException
     {
         try
@@ -52,14 +78,22 @@ public class XMLDelivery implements IOCDeliveryPlugin
             CustomProperties customProps = batch.getConfigurations().getCustomProperties();
             String tempPath = System.getProperty("java.io.tmpdir");
 
-            this.isPdfDelivery = customProps.getProperty("OC_PDF_DELIVERY").getValue().equals("Y") ? true : false;
-            this.isTiffDelivery = customProps.getProperty("OC_TIFF_DELIVERY").getValue().equals("Y") ? true : false;
+            this.deliveryFileFormat = customProps.getProperty("OC_DELIVERY_FORMAT").getValue().length()>0 ? 
+                Integer.parseInt(customProps.getProperty("OC_DELIVERY_FORMAT").getValue()) : 0;
+            
+            if(deliveryFileFormat == 0)
+                throw new OpenCaptureDeliveryException("Invalid delivery format configured.");
+
             this.workingPath = customProps.getProperty("OC_WORKING_PATH").getValue().length()>0 ? customProps.getProperty("OC_WORKING_PATH").getValue() : tempPath;
             this.deliveryPath = customProps.getProperty("OC_DELIVERY_PATH").getValue();
 
             // validate delivery path
             if(!Path.ValidatePath(deliveryPath))
                 throw new OpenCaptureDeliveryException("Invalid delivery path set for XMLDelivery[" + deliveryPath + "]");
+
+            // add trailing slash to paths
+            this.workingPath = Path.FixPath(this.workingPath);
+            this.deliveryPath = Path.FixPath(this.deliveryPath);
 
             long id = Long.parseLong(batch.getID());
             batchID = OpenCaptureCommon.getBatchFolderName(id);
@@ -71,33 +105,227 @@ public class XMLDelivery implements IOCDeliveryPlugin
 
     }
 
+    /**
+     * Close repository connection.
+     * 
+     * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
+     */
     public void CloseRepository() throws OpenCaptureDeliveryException
     {
     }
 
+    /**
+     * Deliver document and XML index data file.
+     * 
+     * @param document Document to deliver.
+     * 
+     * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
+     */
     public void DeliverDocument(Document document) throws OpenCaptureDeliveryException
     {
-        
+        this.document = document;
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        String filename = batchID;
+
         try
         {
             
+            // write image file
+            String pages = WriteDocument(filename);
+            
+            xml += "<Document>";
+            
+            List<String> batchFieldNames = (List<String>)batch.getBatchFields().getNameList();
+            
+            xml += "<BatchFields>";
+            
+            // get batch fields
+            for(int i=0;i<batchFieldNames.size();i++)
+            {
+                String name = (String)batchFieldNames.get(i);
+                
+                BatchField bf = (BatchField)batch.getBatchFields().getBatchField(name);
+                
+                xml += "<BatchField Name=\"" + name + "\" Value=\"" + bf.getValue() + "\"";
+                
+                bf = null;
+            }
+            
+            xml += "</BatchFields>";
+
+            // get index fields
+            List<String> indexFieldNames = (List<String>)document.getIndexFields().getNameList();
+            
+            xml += "<IndexFields>";
+            
+            // get batch fields
+            for(int i=0;i<batchFieldNames.size();i++)
+            {
+                String name = (String)indexFieldNames.get(i);
+
+                IndexField ndx = (IndexField)document.getIndexFields().getIndexField(name);
+
+                xml += "<IndexField Name=\"" + name + "\" Value=\"" + ndx.getValue() + "\"";
+
+                ndx = null;
+            }
+
+            xml += "</IndexFields>";
+
+            // add pages to xml
+            xml += pages;
+
+            // close document tag
+            xml += "</Document>";
+
+            // write xml file
+            WriteXML(xml, filename + ".xml");
         }
         catch(Exception e)
         {
-            
+            throw new OpenCaptureDeliveryException(e.toString());
+        }
+        finally
+        {
+            ++docCount;
         }
     }
+    
+    /**
+     * Write document to filesystem.
+     * 
+     * @param filename Name of output file.  
+     * 
+     * @return String containing Page tag.
+     * 
+     * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
+     */
+    private String WriteDocument(String filename) throws OpenCaptureDeliveryException
+    {
+        String pagesXML = "<Pages>";
 
+        switch(this.deliveryFileFormat)
+        {
+            case DELIVER_PDF:
+                pagesXML += WritePDF(filename + ".pdf");
+
+                break;
+
+            case DELIVER_TIFF_MULTI:
+                throw new OpenCaptureDeliveryException("Not yet supported!");
+
+            case DELIVER_TIFF_SINGLE:
+                throw new OpenCaptureDeliveryException("Not yet supported!");
+        }
+
+
+        pagesXML += "</Pages>";
+
+        return pagesXML;
+    }
+
+    /**
+     * Write PDF file.
+     * 
+     * @param Name of destination PDF file.
+     * 
+     * @return Name and path to destination PDF.
+     * 
+     * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
+     */
+    private String WritePDF(String filename) throws OpenCaptureDeliveryException
+    {
+        String page = "";
+        // get property containg PDF document info.
+        Property property = document.getCustomProperties().getProperty(PDF_PROPERTY_NAME);
+        
+        // check if valid property object
+        if(property.getName().length()<1)
+            throw new OpenCaptureDeliveryException("PDF document property doesn't exist.");
+        
+        // get pdf filename from value attribute.
+        String pdfName = property.getValue();
+        
+        String sourceDir;
+        
+        try
+        {
+            // set sourdir with PDF dir added.
+            sourceDir = Path.FixPath(batch.getImageFilePath()) + "PDF" + OpenCaptureCommon.PATH_SEPARATOR;
+        }
+        catch(OpenCaptureException oce)
+        {
+            throw new OpenCaptureDeliveryException("WritePDF: Unable to add trailing slash to image path.");
+        }
+
+        try
+        {
+            // copy pdf file to new file.
+            FileAccess.CopyFile(sourceDir + pdfName, this.deliveryPath + filename);
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureDeliveryException("Cannont copy " + sourceDir + pdfName + " to " + this.deliveryPath + filename);
+        }
+        
+        // set page tag
+        page = "<Page Name=\"" + pdfName + "\" />";
+
+        return page;
+    }
+    
+    private void WriteTIFFSingle(String filename)
+    {
+        
+    }
+
+    /**
+     * Write XML to file.
+     * @param xml String containing XML
+     * @param filename Name of XML file without path.
+     */
+    private void WriteXML(String xml,String filename) throws OpenCaptureDeliveryException
+    {
+        try
+        {
+            net.filterlogic.io.ReadWriteTextFile.setContents(new java.io.File(this.deliveryPath + filename), xml);
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            throw new OpenCaptureDeliveryException("FileNoteFound Exception writing XML index file[" + filename + "]");
+        }
+        catch(IOException ioe)
+        {
+            throw new OpenCaptureDeliveryException("IOException writing XML index file[" + filename + "]");
+        }
+    }
+    
+    /**
+     * Get delivery plugin description
+     * 
+     * @return String containing description.
+     */
     public String getDescription() 
     {
         return description;
     }
 
+    /**
+     * Get plugin name.
+     * 
+     * @return String containing plugin name.
+     */
     public String getName() 
     {
         return name;
     }
 
+    /**
+     * Set batch object in delivery plugin.
+     * 
+     * @param batch Batch object to set.
+     */
     public void setBatch(Batch batch) 
     {
         this.batch = batch;
