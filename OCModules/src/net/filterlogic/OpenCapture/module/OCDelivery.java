@@ -28,6 +28,7 @@ import java.util.List;
 import java.io.FileInputStream;
 import java.io.File;
 import net.filterlogic.OpenCapture.interfaces.IOCDeliveryPlugin;
+import net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException;
 
 /**
  *
@@ -98,8 +99,23 @@ public class OCDelivery
                         // create converter object.
                         IOCDeliveryPlugin deliveryPlugin = (IOCDeliveryPlugin)c.newInstance();
 
-                        // TODO: Add module code here to process batch
+                        // set batch
+                        deliveryPlugin.setBatch(batch);
+
+                        // call open respository
+                        deliveryPlugin.OpenRepository();
                         
+                        //loop through documents.
+                        for(int i=0;i<batch.getDocuments().Count();i++)
+                        {
+                            Document document = batch.getDocuments().getDocument(i);
+                            
+                            // deliver document
+                            deliveryPlugin.DeliverDocument(document);
+                        }
+
+                        // close repository
+                        deliveryPlugin.CloseRepository();
 
                         // close batch
                         batch.CloseBatch();
@@ -110,7 +126,13 @@ public class OCDelivery
                             batch = null;
                     }
                 }
-                catch(Exception e)
+                catch(Exception ex)
+                {
+                    myLogger.error(ex.toString());
+                    batch.CloseBatch(true, ex.toString());
+
+                }
+                catch(OpenCaptureDeliveryException e)
                 {
                     myLogger.error(e.toString());
                     batch.CloseBatch(true, e.toString());

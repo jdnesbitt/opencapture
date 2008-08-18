@@ -2,9 +2,8 @@
 <BatchClass Name="FFE Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/ffe/Images" version="0.0.1" Priority="7">
     <Configuration>
 	<CustomProperties>
-            <Property Name="OC_TIFF_DELIVERY" Value="N" Volital="N" />
-            <Property Name="OC_PDF_DELIVERY" Value="Y" Volital="N" />
-            <Property Name="OC_WORKING_PATH" Value="/tmp" Volital="N" />
+            <Property Name="OC_DELIVERY_FORMAT" Value="2" Volital="N" />
+           <Property Name="OC_WORKING_PATH" Value="/tmp" Volital="N" />
             <Property Name="OC_DELIVERY_PATH" Value="/home/dnesbitt/Test/OpenCapture/ffe/XML" Volital="N" />
         </CustomProperties>
         <IndexFields>
@@ -17,7 +16,7 @@
             <Queue Name="OCImport" ID="1" CustomPlugin="" />
             <Queue Name="OCCognizance" ID="2" CustomPlugin="" />
 	    <Queue Name="OCConverter" ID="4" CustomPlugin="PDF" />
-            <Queue Name="OCDelivery" ID="3" CustomPlugin="XMLDelivery" >
+            <Queue Name="OCDelivery" ID="3" CustomPlugin="XMLDelivery" />
                 <CustomData Name="" Value="" />
             </Queue>
         </Queues>
