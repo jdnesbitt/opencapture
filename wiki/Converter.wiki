@@ -13,7 +13,8 @@ When the Converter module processes a batch, the CustomPluginID located in the B
     <Queue Name="OCImport" ID="1" CustomPlugin=""/>
     <Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
     <Queue Name="OCConverter" ID="4" CustomPlugin="PDF"/>
-    <Queue Name="OCDelivery" ID="3" CustomPlugin="XMLDelivery"/></Queues>
+    <Queue Name="OCDelivery" ID="3" CustomPlugin="XMLDelivery"/>
+</Queues>
 }}}
 
 Notice the Converter plugin ID is PDF.  The plugin class is loaded from the OpenCaptureConfigurationFile.  The Converter plugins are located in the ConverterPlugins section.  
