@@ -17,6 +17,6 @@ When the Converter module processes a batch, the CustomPluginID located in the B
 </Queues>
 }}}
 
-Notice the Converter plugin ID is PDF.  The plugin class is loaded from the OpenCaptureConfigurationFile.  The Converter plugins are located in the ConverterPlugins section.  
+Notice the Converter plugin ID is PDF.  The plugin class is loaded from the OpenCaptureConfigurationFile.  The Converter plugins are located in the [http://code.google.com/p/opencapture/w/edit/HowToWriteConverterPlugins ConverterPlugins] section.  
 
 Once the Converter finishes processing a batch, it is closed and the converted documents are located in the batch image directory in a folder with the same name as the Converter's plugin ID.
