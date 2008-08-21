@@ -10,7 +10,7 @@ OpenCapture is a document capture system.
 OpenCapture consists of the following modules:
   * [Import] module.
   * [Cognizance] module.
-  * Converter module.
+  * [Converter] module.
   * Delivery module.
 
 The first release is planned to be used as pass through system.  As there is currently no administration interface all configurations are done in XML files.
