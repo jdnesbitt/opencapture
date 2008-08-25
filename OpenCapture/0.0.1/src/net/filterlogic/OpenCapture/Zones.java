@@ -58,7 +58,7 @@ public class Zones
                 String ft = (String)map.get("FieldType");
 
                 // create and fill ndx field object
-                Zone zone = new Zone(zoneName,type,Integer.parseInt(x),Integer.parseInt(y),Integer.parseInt(h),Integer.parseInt(w),Byte.parseByte(min),ft);
+                Zone zone = new Zone(zoneName,type,Integer.parseInt(x),Integer.parseInt(y),Integer.parseInt(w),Integer.parseInt(h),Byte.parseByte(min),ft);
 
                 // add ndx field to hash
                 zones.put(zoneName, zone);
