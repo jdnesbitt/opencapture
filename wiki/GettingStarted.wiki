@@ -13,7 +13,7 @@ Extract to folder of choice.  The rest of filesystem is there.
 
 Need to change settings in the following files:
 
-config\carrierfiles.xml - This is an example batch class.  To use change BatchClass ImagePath attribute to point to location where source images will be imported into OC.
+config\carrierfiles.xml - This is an example batch class.  To use change BatchClass ImagePath attribute to point to location where OpenCapture will store images in the system.
 
 conf\log4j-ocimport.properties - There is a lo4j file for each module.  Change log4j.appender.myAppender.File setting to point to location log should be written to.  Include log file name.
 
