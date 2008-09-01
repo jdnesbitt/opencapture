@@ -45,6 +45,7 @@ Java persistence classes are used for database access.  Be sure to change the pe
       <property name="toplink.jdbc.password" value="<dbuser password>"/>
       <property name="toplink.jdbc.url" value="jdbc:derby://localhost:1527/OpenCapture"/>
       <property name="toplink.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+      <!--<property name="toplink.ddl-generation" value="create-tables"/> -->
     </properties>
 }}}
 
