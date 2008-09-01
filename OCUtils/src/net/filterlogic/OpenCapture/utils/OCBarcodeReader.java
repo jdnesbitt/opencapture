@@ -36,7 +36,7 @@ public class OCBarcodeReader
 
         try
         {
-            Batch batch = new Batch();
+            Batch batch = new Batch(false);
 
             File file = new File(fileName);
             BufferedImage image = ToTIFF.loadTIFF(file, page);
@@ -52,9 +52,9 @@ public class OCBarcodeReader
             // set image object in reader
             zr.setImage(image);
             byte min=0;
-            
+
             Zone zone = new Zone("FORMID", idMethod, x, y, w, h, min, "IndxField");
-            
+
             try
             {
                 zoneValue = zr.ReadZone(zone);
