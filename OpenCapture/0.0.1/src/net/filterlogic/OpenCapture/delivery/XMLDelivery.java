@@ -50,7 +50,7 @@ public class XMLDelivery implements IOCDeliveryPlugin
     /**
      * PDF_PROPERTY_NAME comes from knowing the Converter plugin that created the documents.
      */
-    private final String PDF_PROPERTY_NAME = "OC_PDF";
+    private final String PDF_PROPERTY_NAME = "PDF";
 
     private String name = "XMLDelivery";
     private Batch batch;
@@ -94,6 +94,7 @@ public class XMLDelivery implements IOCDeliveryPlugin
             // add trailing slash to paths
             this.workingPath = Path.FixPath(this.workingPath);
             this.deliveryPath = Path.FixPath(this.deliveryPath);
+            
 
             long id = Long.parseLong(batch.getID());
             batchID = OpenCaptureCommon.getBatchFolderName(id);
@@ -126,20 +127,20 @@ public class XMLDelivery implements IOCDeliveryPlugin
         this.document = document;
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String filename = batchID;
+        String filename = String.valueOf(document.getNumber());
 
         try
         {
             
             // write image file
-            String pages = WriteDocument(filename);
+            String pages = WriteDocument();
             
             xml += "<Document>";
             
             List<String> batchFieldNames = (List<String>)batch.getBatchFields().getNameList();
             
             xml += "<BatchFields>";
-            
+            //xml += batch.getBatchFields().getXML();
             // get batch fields
             for(int i=0;i<batchFieldNames.size();i++)
             {
@@ -147,7 +148,7 @@ public class XMLDelivery implements IOCDeliveryPlugin
                 
                 BatchField bf = (BatchField)batch.getBatchFields().getBatchField(name);
                 
-                xml += "<BatchField Name=\"" + name + "\" Value=\"" + bf.getValue() + "\"";
+                xml += "<BatchField Name=\"" + name + "\" Value=\"" + bf.getValue() + "\" />";
                 
                 bf = null;
             }
@@ -158,15 +159,16 @@ public class XMLDelivery implements IOCDeliveryPlugin
             List<String> indexFieldNames = (List<String>)document.getIndexFields().getNameList();
             
             xml += "<IndexFields>";
-            
+            //xml += document.getIndexFields().getXML();
+
             // get batch fields
-            for(int i=0;i<batchFieldNames.size();i++)
+            for(int i=0;i<indexFieldNames.size();i++)
             {
                 String name = (String)indexFieldNames.get(i);
 
                 IndexField ndx = (IndexField)document.getIndexFields().getIndexField(name);
 
-                xml += "<IndexField Name=\"" + name + "\" Value=\"" + ndx.getValue() + "\"";
+                xml += "<IndexField Name=\"" + name + "\" Value=\"" + ndx.getValue() + "\" />";
 
                 ndx = null;
             }
@@ -201,22 +203,22 @@ public class XMLDelivery implements IOCDeliveryPlugin
      * 
      * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
      */
-    private String WriteDocument(String filename) throws OpenCaptureDeliveryException
+    private String WriteDocument() throws OpenCaptureDeliveryException
     {
         String pagesXML = "<Pages>";
 
         switch(this.deliveryFileFormat)
         {
             case DELIVER_PDF:
-                pagesXML += WritePDF(filename + ".pdf");
+                pagesXML += WritePDF();
 
                 break;
 
             case DELIVER_TIFF_MULTI:
-                throw new OpenCaptureDeliveryException("Not yet supported!");
+                throw new OpenCaptureDeliveryException("Delivery of multi-page TIFFs not yet supported!");
 
             case DELIVER_TIFF_SINGLE:
-                throw new OpenCaptureDeliveryException("Not yet supported!");
+                throw new OpenCaptureDeliveryException("Delivery of single page TIFFs not yet supported!");
         }
 
 
@@ -234,7 +236,7 @@ public class XMLDelivery implements IOCDeliveryPlugin
      * 
      * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
      */
-    private String WritePDF(String filename) throws OpenCaptureDeliveryException
+    private String WritePDF() throws OpenCaptureDeliveryException
     {
         String page = "";
         // get property containg PDF document info.
@@ -261,12 +263,19 @@ public class XMLDelivery implements IOCDeliveryPlugin
 
         try
         {
+            // create output folder
+            if(!Path.ValidatePath(this.deliveryPath + this.batchID))
+                if(!Path.createPath(this.deliveryPath + this.batchID))
+                    throw new OpenCaptureDeliveryException("Unable to create delivery directory[" + this.deliveryPath + this.batchID + "]");
+            
+            String dPath = Path.FixPath(this.deliveryPath + this.batchID) + pdfName;
+
             // copy pdf file to new file.
-            FileAccess.CopyFile(sourceDir + pdfName, this.deliveryPath + filename);
+            FileAccess.CopyFile(sourceDir + pdfName, dPath);
         }
         catch(Exception e)
         {
-            throw new OpenCaptureDeliveryException("Cannont copy " + sourceDir + pdfName + " to " + this.deliveryPath + filename);
+            throw new OpenCaptureDeliveryException("Cannont copy " + sourceDir + pdfName + " to " + this.deliveryPath + pdfName);
         }
         
         // set page tag
@@ -289,7 +298,9 @@ public class XMLDelivery implements IOCDeliveryPlugin
     {
         try
         {
-            net.filterlogic.io.ReadWriteTextFile.setContents(new java.io.File(this.deliveryPath + filename), xml);
+            String dPath = Path.FixPath(this.deliveryPath + this.batchID) + filename;
+
+            net.filterlogic.io.ReadWriteTextFile.setContents(new java.io.File(dPath), xml);
         }
         catch(FileNotFoundException fnfe)
         {

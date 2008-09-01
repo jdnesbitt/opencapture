@@ -70,7 +70,8 @@ public class ReadWriteTextFile {
   * @throws IOException if problem encountered during write.
   */
   static public void setContents(File aFile, String aContents)
-                                 throws FileNotFoundException, IOException {
+                                 throws FileNotFoundException, IOException 
+  {
     if (aFile == null) {
       throw new IllegalArgumentException("File should not be null.");
     }
@@ -90,6 +91,35 @@ public class ReadWriteTextFile {
       //use buffering
       //FileWriter always assumes default encoding is OK!
       output = new BufferedWriter( new FileWriter(aFile) );
+      output.write( aContents );
+    }
+    finally {
+      //flush and close both "output" and its underlying FileWriter
+      if (output != null) output.close();
+    }
+  }
+  
+  static public void appendContents(File aFile, String aContents)
+                                 throws FileNotFoundException, IOException {
+    if (aFile == null) {
+      throw new IllegalArgumentException("File should not be null.");
+    }
+//    if (!aFile.exists()) {
+//      throw new FileNotFoundException ("File does not exist: " + aFile);
+//    }
+    if (aFile.isDirectory()) {
+      throw new IllegalArgumentException("Should not be a directory: " + aFile);
+    }
+    if (aFile.exists() && !aFile.canWrite()) {
+      throw new IllegalArgumentException("File cannot be written: " + aFile);
+    }
+    
+    //declared here only to make visible to finally clause; generic reference
+    Writer output = null;
+    try {
+      //use buffering
+      //FileWriter always assumes default encoding is OK!
+      output = new BufferedWriter( new FileWriter(aFile,true) );
       output.write( aContents );
     }
     finally {
