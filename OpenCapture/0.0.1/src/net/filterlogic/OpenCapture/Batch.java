@@ -21,6 +21,7 @@ import javax.persistence.Query;
 import net.filterlogic.OpenCapture.data.DBManager;
 import net.filterlogic.util.xml.XMLParser;
 import net.filterlogic.util.DateUtil;
+import net.filterlogic.io.Path;
 
 /**
  * The Batch class represents a batch within the OpenCapture.  When a batch is loaded
@@ -48,7 +49,7 @@ public class Batch
     private Configurations configurations = null;
     private XMLParser xmlParser = null;    
 
-    private DBManager dbm = new DBManager();
+    private DBManager dbm = null;
 
     private String batchClassXmlFile = "";
     private boolean hasException = false;
@@ -67,16 +68,93 @@ public class Batch
     
     private long batchID = 0;
     
-    private boolean fsLocked = false;
-    private boolean dbLocked = false;
+    //private boolean fsLocked = false;
+    //private boolean dbLocked = false;
    
     private String moduleID = "";
 
     public Batch() throws OpenCaptureException
     {
+        dbm = new DBManager();;
+
         logging = new Logging();
 
         ocConfig = new OpenCaptureConfig();
+    }
+
+    /**
+     * Use this constructor when OC configuration and batch class configuration only is needed.
+     * The OCBR utility uses this constructor as database connectivity isn't required.  Only access
+     * to the OC config and batch class objects are required.
+     * @param BatchClass Name of batch class to load.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public Batch(String BatchClass) throws OpenCaptureException
+    {
+        // load oc config object
+        ocConfig = new OpenCaptureConfig();        
+
+        // load batch class object
+        loadBatchClass(batchClassName);
+    }
+    
+    public Batch(boolean useDBM) throws OpenCaptureException
+    {
+        if(useDBM)
+        {
+            dbm = new DBManager();;
+
+            logging = new Logging();           
+        }
+        
+        // load oc config object
+        ocConfig = new OpenCaptureConfig();        
+        
+    }
+    
+    /**
+     * Load batch class
+     * @param batchClassName Name of batch class to load.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    private void loadBatchClass(String batchClassName) throws OpenCaptureException
+    {
+            // set batch class xml file name.  this is the batch class template file.
+            this.batchClassName = batchClassName;
+            this.batchClassXmlFile = OpenCaptureCommon.getBatchClassXmlFile(batchClassName);
+
+            try
+            {
+                // instantiate instance
+                xmlParser = new XMLParser();
+
+                // load new copy of batch class setup xml
+                xmlParser.loadDocument(this.batchClassXmlFile);
+            }
+            catch(Exception e)
+            {
+                throw new OpenCaptureException("Failed to load new copy of batch class[" + this.batchClassXmlFile + "].\n" + e.toString());
+            }                
+
+            // create batch class object
+            batchClass = new BatchClass(xmlParser);
+    }
+
+    /**
+     * Delete active batch.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void DeleteBatch() throws OpenCaptureException
+    {
+        try
+        {
+            deleteBatch(this.batchID);
+        }
+        catch(OpenCaptureException oe)
+        {
+            logException(oe.toString());
+            throw new OpenCaptureException(oe.toString());
+        }
     }
     
     /**
@@ -127,15 +205,16 @@ public class Batch
             this.setID(String.valueOf(id));
 
             // set batch xml file name which is also the folder name
-            this.rootPath = OpenCaptureCommon.getRootPath();
+            //this.rootPath = OpenCaptureCommon.getRootPath();
 
             // set batch class xml file name.  this is the batch class template file.
-            this.batchClassXmlFile = OpenCaptureCommon.getBatchClassXmlFile(batchClassName);
+            //this.batchClassXmlFile = OpenCaptureCommon.getBatchClassXmlFile(batchClassName);
 
             try
             {
                 // load new copy of batch class setup xml
-                xmlParser.loadDocument(this.batchClassXmlFile);
+                //xmlParser.loadDocument(this.batchClassXmlFile);
+                loadBatchClass(batchClassName);
             }
             catch(Exception e)
             {
@@ -143,7 +222,7 @@ public class Batch
             }                
 
             // create batch class object
-            batchClass = new BatchClass(xmlParser);
+            //batchClass = new BatchClass(xmlParser);
 
             // save batch to Batch xml folder
             String batchFolderID = OpenCaptureCommon.toHex8(id);
@@ -330,14 +409,11 @@ public class Batch
             // if no more queues, write output log
             if(configurations.getQueues().getCurrentQueue().getQueueName().length()<1)
             {
-                // log batch
-                OpenCaptureCommon.writeBatchLog(this.logging);
-
                 // remove lock file
                 OpenCaptureCommon.unlockBatchXmlFile(batchID);
 
-                // delete batch 
-                dbm.deleteBatch(batchID);
+                // delete batch
+                deleteBatch(batchID);
             }
             else
             {
@@ -399,14 +475,11 @@ public class Batch
             // if no more queues, write output log
             if(configurations.getQueues().getCurrentQueue().getQueueName().length()<1)
             {
-                // log batch
-                OpenCaptureCommon.writeBatchLog(this.logging);
-
                 // remove lock file
                 OpenCaptureCommon.unlockBatchXmlFile(batchID);
-
-                // delete batch 
-                dbm.deleteBatch(batchID);
+                
+                // delete batch
+                deleteBatch(batchID);
             }
             else
             {
@@ -431,8 +504,10 @@ public class Batch
         {
             dbm.CloseConnections();
 
-            // save the batch
-            saveBatch();
+            // if valid next queue exists, save batch
+            if(configurations.getQueues().getCurrentQueue().getQueueName().length()>0)
+                // save the batch
+                saveBatch();
         }
     }
 
@@ -595,6 +670,43 @@ public class Batch
         return pageName;
     }
 
+    /**
+     * Delete batch basedon specified batch id.
+     * @param batchID ID of batch to delete.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    private void deleteBatch(long batchID) throws OpenCaptureException
+    {
+        String batchFilePath = "";
+        String imageFilePath = "";
+
+        try
+        {
+            // delete batch 
+            dbm.deleteBatch(batchID);
+
+            // log batch
+            OpenCaptureCommon.writeBatchLog(this);
+
+            // get batch xml folder path
+            batchFilePath = OpenCaptureCommon.getBatchFilePath(batchID);
+            
+            // delete batch folder and contents
+            boolean k = Path.deleteDir(new java.io.File(batchFilePath));
+            
+            // get image path
+            imageFilePath = getImageFilePath();
+            
+            // delete images
+            k = Path.deleteDir(new java.io.File(imageFilePath));
+
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Error deleting batch [" + batchID + "].  " + e.toString());
+        }
+    }
+    
     /**
      * Delete loose page from batch.
      * @param pageName Name of loose page.

@@ -65,7 +65,7 @@ public class Document
             setIndexFields(new IndexFields(batch, xPath));
 
             // get custom config properties
-            xPath = OpenCaptureCommon.CUSTOM_DOCUMENT_PROPERTIES;
+            xPath = OpenCaptureCommon.CUSTOM_DOCUMENT_PROPERTIES.replaceAll("<1>",documentName);
             setCustomProperties(new CustomProperties(batch, xPath));
 
             // get pages
@@ -97,7 +97,7 @@ public class Document
             setIndexFields(new IndexFields(batch, xPath));
 
             // get custom config properties
-            xPath = OpenCaptureCommon.CUSTOM_DOCUMENT_PROPERTIES;
+            xPath = OpenCaptureCommon.CUSTOM_DOCUMENT_PROPERTIES.replaceAll("<1>",docNumber);
             setCustomProperties(new CustomProperties(batch, xPath));
 
             // get pages

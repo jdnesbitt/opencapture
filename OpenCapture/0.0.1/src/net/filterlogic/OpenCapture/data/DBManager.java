@@ -56,18 +56,26 @@ public class DBManager
     public void deleteBatch(long batchID) throws OpenCaptureException
     {
 
+        EntityTransaction tx = null;
+
         try
         {
             entMgr = entMgrFac.createEntityManager();
+            
+            tx = entMgr.getTransaction();
+            tx.begin();
 
             qry = entMgr.createNamedQuery("Batches.removeBatchByBatchID");
             
             qry.setParameter("batchId", batchID);
 
             qry.executeUpdate();
+            
+            tx.commit();
         }
         catch(Exception e)
         {
+            tx.rollback();
             throw new OpenCaptureException("Unable to delete batch! " + e.toString());
         }
         finally

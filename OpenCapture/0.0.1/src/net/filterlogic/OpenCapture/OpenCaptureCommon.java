@@ -26,6 +26,7 @@ import net.filterlogic.util.DateUtil;
 
 import java.io.FilenameFilter;
 import java.io.FileFilter;
+import net.filterlogic.util.xml.XMLParser;
 
 class FileNameFilter implements FilenameFilter 
 {
@@ -87,8 +88,8 @@ public class OpenCaptureCommon
     public static String LOOSE_PAGES = "//BatchClass/Batch/Pages/Page";
     public static String LOOSE_PAGE = "//BatchClass/Batch/Pages/Page[@Name=\"<1>\"]";
 
-    public static String CUSTOM_DOCUMENT_PROPERTIES = "//BatchClass/Batch/Documents/CustomProperties/Property";
-    public static String CUSTOM_DOCUMENT_PROPERTY = "//BatchClass/Batch/Documents/CustomProperties/Property[@Name=\"<1>\"]";
+    public static String CUSTOM_DOCUMENT_PROPERTIES = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/CustomProperties/Property";
+    public static String CUSTOM_DOCUMENT_PROPERTY = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/CustomProperties/Property[@Name=\"<1>\"]";
     
     // Document tag that contains actual index data
     public static String PAGES = "//BatchClass/Batch/Documents/Document[@Number=\"<1>\"]/Pages/Page";
@@ -339,21 +340,45 @@ public class OpenCaptureCommon
      * 
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    protected static void writeBatchLog(Logging logging) throws OpenCaptureException
+    protected static void writeBatchLog(Batch batch) throws OpenCaptureException
     {
+        XMLParser xml = new XMLParser();
+
+        Logging logging = batch.getLogging();
+
         List logs = logging.getLogs();
-        String logEntries = "";
+        int pageCount = 0;
+        String logEntries = "<Batch Name=\"" + batch.getBatchName() + 
+                "\" CreateDateTime=\"" + batch.getCreationDateTime() + 
+                "\" CreateUser=\"" + batch.getCreateUser() + "\">";
+
+        logEntries += "<Documents Count=\"" + batch.getDocuments().Count() + "\" />";
+        
+        try
+        {
+        // get page count
+        for(int i=1;i<=batch.getDocuments().Count();i++)
+            // TODO:  fix NPE here
+            pageCount += batch.getDocuments().getDocument(i).getPages().Count();
+        }
+        catch(Exception e)
+        {
+            // do nothing
+        }
+
+        // add loose page count
+        pageCount += batch.getLoosePageCount();
+
+        logEntries += "<Pages Count=\"" + pageCount + "\" />";
+
+        logEntries += "<Logging>";
+
         String rootPath = "";
 
-        for(int i=0;i<logs.size();i++)
-        {
-            Log log = (Log)logs.get(i);
-            
-            if(logEntries.length()>0)
-                logEntries += "\n";
+        logEntries += batch.getLogging().getXML();
 
-            logEntries += log.getBatchLogEntry();
-        }
+        logEntries += "</Logging>";
+        logEntries += "</Batch>";
 
         rootPath = getRootPath() + LOG_FOLDER;
 
@@ -363,11 +388,11 @@ public class OpenCaptureCommon
         ReadWriteTextFile rwt = new ReadWriteTextFile();
         String today = DateUtil.getDateTime("MMyyyy");
 
-        File file = new File(rootPath + PATH_SEPARATOR + today + ".log");
+        File file = new File(rootPath + PATH_SEPARATOR + today + ".log.xml");
 
         try
         {
-            rwt.setContents(file, logEntries);
+            rwt.appendContents(file, logEntries);
         }
         catch(Exception e)
         {

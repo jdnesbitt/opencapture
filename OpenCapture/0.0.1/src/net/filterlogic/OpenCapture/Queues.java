@@ -105,6 +105,8 @@ public class Queues
                         // leave for loop
                         break;
                     }
+                    else
+                        this.setCurrentQueue("");
                 }
             }
         }
@@ -166,6 +168,11 @@ public class Queues
         
         try
         {
+            // if queue empty, meaning batch complete, then return empty q object.
+            if(this.currentQueue.length()<1)
+                return new Queue();
+            
+            // loop through queue objects to find correct queue.
             for(int i=0;i<queues.size();i++)
             {
                 queue = (Queue)queues.get(i);
