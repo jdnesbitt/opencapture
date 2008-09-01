@@ -92,8 +92,8 @@ public class OCDelivery
                         myLogger.info("NextBatch: " + batch.getBatchName());
 
                         // load converter plugin
-                        String converterID = batch.getConfigurations().getQueues().getCurrentQueue().getPluginID();
-                        String className = batch.getOcConfig().getConverterClass(converterID);
+                        String deliveryID = batch.getConfigurations().getQueues().getCurrentQueue().getPluginID();
+                        String className = batch.getOcConfig().getDeliveryClass(deliveryID);
                         // load converter plugin
                         Class c = Class.forName(className);
                         // create converter object.
@@ -104,9 +104,9 @@ public class OCDelivery
 
                         // call open respository
                         deliveryPlugin.OpenRepository();
-                        
+
                         //loop through documents.
-                        for(int i=0;i<batch.getDocuments().Count();i++)
+                        for(int i=1;i<=batch.getDocuments().Count();i++)
                         {
                             Document document = batch.getDocuments().getDocument(i);
                             
@@ -143,6 +143,30 @@ public class OCDelivery
         catch(OpenCaptureException oce2)
         {
             myLogger.error(oce2.toString());
+        }
+    }
+    
+    public static void main(String[] args) 
+    {
+        try
+        {
+            if(args.length<1)
+            {
+                System.out.println("Must pass path to configuration file.");
+                System.exit(0);
+            }
+
+            OCDelivery ocDelivery = new OCDelivery(args[0]);
+
+            ocDelivery.ProcessBatches();
+        }
+        catch(OpenCaptureException oce)
+        {
+            myLogger.fatal(oce.toString());
+        }
+        catch(Exception e)
+        {
+            myLogger.fatal(e.toString());
         }
     }
 }
