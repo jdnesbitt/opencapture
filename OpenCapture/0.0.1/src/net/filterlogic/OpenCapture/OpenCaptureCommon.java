@@ -350,9 +350,9 @@ public class OpenCaptureCommon
         int pageCount = 0;
         String logEntries = "<Batch Name=\"" + batch.getBatchName() + 
                 "\" CreateDateTime=\"" + batch.getCreationDateTime() + 
-                "\" CreateUser=\"" + batch.getCreateUser() + "\">";
+                "\" CreateUser=\"" + batch.getCreateUser() + "\">\n";
 
-        logEntries += "<Documents Count=\"" + batch.getDocuments().Count() + "\" />";
+        logEntries += "<Documents Count=\"" + batch.getDocuments().Count() + "\" />\n";
         
         try
         {
@@ -369,16 +369,16 @@ public class OpenCaptureCommon
         // add loose page count
         pageCount += batch.getLoosePageCount();
 
-        logEntries += "<Pages Count=\"" + pageCount + "\" />";
+        logEntries += "<Pages Count=\"" + pageCount + "\" />\n";
 
-        logEntries += "<Logging>";
+        logEntries += "<Logging>\n";
 
         String rootPath = "";
 
         logEntries += batch.getLogging().getXML();
 
-        logEntries += "</Logging>";
-        logEntries += "</Batch>";
+        logEntries += "</Logging>\n";
+        logEntries += "</Batch>\n";
 
         rootPath = getRootPath() + LOG_FOLDER;
 
