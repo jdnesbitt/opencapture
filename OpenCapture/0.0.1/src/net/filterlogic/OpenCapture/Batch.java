@@ -726,7 +726,7 @@ public class Batch
             // create batch xml.
             batchXML += this.batchClass.getXML();
             batchXML += this.configurations.getXML();
-            batchXML += "<Batch Name=\"" + this.BatchName + "\" ID=\"" + this.ID + "\" ScanUser=\"" + this.CreateUser + "\">\n";
+            batchXML += "<Batch Name=\"" + this.BatchName + "\" CreateDateTime=\"" + this.CreationDateTime + "\" ID=\"" + this.ID + "\" ScanUser=\"" + this.CreateUser + "\">\n";
             batchXML += "<BatchFields>\n";
             batchXML += this.getBatchFields().getXML();
             batchXML += "</BatchFields>\n";
