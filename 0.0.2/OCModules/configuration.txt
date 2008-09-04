@@ -1,0 +1,58 @@
+Unzip.
+
+Outter folder is OCM
+
+rest of filesystem is there.  Look at the cmd files to see how to start.
+
+Need to change settings in the following files:
+
+config\ffecarrierfiles.xml - Change ImagePath attribute to point to location where images will be housed when imported into OC.
+
+config\log4j-occognizance.properties - Change log4j.appender.myAppender.File setting to point to location cognizance log should be written to.  Include log file name.
+
+conf\log4j-ocimport.properties - Change log4j.appender.myAppender.File setting to point to location import log should be written to.  Include log file name.
+
+conf\occognizance.properties - Change the following settings:
+
+    oc_home     - Point to location OC main folder (Zip contains OCM folder)
+
+    log4j           - Path and name of cognizance log4j properties file.
+
+    archivepath - Path where original images that have been imported will be moved to.
+
+    polldir         - Path to directory that contains images to be imported into oc.
+
+    batchclass   - Name of batch class that images being imported will be associated with.  Leave alone.  
+
+                       This is the name of the batch class xml file in the conf directory.  It will have the same
+
+                       batch class without spaces.
+
+    importfilesonly - set to yes to import only image files (only tiffs).
+
+    importtrigger   - extension to trigger on.  Signifies image is ready to import.  Not functional in OC 0.0.1
+
+
+conf\ocimport.properties - Change the following settings:
+
+ 
+
+    oc_home     - Point to location OC main folder (Zip contains OCM folder)
+
+    log4j           - Path and name of import log4j properties file.
+
+    archivepath - Path where original images that have been imported will be moved to.
+
+    polldir         - Path to directory that contains images to be imported into oc.
+
+    batchclass   - Name of batch class that images being imported will be associated with.  Leave alone.  
+
+                       This is the name of the batch class xml file in the conf directory.  It will have the same
+
+                       batch class without spaces.
+
+    importfilesonly - set to yes to import only image files (only tiffs).
+
+    importtrigger   - extension to trigger on.  Signifies image is ready to import.  Not functional in OC 0.0.1
+
+ 
