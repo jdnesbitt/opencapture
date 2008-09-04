@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BatchClass Name="" ImagePath="" version="">
+	<Batch Name="" ID="" CreateDateTime="" ScanUser="">
+		<BatchFields>
+			<BatchField Name="" Type="" Value=""/>
+		</BatchFields>
+		<Documents>
+			<Document Name="">
+				<IndexFields>
+					<IndexField Name="" Type="" Value="" Stickey=""/>
+				</IndexFields>
+				<Pages>
+					<Page Name=""/>
+				</Pages>
+				<Zones>
+					<Zone Name="" Type="" X="" Y="" W="" H="" FieldType="" FieldName=""/>
+				</Zones>
+				<Queues CurrentQueue="">
+					<Queue Name="" ID="" CustomPlugin="" />
+				</Queues>
+				<Logging>
+					<Log QueueName="" StartDateTime="" EndDateTime="" Station="" Message="" />
+				</Logging>
+			</Document>
+		</Documents>
+	</Batch>
+</BatchClass>
