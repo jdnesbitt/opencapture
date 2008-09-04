@@ -144,4 +144,28 @@ public class OCModuleTemplate
             myLogger.error(oce2.toString());
         }
     }
+    
+    public static void main(String[] args) 
+    {
+        try
+        {
+            if(args.length<1)
+            {
+                System.out.println("Must pass path to configuration file.");
+                System.exit(0);
+            }
+
+            OCModuleTemplate ocDelivery = new OCModuleTemplate(args[0]);
+
+            ocDelivery.ProcessBatches();
+        }
+        catch(OpenCaptureException oce)
+        {
+            myLogger.fatal(oce.toString());
+        }
+        catch(Exception e)
+        {
+            myLogger.fatal(e.toString());
+        }
+    }
 }
