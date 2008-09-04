@@ -1,0 +1,4 @@
+DROP TABLE lkp_batchclass_queues
+DROP TABLE batches
+DROP TABLE batch_class
+DROP TABLE queues

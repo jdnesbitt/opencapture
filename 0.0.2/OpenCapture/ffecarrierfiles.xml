@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BatchClass Name="FFE Carrier Files" ImagePath="C:\Temp" version="0.0.1">
+	<Batch Name="" ID="" CreateDateTime="" ScanUser="">
+		<BatchFields>
+			<BatchField Name="" Type="S" Value=""/>
+		</BatchFields>
+		<BatchDataFields>
+			<BatchDataField Name="" Value=""/>
+		</BatchDataFields>
+		<Queues CurrentQueue="">
+			<Queue Name="OCImport" ID="1" CustomPlugin=""/>
+			<Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
+			<Queue Name="OCDelivery" ID="3" CustomPlugin="com.ffe.OpenCapture.alfresco.delivery"/>
+		</Queues>
+		<Logging>
+			<Log QueueName="" StartDateTime="" EndDateTime="" Host="" Message=""/>
+		</Logging>
+		<Documents>
+			<Document Name="Carrier Header" FormID="HDR">
+				<IndexDataFields>
+					<IndexDataField Name="CARRIER" Value="" Stickey="Y"/>
+				</IndexDataFields>
+				<Pages>
+					<Page Name=""/>
+				</Pages>
+				<IndexFields>
+					<IndexField Name="CARRIER" Type="S" Value="" Stickey="Y"/>
+				</IndexFields>
+				<Zones>
+					<Zone Name="FORMTYPE" Type="CODE39" X="" Y="" W="" H="" MinAccuracy="" FieldType="FormID"/>
+					<Zone Name="CARRIER" Type="CODE39" X="" Y="" W="" H="" MinAccuracy="" FieldType="Index"/>
+				</Zones>
+			</Document>
+		</Documents>
+	</Batch>
+</BatchClass>
