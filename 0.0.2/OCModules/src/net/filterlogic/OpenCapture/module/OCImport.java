@@ -178,16 +178,16 @@ public class OCImport
                     }
                     catch(OpenCaptureException oe)
                     {
-                         myLogger.error("Error creating batch!\n" + oe.toString());
+                         myLogger.error("Error creating batch!\n" + net.filterlogic.util.StackTraceUtil.getStackTrace(oe));
                     }
                     catch(OpenCaptureImagingException oie)
                     {
-                         myLogger.error("Error creating batch!\n" + oie.toString());
+                         myLogger.error("Error creating batch!\n" + net.filterlogic.util.StackTraceUtil.getStackTrace(oie));
                     }
                 }
                 catch(OpenCaptureException e)
                 {
-                    myLogger.error("Error creating batch!\n" + e.toString());
+                    myLogger.error("Error creating batch!\n" + net.filterlogic.util.StackTraceUtil.getStackTrace(e));
                 }
             }
         }
@@ -213,8 +213,8 @@ public class OCImport
         }
         catch(Exception e)
         {
-            myLogger.fatal(e.toString());
-            System.out.println(e.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
+            e.printStackTrace();
         }
     }
 

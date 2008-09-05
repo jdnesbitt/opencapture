@@ -165,7 +165,7 @@ public class OCConverter
                                     docConverted = false;
 
                                     myLogger.error("Error creating document in batch[" + batch.getBatchName() + "] document[" + 
-                                            document.getNumber() + "/" + document.getName() + "]: " + oce.toString());
+                                            document.getNumber() + "/" + document.getName() + "]: " + net.filterlogic.util.StackTraceUtil.getStackTrace(oce));
                                 }
 
                                 if(docConverted)
@@ -200,14 +200,14 @@ public class OCConverter
 
                 catch(Exception e)
                 {
-                     myLogger.error(e.toString());
+                     myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
                     batch.CloseBatch(true, e.toString());              
                 }
             }
         }
         catch(OpenCaptureException oce2)
         {
-            myLogger.error(oce2.toString());
+            myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(oce2));
             batch.CloseBatch(true, oce2.toString());
         }
     }
@@ -228,11 +228,11 @@ public class OCConverter
         }
         catch(OpenCaptureException oce)
         {
-            myLogger.fatal(oce.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(oce));
         }
         catch(Exception e)
         {
-            myLogger.fatal(e.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
         }
     }
 }

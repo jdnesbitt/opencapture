@@ -146,7 +146,7 @@ public class OCCognizance
                                     }
                                     catch(OpenCaptureReaderException ocre)
                                     {
-                                        myLogger.info("Error reading zone[" + zone.getName() + "] in batch[" + batch.getBatchName() + "].  " + ocre.toString());
+                                        myLogger.info("Error reading zone[" + zone.getName() + "] in batch[" + batch.getBatchName() + "].  " + net.filterlogic.util.StackTraceUtil.getStackTrace(ocre));
                                         zoneValue = "";
                                     }
 
@@ -204,7 +204,7 @@ public class OCCognizance
                             }
                             catch(Exception ex)
                             {
-                                myLogger.error(ex.toString());
+                                myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(ex));
 
                                 batch.getLog().setMessage(ex.toString());
                                 // close batch with exception
@@ -232,9 +232,9 @@ public class OCCognizance
                     }
                     catch(Exception ex2)
                     {
-                        myLogger.error("Error: " + ex2.toString() + "\nClosing batch");
+                        myLogger.error("Error: " + net.filterlogic.util.StackTraceUtil.getStackTrace(ex2) + "\nClosing batch");
                         
-                        batch.CloseBatch(true, ex2.toString());
+                        batch.CloseBatch(true, net.filterlogic.util.StackTraceUtil.getStackTrace(ex2));
                     }
                 }
                 else
@@ -248,7 +248,7 @@ public class OCCognizance
         }
         catch(OpenCaptureException oce2)
         {
-            myLogger.error(oce2.toString());
+            myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(oce2));
         }
     }
 
@@ -398,11 +398,11 @@ public class OCCognizance
         }
         catch(OpenCaptureException oce)
         {
-            myLogger.fatal(oce.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(oce));
         }
         catch(Exception e)
         {
-            myLogger.fatal(e.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
         }
     }
 }

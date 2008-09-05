@@ -128,13 +128,13 @@ public class OCDelivery
                 }
                 catch(Exception ex)
                 {
-                    myLogger.error(ex.toString());
+                    myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(ex));
                     batch.CloseBatch(true, ex.toString());
 
                 }
                 catch(OpenCaptureDeliveryException e)
                 {
-                    myLogger.error(e.toString());
+                    myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
                     batch.CloseBatch(true, e.toString());
                 }
 
@@ -142,7 +142,7 @@ public class OCDelivery
         }
         catch(OpenCaptureException oce2)
         {
-            myLogger.error(oce2.toString());
+            myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(oce2));
         }
     }
     
@@ -162,11 +162,11 @@ public class OCDelivery
         }
         catch(OpenCaptureException oce)
         {
-            myLogger.fatal(oce.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(oce));
         }
         catch(Exception e)
         {
-            myLogger.fatal(e.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
         }
     }
 }
