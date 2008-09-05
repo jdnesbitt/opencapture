@@ -133,7 +133,7 @@ public class OCModuleTemplate
                 }
                 catch(Exception e)
                 {
-                    myLogger.error(e.toString());
+                    myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
                     batch.CloseBatch(true, e.toString());
                 }
 
@@ -141,7 +141,7 @@ public class OCModuleTemplate
         }
         catch(OpenCaptureException oce2)
         {
-            myLogger.error(oce2.toString());
+            myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(oce2));
         }
     }
     
@@ -161,11 +161,11 @@ public class OCModuleTemplate
         }
         catch(OpenCaptureException oce)
         {
-            myLogger.fatal(oce.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(oce));
         }
         catch(Exception e)
         {
-            myLogger.fatal(e.toString());
+            myLogger.fatal(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
         }
     }
 }
