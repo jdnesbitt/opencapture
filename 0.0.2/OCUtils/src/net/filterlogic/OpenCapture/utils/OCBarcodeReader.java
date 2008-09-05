@@ -81,7 +81,7 @@ public class OCBarcodeReader
         }
         catch(OpenCaptureException e)
         {
-            throw new Exception(e.toString());
+            throw new Exception(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
         }
     }
     
@@ -137,7 +137,7 @@ public class OCBarcodeReader
         }
         catch(Exception e)
         {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 }
