@@ -152,7 +152,7 @@ public class Batch
         }
         catch(OpenCaptureException oe)
         {
-            logException(oe.toString());
+            logException(net.filterlogic.util.StackTraceUtil.getStackTrace(oe));
             throw new OpenCaptureException(oe.toString());
         }
     }
@@ -259,7 +259,7 @@ public class Batch
         }
         catch(Exception dbe)
         {
-            logException(dbe.toString());
+            logException(net.filterlogic.util.StackTraceUtil.getStackTrace(dbe));
             throw new OpenCaptureException(dbe.toString());
         }
 
@@ -323,7 +323,7 @@ public class Batch
         }
         catch(Exception e)
         {
-            logException(e.toString());
+            logException(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
             throw new OpenCaptureException(e.toString());
         }
     }
@@ -438,7 +438,7 @@ public class Batch
         }
         catch(Exception e)
         {
-            logException("Unable to close batch. " + e.toString());
+            logException("Unable to close batch. " + net.filterlogic.util.StackTraceUtil.getStackTrace(e));
             throw new OpenCaptureException(e.toString());
         }
         finally
@@ -497,7 +497,7 @@ public class Batch
         }
         catch(Exception e)
         {
-            logException("Unable to close batch. " + e.toString());
+            logException("Unable to close batch. " + net.filterlogic.util.StackTraceUtil.getStackTrace(e));
             throw new OpenCaptureException(e.toString());
         }
         finally
