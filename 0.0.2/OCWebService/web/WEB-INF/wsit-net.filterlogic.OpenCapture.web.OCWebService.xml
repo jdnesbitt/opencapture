@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <definitions 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="OCWebServiceService" targetNamespace="http://web.OpenCapture.filterlogic.net/" xmlns:tns="http://web.OpenCapture.filterlogic.net/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" 
+ >
+    <message name="OpenBatch"/>
+    <message name="OpenBatchResponse"/>
+    <message name="GetBatchList"/>
+    <message name="GetBatchListResponse"/>
+    <message name="GetPage"/>
+    <message name="GetPageResponse"/>
+    <message name="authenticate"/>
+    <message name="authenticateResponse"/>
+    <message name="CloseBatch"/>
+    <message name="CloseBatchResponse"/>
+    <message name="CreateBatch"/>
+    <message name="CreateBatchResponse"/>
+    <message name="CreateBatchClass"/>
+    <message name="CreateBatchClassResponse"/>
+    <message name="OpenBatchClass"/>
+    <message name="OpenBatchClassResponse"/>
+    <message name="CloseBatchClass"/>
+    <message name="CloseBatchClassResponse"/>
+    <message name="GetSessions"/>
+    <message name="GetSessionsResponse"/>
+    <portType name="OCWebService">
+        <operation name="OpenBatch">
+            <input message="tns:OpenBatch"/>
+            <output message="tns:OpenBatchResponse"/>
+        </operation>
+        <operation name="GetBatchList">
+            <input message="tns:GetBatchList"/>
+            <output message="tns:GetBatchListResponse"/>
+        </operation>
+        <operation name="GetPage">
+            <input message="tns:GetPage"/>
+            <output message="tns:GetPageResponse"/>
+        </operation>
+        <operation name="authenticate">
+            <input message="tns:authenticate"/>
+            <output message="tns:authenticateResponse"/>
+        </operation>
+        <operation name="CloseBatch">
+            <input message="tns:CloseBatch"/>
+            <output message="tns:CloseBatchResponse"/>
+        </operation>
+        <operation name="CreateBatch">
+            <input message="tns:CreateBatch"/>
+            <output message="tns:CreateBatchResponse"/>
+        </operation>
+        <operation name="CreateBatchClass">
+            <input message="tns:CreateBatchClass"/>
+            <output message="tns:CreateBatchClassResponse"/>
+        </operation>
+        <operation name="OpenBatchClass">
+            <input message="tns:OpenBatchClass"/>
+            <output message="tns:OpenBatchClassResponse"/>
+        </operation>
+        <operation name="CloseBatchClass">
+            <input message="tns:CloseBatchClass"/>
+            <output message="tns:CloseBatchClassResponse"/>
+        </operation>
+        <operation name="GetSessions">
+            <input message="tns:GetSessions"/>
+            <output message="tns:GetSessionsResponse"/>
+        </operation>
+    </portType>
+    <binding name="OCWebServicePortBinding" type="tns:OCWebService">
+        <operation name="OpenBatch">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="GetBatchList">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="GetPage">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="authenticate">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="CloseBatch">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="CreateBatch">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="CreateBatchClass">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="OpenBatchClass">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="CloseBatchClass">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="GetSessions">
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="OCWebServiceService">
+        <port name="OCWebServicePort" binding="tns:OCWebServicePortBinding"/>
+    </service>
+</definitions>
