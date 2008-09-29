@@ -338,6 +338,12 @@ public class DBManager
         
     }
     
+    /**
+     * Get list of batches in the system.
+     * 
+     * @return List of Batches objects.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
     public List getBatchList() throws OpenCaptureException
     {
         try
