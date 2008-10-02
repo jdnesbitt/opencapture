@@ -19,6 +19,9 @@ package net.filterlogic.OpenCapture.web;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import net.filterlogic.OpenCapture.OpenCaptureException;
+import net.filterlogic.OpenCapture.data.DBManager;
+import net.filterlogic.OpenCapture.data.DBUtils;
 
 /**
  *
@@ -51,8 +54,28 @@ public class OCWebService
     public String GetBatchList(@WebParam(name = "moduleID")
     String moduleID)
     {
-        //TODO write your implementation code here:
-        return null;
+        DBManager dbm;
+        java.util.List list;
+        String xml = "<Error />";
+
+        try
+        {
+            dbm = new DBManager();
+
+            list = dbm.getBatchList();
+
+            xml = DBUtils.BatchesListToXML(list);
+        }
+        catch(Exception e)
+        {
+            xml = "<Error>" + e.toString() + "</Error>";
+        }
+        catch(OpenCaptureException oce)
+        {
+            xml = "<Error>" + oce.toString() + "</Error>";
+        }
+
+        return xml;
     }
 
 /**

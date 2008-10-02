@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://web.OpenCapture.filterlogic.net/" xmlns:tns="http://web.OpenCapture.filterlogic.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="CloseBatch" type="tns:CloseBatch"/>
+
+  <xs:element name="CloseBatchClass" type="tns:CloseBatchClass"/>
+
+  <xs:element name="CloseBatchClassResponse" type="tns:CloseBatchClassResponse"/>
+
+  <xs:element name="CloseBatchResponse" type="tns:CloseBatchResponse"/>
+
+  <xs:element name="CreateBatch" type="tns:CreateBatch"/>
+
+  <xs:element name="CreateBatchClass" type="tns:CreateBatchClass"/>
+
+  <xs:element name="CreateBatchClassResponse" type="tns:CreateBatchClassResponse"/>
+
+  <xs:element name="CreateBatchResponse" type="tns:CreateBatchResponse"/>
+
+  <xs:element name="GetBatchList" type="tns:GetBatchList"/>
+
+  <xs:element name="GetBatchListResponse" type="tns:GetBatchListResponse"/>
+
+  <xs:element name="GetPage" type="tns:GetPage"/>
+
+  <xs:element name="GetPageResponse" type="tns:GetPageResponse"/>
+
+  <xs:element name="GetSessions" type="tns:GetSessions"/>
+
+  <xs:element name="GetSessionsResponse" type="tns:GetSessionsResponse"/>
+
+  <xs:element name="OpenBatch" type="tns:OpenBatch"/>
+
+  <xs:element name="OpenBatchClass" type="tns:OpenBatchClass"/>
+
+  <xs:element name="OpenBatchClassResponse" type="tns:OpenBatchClassResponse"/>
+
+  <xs:element name="OpenBatchResponse" type="tns:OpenBatchResponse"/>
+
+  <xs:element name="authenticate" type="tns:authenticate"/>
+
+  <xs:element name="authenticateResponse" type="tns:authenticateResponse"/>
+
+  <xs:complexType name="authenticate">
+    <xs:sequence>
+      <xs:element name="moduleID" type="xs:string" minOccurs="0"/>
+      <xs:element name="userID" type="xs:string" minOccurs="0"/>
+      <xs:element name="password" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="authenticateResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OpenBatchClass">
+    <xs:sequence>
+      <xs:element name="batchClassName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OpenBatchClassResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CreateBatch">
+    <xs:sequence>
+      <xs:element name="batchClassName" type="xs:string" minOccurs="0"/>
+      <xs:element name="batchName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CreateBatchResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OpenBatch">
+    <xs:sequence>
+      <xs:element name="batchID" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OpenBatchResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetBatchList">
+    <xs:sequence>
+      <xs:element name="moduleID" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetBatchListResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CloseBatchClass">
+    <xs:sequence>
+      <xs:element name="batchClassName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CloseBatchClassResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetSessions">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="GetSessionsResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetPage">
+    <xs:sequence>
+      <xs:element name="batchID" type="xs:long"/>
+      <xs:element name="pages" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GetPageResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CreateBatchClass">
+    <xs:sequence>
+      <xs:element name="batchClassName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CreateBatchClassResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CloseBatch">
+    <xs:sequence>
+      <xs:element name="batchID" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CloseBatchResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+
