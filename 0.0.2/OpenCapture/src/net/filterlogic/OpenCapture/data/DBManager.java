@@ -367,8 +367,67 @@ public class DBManager
             if(entMgr.isOpen())
                 entMgr.close();
             
-//            if(entMgrFac.isOpen())
-//                entMgrFac.close();
+            entMgr = null;
+        }
+    }
+
+    /**
+     * GetBatchClass List
+     * 
+     * @return List containing batch class.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public List getBatchClassList() throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            qry = entMgr.createNamedQuery("BatchClass.getBatchClassList");
+
+            List list = qry.getResultList();
+
+            return list;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to retrieve batch class.  " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+            
+            entMgr = null;
+        }
+    }
+
+    /**
+     * GetQueue List
+     * 
+     * @return Returns List containing queues.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public List getQueueList() throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            qry = entMgr.createNamedQuery("Queues.getQueueList");
+
+            List list = qry.getResultList();
+
+            return list;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to retrieve queue list.  " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
             
             entMgr = null;
         }

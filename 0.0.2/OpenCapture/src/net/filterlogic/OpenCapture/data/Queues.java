@@ -32,7 +32,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "queues")
-@NamedQueries({@NamedQuery(name = "Queues.findByQueueId", query = "SELECT q FROM Queues q WHERE q.queueId = :queueId"), @NamedQuery(name = "Queues.findByQueueName", query = "SELECT q FROM Queues q WHERE q.queueName = :queueName"), @NamedQuery(name = "Queues.findByQueueDesc", query = "SELECT q FROM Queues q WHERE q.queueDesc = :queueDesc"), @NamedQuery(name = "Queues.findByPlugin", query = "SELECT q FROM Queues q WHERE q.plugin = :plugin")})
+@NamedQueries({@NamedQuery(name = "Queues.findByQueueId", query = "SELECT q FROM Queues q WHERE q.queueId = :queueId"), 
+@NamedQuery(name = "Queues.findByQueueName", query = "SELECT q FROM Queues q WHERE q.queueName = :queueName"), 
+@NamedQuery(name = "Queues.findByQueueDesc", query = "SELECT q FROM Queues q WHERE q.queueDesc = :queueDesc"), 
+@NamedQuery(name = "Queues.getQueueList", query = "SELECT q FROM Queues q"),
+@NamedQuery(name = "Queues.findByPlugin", query = "SELECT q FROM Queues q WHERE q.plugin = :plugin")})
+
 public class Queues implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -18,6 +18,7 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture.data;
 
 import java.util.List;
+import net.filterlogic.OpenCapture.OpenCaptureCommon;
 
 /**
  * DBUtils class contains helper methods for working with persistence objects.
@@ -28,7 +29,7 @@ public class DBUtils
 {
     public static String BatchesListToXML(List list)
     {
-        String xml = "<BatchList>";
+        String xml = "<BatchList>\n";
         
         // build xml string to return to caller
         for(int i=0;i<list.size();i++)
@@ -36,21 +37,79 @@ public class DBUtils
             Batches batches = (Batches)list.get(i);
             
             xml += "<Batch " +
-                    "BatchID=\"" + batches.getBatchId() + "\" " +
-                    "Name=\"" + batches.getBatchName() + "\" " +
-                    "Description=\"" + batches.getBatchDesc() + "\" " +
-                    "BatchClassID=\"" + batches.getBatchClassId() + "\" " +
-                    "BatchState=\"" + batches.getBatchState() + "\" " +
-                    "Priority=\"" + batches.getPriority().toString() + "\" " +
-                    "QueueID=\"" + String.valueOf(batches.getQueueId()) + "\" " +
-                    "ScanDateTime=\"" + batches.getScanDatetime() + "\" " +
-                    "SiteID=\"" + String.valueOf(batches.getSiteId()) + "\" " +
-                    "ErrorNumber=\"" + batches.getErrorNo().toString() + "\" " +
-                    "ErrorMessage=\"" + batches.getErrorMsg() + "\" " +
-                    " />";
+                    "BatchID=\"" + OpenCaptureCommon.getStringValue(batches.getBatchId()) + "\" " +
+                    "Name=\"" + OpenCaptureCommon.getStringValue(batches.getBatchName()) + "\" " +
+                    "Description=\"" + OpenCaptureCommon.getStringValue(batches.getBatchDesc()) + "\" " +
+                    "BatchClassID=\"" + OpenCaptureCommon.getStringValue(batches.getBatchClassId()) + "\" " +
+                    "BatchState=\"" + OpenCaptureCommon.getStringValue(batches.getBatchState()) + "\" " +
+                    "Priority=\"" + OpenCaptureCommon.getStringValue(batches.getPriority()) + "\" " +
+                    "QueueID=\"" + OpenCaptureCommon.getStringValue(batches.getQueueId()) + "\" " +
+                    "ScanDateTime=\"" + net.filterlogic.util.DateUtil.getDateTime("yyyy/MM/dd HH:mm:ss", batches.getScanDatetime()) + "\" " +
+                    "SiteID=\"" + OpenCaptureCommon.getStringValue(batches.getSiteId()) + "\" " +
+                    "ErrorNumber=\"" + OpenCaptureCommon.getStringValue(batches.getErrorNo()) + "\" " +
+                    "ErrorMessage=\"" + OpenCaptureCommon.getStringValue(batches.getErrorMsg()) + "\" " +
+                    " />\n";
         }
         
-        xml += "</BatchList>";
+        xml += "</BatchList>\n";
+
+        return xml;
+    }
+
+    /**
+     * QueueListToXML returns XML of Queue object.
+     * 
+     * @param list List containing queues.
+     * 
+     * @return XML containing String.
+     */
+    public static String QueueListToXML(List list)
+    {
+        String xml = "<QueueList>\n";
+        
+        // build xml string to return to caller
+        for(int i=0;i<list.size();i++)
+        {
+            Queues queues = (Queues)list.get(i);
+            
+            xml += "<Queue " +
+                    "QueueID=\"" + OpenCaptureCommon.getStringValue(queues.getQueueId()) + "\" " +
+                    "Name=\"" + OpenCaptureCommon.getStringValue(queues.getQueueName()) + "\" " +
+                    "Description=\"" + OpenCaptureCommon.getStringValue(queues.getQueueDesc()) + "\" " +
+                    "Plugin=\"" + OpenCaptureCommon.getStringValue(queues.getPlugin()) + "\" " +
+                    " />\n";
+        }
+
+        xml += "</QueueList>\n";
+
+        return xml;
+    }
+
+    /**
+     * BatchClassListToXML converts batch class list to xml.
+     * 
+     * @param list List containing  BatchClass data objects.
+     * 
+     * @return String containing XML.
+     */
+    public static String BatchClassListToXML(List list)
+    {
+        String xml = "<BatchClassList>\n";
+
+        // build xml string to return to caller
+        for(int i=0;i<list.size();i++)
+        {
+            BatchClass batchclass = (BatchClass)list.get(i);
+
+            xml += "<BatchClass " +
+                    "BatchClassID=\"" + OpenCaptureCommon.getStringValue(batchclass.getBatchClassId()) + "\" " +
+                    "Name=\"" + OpenCaptureCommon.getStringValue(batchclass.getBatchClassName()) + "\" " +
+                    "Description=\"" + OpenCaptureCommon.getStringValue(batchclass.getDescr()) + "\" " +
+                    "ImagePath=\"" + OpenCaptureCommon.getStringValue(batchclass.getImagePath()) + "\" " +
+                    " />\n";
+        }
+
+        xml += "</BatchClassList>\n";
 
         return xml;
     }
