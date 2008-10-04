@@ -32,7 +32,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "batch_class")
-@NamedQueries({@NamedQuery(name = "BatchClass.findByBatchClassId", query = "SELECT b FROM BatchClass b WHERE b.batchClassId = :batchClassId"), @NamedQuery(name = "BatchClass.findByBatchClassName", query = "SELECT b FROM BatchClass b WHERE b.batchClassName = :batchClassName"), @NamedQuery(name = "BatchClass.findByDescr", query = "SELECT b FROM BatchClass b WHERE b.descr = :descr"), @NamedQuery(name = "BatchClass.findByImagePath", query = "SELECT b FROM BatchClass b WHERE b.imagePath = :imagePath")})
+@NamedQueries({@NamedQuery(name = "BatchClass.findByBatchClassId", query = "SELECT b FROM BatchClass b WHERE b.batchClassId = :batchClassId"), 
+@NamedQuery(name = "BatchClass.findByBatchClassName", query = "SELECT b FROM BatchClass b WHERE b.batchClassName = :batchClassName"), 
+@NamedQuery(name = "BatchClass.findByDescr", query = "SELECT b FROM BatchClass b WHERE b.descr = :descr"), 
+@NamedQuery(name = "BatchClass.getBatchClassList", query = "SELECT b FROM BatchClass b"), 
+@NamedQuery(name = "BatchClass.findByImagePath", query = "SELECT b FROM BatchClass b WHERE b.imagePath = :imagePath")})
+
 public class BatchClass implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

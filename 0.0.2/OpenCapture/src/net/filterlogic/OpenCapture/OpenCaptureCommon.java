@@ -462,4 +462,103 @@ public class OpenCaptureCommon
             return "";
         }
     }
+    
+    /**
+     * Get value of string.
+     * @param value Value to retrieve.
+     * @return Returns a string containing value. If value is null, empty string returned.
+     */
+    public static String getStringValue(Object value)
+    {
+        String s="";
+        
+        try
+        {
+            if(value.getClass().toString().equals("class java.lang.String"))
+            {            
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "";
+            }
+            
+            if(value.getClass().toString().equals("class java.lang.Integer"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+
+            if(value.getClass().toString().equals("class java.lang.Short"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+            
+            if(value.getClass().toString().equals("class java.lang.Byte"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+
+            if(value.getClass().toString().equals("class java.lang.Character"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+
+            if(value.getClass().toString().equals("class java.lang.Boolean"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "False";
+            }
+
+            if(value.getClass().toString().equals("class java.lang.Double"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+            
+            if(value.getClass().toString().equals("class java.lang.Float"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+            
+            if(value.getClass().toString().equals("class java.lang.Long"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "0";
+            }
+            
+            if(value.getClass().toString().equals("class java.lang.Object"))
+            {
+                if(value != null)
+                    s = value.toString();
+                else
+                    s = "";
+            }
+        }
+        catch(Exception e)
+        {
+            s = "";
+        }
+        
+        return s;
+    }
 }
