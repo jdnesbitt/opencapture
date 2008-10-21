@@ -187,42 +187,34 @@ public class Batch
         {
             scanDate = new Date();
         }
-        
+
         // set user name
         this.CreateUser = OpenCaptureCommon.CURRENT_USER_NAME;
 
         try
         {
-            //net.filterlogic.OpenCapture.data.BatchClass bc = dbm.createBatchClass(0, batchClassName,"FFE Logistics Batches", "C:\\code\\java\\opencapture\\ffe\\images\\");
-
-            // create batch db entry and set status to in use.
-            id = dbm.createBatch(Long.parseLong("0"), batchName, Long.parseLong("1"),
-                                                                            scanDate , 1,OpenCaptureCommon.BATCH_STATUS_READY, 
-                                                                            Long.parseLong("1"));
-
-            // save batch id
-            this.batchID = id;
-            this.setID(String.valueOf(id));
-
-            // set batch xml file name which is also the folder name
-            //this.rootPath = OpenCaptureCommon.getRootPath();
-
-            // set batch class xml file name.  this is the batch class template file.
-            //this.batchClassXmlFile = OpenCaptureCommon.getBatchClassXmlFile(batchClassName);
-
+            // load batch class into object
             try
             {
                 // load new copy of batch class setup xml
-                //xmlParser.loadDocument(this.batchClassXmlFile);
                 loadBatchClass(batchClassName);
             }
             catch(Exception e)
             {
                 throw new OpenCaptureException("Failed to load new copy of batch class[" + this.batchClassXmlFile + "].\n" + e.toString());
-            }                
+            }   
 
-            // create batch class object
-            //batchClass = new BatchClass(xmlParser);
+            short priority = batchClass.getPriority().length()>0 ? Short.parseShort(batchClass.getPriority()) : Short.parseShort("9");
+
+            // create batch db entry and set status to in use.
+            id = dbm.createBatch(Long.parseLong("0"), batchName, Long.parseLong("1"),
+                                                                            scanDate , 1,OpenCaptureCommon.BATCH_STATUS_READY, 
+                                                                            Long.parseLong("1"),
+                                                                            priority);
+
+            // save batch id
+            this.batchID = id;
+            this.setID(String.valueOf(id));
 
             // save batch to Batch xml folder
             String batchFolderID = OpenCaptureCommon.toHex8(id);
