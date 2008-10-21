@@ -434,7 +434,7 @@ public class DBManager
     }
 
     /**
-     * Create a new batch.
+     * Create a new batch with default priority of 9.
      * @param batchId Set this to 0.
      * @param batchName Name of new batch.
      * @param batchClassId Id of batch class the batch is assigned to.
@@ -465,6 +465,7 @@ public class DBManager
             tblBatches.setSiteId(siteId);
             tblBatches.setBatchState(batchState);
             tblBatches.setQueueId(queueId);
+            tblBatches.setPriority(Short.parseShort("9"));
 
             entMgr.persist(tblBatches);
 
@@ -491,6 +492,66 @@ public class DBManager
         }
     }
 
+       /**
+     * Create a new batch.
+     * @param batchId Set this to 0.
+     * @param batchName Name of new batch.
+     * @param batchClassId Id of batch class the batch is assigned to.
+     * @param scanDateTime DateTime batch is created.
+     * @param siteId Id of site that is creating batch.
+     * @param batchState State of batch when creating (usually OpenCaptureCommon.BATCH_STATE_READY).
+     * @param queueId Id of starting queue.
+     * @param priority Priority of the batch.
+     * @return Return new batch id.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public long createBatch(Long batchId, String batchName, long batchClassId, Date scanDateTime, int siteId, 
+                                                                int batchState, long queueId,short priority) throws OpenCaptureException
+    {
+        EntityTransaction tx = null;
+        
+        try
+        {
+            tblBatches = new net.filterlogic.OpenCapture.data.Batches();
+
+            entMgr = entMgrFac.createEntityManager();
+
+            tx = entMgr.getTransaction();
+            tx.begin();
+
+            tblBatches.setBatchName(batchName);
+            tblBatches.setBatchClassId(batchClassId);
+            tblBatches.setScanDatetime(scanDateTime);
+            tblBatches.setSiteId(siteId);
+            tblBatches.setBatchState(batchState);
+            tblBatches.setQueueId(queueId);
+            tblBatches.setPriority(priority);
+
+            entMgr.persist(tblBatches);
+
+            tx.commit();
+
+            return tblBatches.getBatchId();
+        }
+        catch(Exception e)
+        {
+            if(tx!=null)
+                if(tx.isActive())
+                    tx.rollback();
+            throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            if(entMgr!=null)
+                if(entMgr.isOpen())
+                    entMgr.close();
+//            if(entMgrFac.isOpen())
+//                entMgrFac.close();
+            
+            entMgr = null;
+        }
+    }
+    
     /**
      * Get batch row.
      * @return
