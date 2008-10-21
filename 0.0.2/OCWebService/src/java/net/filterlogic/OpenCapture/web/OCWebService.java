@@ -62,9 +62,18 @@ public class OCWebService
         {
             dbm = new DBManager();
 
-            list = dbm.getBatchList();
+            xml = "<GetBatchList>";
 
-            xml = DBUtils.BatchesListToXML(list);
+            list = dbm.getBatchList();
+            xml += DBUtils.BatchesListToXML(list);
+
+            list = dbm.getBatchClassList();
+            xml += DBUtils.BatchClassListToXML(list);
+
+            list = dbm.getQueueList();
+            xml += DBUtils.QueueListToXML(list);
+
+            xml += "</GetBatchList>";
         }
         catch(Exception e)
         {
