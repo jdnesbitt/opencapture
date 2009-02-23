@@ -51,21 +51,26 @@ import org.alfresco.webservice.authentication.AuthenticationFault;
  * xml configuration file in the Configuration/CustomProperties section.  Each
  * entry will be a Property in the CustomProperties.
  * 
- * OC_ALFRESCO_DELIVERY_USER        = Alfreso login user name.
- * OC_ALFRESCO_DELIVERY_USER_PWD    = Afresco user's password
- * OC_ALFRESCO_DELIVERY_STORE       = Name of store to connect to.
- * OC_ALFRESCO_DELIVERY_CONAME      = Name of home to deliver documents to.
- * OC_ALFRESCO_DELIVERY_FOLDER      = Name of folder to deliver documents to.
+ * <Property Name="OC_ALFRESCO_DELIVERY_USER" Value="username" Volital="N" />       = Alfreso login user name.
+ * <Property Name="OC_ALFRESCO_DELIVERY_USER_PWD" Value="password" Volital="N" />   = Afresco user's password
+ * <Property Name="OC_ALFRESCO_DELIVERY_STORE" Value="SpacesStore" Volital="N" />   = Name of store to connect to.
+ * <Property Name="OC_ALFRESCO_DELIVERY_CONAME" Value="store name" Volital="N" />   = Name of home to deliver documents to.
+ * <Property Name="OC_ALFRESCO_DELIVERY_FOLDER" Value="folder name" Volital="N" />  = Name of folder to deliver documents to.
  * 
  * @author dnesbitt
  */
 public class AlfrescoDelivery extends AlfrescoDeliveryBase implements IOCDeliveryPlugin
 {
+    /** The type of the association we are creating to the new content */
+    private static final String ASSOC_CONTAINS = "{http://www.alfresco.org/model/content/1.0}contains";
+
     private static final String DELIVERY_USERNAME = "OC_ALFRESCO_DELIVERY_USER";
     private static final String DELIVERY_USER_PWD = "OC_ALFRESCO_DELIVERY_USER_PWD";
     private static final String DELIVERY_STORE = "OC_ALFRESCO_DELIVERY_STORE";
     private static final String DELIVERY_CONAME = "OC_ALFRESCO_DELIVERY_CONAME";
     private static final String DELIVERY_FOLDER = "OC_ALFRESCO_DELIVERY_FOLDER";
+    
+    private ContentServiceSoapBindingStub contentService;
 
     private String name = "AlfrescoDelivery";
     private Batch batch;
@@ -100,7 +105,35 @@ public class AlfrescoDelivery extends AlfrescoDeliveryBase implements IOCDeliver
      */
     public void DeliverDocument(Document document) throws OpenCaptureDeliveryException 
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try
+        {
+            // Upload binary content into the repository
+            Reference reference = REPOSITORY[0].getReference(); // Query1.executeSearch();
+            ParentReference parentReference = new ParentReference(reference.getStore(), reference.getUuid(), null, ASSOC_CONTAINS, ASSOC_CONTAINS);
+
+            // Create the content
+            NamedValue[] properties = new NamedValue[]{Utils.createNamedValue(Constants.PROP_NAME, "test.jpg")};
+            CMLCreate create = new CMLCreate("1", parentReference, null, null, null, Constants.TYPE_CONTENT, properties);
+            CML cml = new CML();
+            cml.setCreate(new CMLCreate[]{create});
+            UpdateResult[] result = WebServiceFactory.getRepositoryService().update(cml);     
+
+            // Get the created node and create the format
+            Reference newContentNode = result[0].getDestination();              
+            ContentFormat format = new ContentFormat("image/jpeg", "UTF-8");  
+
+            // Open the file and convert to byte array
+            InputStream viewStream = newContentNode.getClass().getClassLoader().getResourceAsStream("org/alfresco/webservice/test/resources/test.jpg");
+            byte[] bytes = ContentUtils.convertToByteArray(viewStream);
+
+            // Write the content
+            WebServiceFactory.getContentService().write(newContentNode, Constants.PROP_CONTENT, bytes, format);
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureDeliveryException(this.name + ":" + e.toString());
+        }
+
     }
 
     /**
@@ -114,7 +147,13 @@ public class AlfrescoDelivery extends AlfrescoDeliveryBase implements IOCDeliver
         {
             // Start the session
             AuthenticationUtils.startSession(USERNAME, PASSWORD);
+
+            // connect to folder
             getRepository();
+            
+            // Get the content service
+            contentService = WebServiceFactory.getContentService();        
+
         }
         catch(AuthenticationFault af)
         {
