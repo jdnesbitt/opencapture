@@ -17,6 +17,7 @@ package net.filterlogic.OpenCapture.delivery;
 
 import org.alfresco.webservice.types.Predicate;
 import org.alfresco.webservice.types.Reference;
+import org.alfresco.webservice.types.Node;
 import org.alfresco.webservice.types.Store;
 import org.alfresco.webservice.util.Constants;
 import org.alfresco.webservice.util.WebServiceFactory;
@@ -35,6 +36,8 @@ public class AlfrescoDeliveryBase
     protected String AD_COMPANY_HOME = "";
     protected String AD_FOLDER_NAME = "";
     
+    protected Node[] REPOSITORY;
+
     /** The store used throughout the samples */
     protected Store STORE = new Store(Constants.WORKSPACE_STORE, AD_STORE_NAME);
     
@@ -45,7 +48,7 @@ public class AlfrescoDeliveryBase
         try
         {
             // Check to see if the sample folder has already been created or not
-            WebServiceFactory.getRepositoryService().get(new Predicate(new Reference[]{AD_FOLDER}, STORE, null));
+            REPOSITORY = WebServiceFactory.getRepositoryService().get(new Predicate(new Reference[]{AD_FOLDER}, STORE, null));
         }
         catch (Exception e)
         {
