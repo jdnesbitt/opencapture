@@ -36,9 +36,9 @@ public class Batch
     private OpenCaptureConfig ocConfig = null;
     
     private String rootPath = "";
-    
+
     private Query query;
-    
+
     private BatchClass batchClass = null;
     //private Queues queues = null;
     private BatchFields  batchFields = null;

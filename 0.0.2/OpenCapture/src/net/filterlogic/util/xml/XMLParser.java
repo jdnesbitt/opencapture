@@ -311,30 +311,151 @@ public class XMLParser
         
         return elem;
     }
+
+    /**
+     * Return attributes as string.
+     * @param node Node that contains attributes to retrieve.
+     * @return String containing attributes.
+     */
+    public String getXMLAttributeStructure(Node node)
+    {
+        String attributes = "";
+        
+        try
+        {
+            NamedNodeMap nnm = node.getAttributes();
+            
+            for(int i=0;i<nnm.getLength();i++)
+            {
+                Node attr = nnm.item(i);
+                
+                attributes += " ";
+
+                attributes += attr.getNodeName() + "=\"\"";
+            }
+        }
+        catch(Exception e)
+        {
+            
+        }
+        
+        return attributes;
+    }
+
+    public String getNodeAsXML(Node node)
+    {
+        String xml = "";
+
+        try
+        {
+            NodeList nodes = node.getChildNodes();
+            
+            for(int i=0;i<nodes.getLength();i++)
+            {
+                Node theNode = nodes.item(i);
+                
+                if(!theNode.getNodeName().startsWith("#"))
+                {
+                    if(theNode.getNodeName().equals("Test"))
+                        System.out.println("Test found!!");
+                    
+                    xml += "<" + theNode.getNodeName();
+
+                    if(theNode.hasAttributes())
+                        xml += getXMLAttributeStructure(theNode);
+
+                    if(theNode.getChildNodes().getLength()>0)
+                    {
+                        xml += ">";
+
+                        xml += getNodeAsXML(theNode);
+                        
+                        xml += "</" + theNode.getNodeName() + ">";
+                    }
+                    else
+                    {
+                        xml += "/>";
+                    }
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            
+        }
+        return xml;
+    }
+    
+    public String getXMLStructure()
+    {
+        Node node;
+        StringBuffer sb = new StringBuffer();
+        
+        try
+        {
+            XPath xpath = new DOMXPath("/");
+
+            node = (Node)xpath.selectSingleNode(this.doc);
+
+            if(!node.getNodeName().startsWith("#"))
+            {
+                sb.append("<" + node.getNodeName());
+
+                if(node.getChildNodes().getLength()<1)
+                {
+                    //sb.append(getNodeAsXML(node));
+
+                    sb.append("/>");
+                }
+                else
+                {
+                    sb.append(">");
+
+                    sb.append(getNodeAsXML(node));
+                }
+            }
+            else
+                sb.append(getNodeAsXML(node));
+        }
+        catch(Exception e)
+        {
+            
+        }
+        
+        return sb.toString();
+    }
     
     public static void main(String[] argv)
     {
         try
         {
-            String filePath = "";
+            String filePath = "/home/dnesbitt/NetBeansProjects/OCModules/config/carrierfiles.xml";
+            //String filePath = "/home/dnesbitt/NetBeansProjects/OCModules/config/testXMLClassification.xml";
+            
             String xPath = "";
-            if(argv.length>1)
-            {
-                filePath = argv[0];
-                xPath = argv[1];
-            }
-            else
-            {
-                System.out.println("\n\nInvalid parameters.  \n\nusage: java -cp FaxTrax.jar com.jpmchase.util.xml.XMLParser <xml file path> <xpath>\n");
-                System.exit(0);
-            }
-            File XmlDocumentUrl= new File(filePath);
+//            if(argv.length>1)
+//            {
+//                filePath = argv[0];
+//                xPath = argv[1];
+//            }
+//            else
+//            {
+//                System.out.println("\n\nInvalid parameters.  \n\nusage: java -cp FaxTrax.jar com.jpmchase.util.xml.XMLParser <xml file path> <xpath>\n");
+//                System.exit(0);
+//            }
+            
+            //File XmlDocumentUrl= new File(filePath);
             XMLParser x = new XMLParser();
-            String m = ReadWriteTextFile.getContents(XmlDocumentUrl);
-            x.parseDocument(m);
-            List list = x.getValues(xPath);
-            for(int i=0;i<list.size();i++)
-                System.out.println("Value " + i + " = " + list.get(i));
+            //String m = ReadWriteTextFile.getContents(XmlDocumentUrl);
+            x.loadDocument(filePath);
+
+            String xml = "";
+            
+            xml = x.getXMLStructure();
+
+            System.out.println("MD5: " + net.filterlogic.util.MD5.generateMD5(xml));
+            System.out.println(xml);
+            
         }
         catch(Exception e)
         {

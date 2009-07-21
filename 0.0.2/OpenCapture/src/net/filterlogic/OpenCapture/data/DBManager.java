@@ -169,11 +169,7 @@ public class DBManager
         {
             if(entMgr.isOpen())
                 entMgr.close();
-            
-            
-//            if(entMgrFac.isOpen())
-//                entMgrFac.close();
-            
+
             entMgr = null;
         }
     }
@@ -235,9 +231,6 @@ public class DBManager
             if(entMgr.isOpen())
                 entMgr.close();
             
-//            if(entMgrFac.isOpen())
-//                entMgrFac.close();
-//            
             entMgr = null;
         }
     }
@@ -292,9 +285,6 @@ public class DBManager
             
             if(entMgr.isOpen())
                 entMgr.close();
-            
-//            if(entMgrFac.isOpen())
-//                entMgrFac.close();
             
             entMgr = null;
         }
