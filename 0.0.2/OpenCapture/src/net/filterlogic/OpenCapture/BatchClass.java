@@ -36,6 +36,7 @@ public class BatchClass
         this.ImagePath = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_IMAGE_PATH);
         this.Version = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_VERSION);
         this.Priority = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_PRIORITY);
+        this.ID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_ID));
 
         if(this.ImagePath.length()<1)
             throw new OpenCaptureException("Image path not set.");
@@ -56,7 +57,7 @@ public class BatchClass
     
     public String getXML()
     {
-        return "<BatchClass Name=\"" + this.BatchClassName + "\" ImagePath=\"" + this.ImagePath + "\" version=\"" + this.Version + "\" Priority=\"" + this.Priority + "\">\n";
+        return "<BatchClass Name=\"" + this.BatchClassName + "\" ImagePath=\"" + this.ImagePath + "\" version=\"" + this.Version + "\" Priority=\"" + this.Priority + "\" ID=\"" + String.valueOf(this.ID) + "\">\n";
     }
     public long getID()
     {

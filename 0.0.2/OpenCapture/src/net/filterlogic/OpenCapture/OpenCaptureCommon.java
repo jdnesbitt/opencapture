@@ -55,6 +55,7 @@ public class OpenCaptureCommon
     public static String BATCH_CLASS_IMAGE_PATH = "//BatchClass/@ImagePath";
     public static String BATCH_CLASS_VERSION = "//BatchClass/@version";
     public static String BATCH_CLASS_PRIORITY = "//BatchClass/@Priority";
+    public static String BATCH_CLASS_ID = "//BatchClass/@ID";
 
     public static String BATCH_NAME = "//BatchClass/Batch/@Name";
     public static String BATCH_ID = "//BatchClass/Batch/@ID";
