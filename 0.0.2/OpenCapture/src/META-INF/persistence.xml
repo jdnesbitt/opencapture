@@ -6,6 +6,7 @@
     <class>net.filterlogic.OpenCapture.data.Batches</class>
     <class>net.filterlogic.OpenCapture.data.LkpBatchclassQueues</class>
     <class>net.filterlogic.OpenCapture.data.Queues</class>
+    <class>net.filterlogic.OpenCapture.data.Users</class>
     <properties>
       <property name="toplink.jdbc.user" value="opencapture"/>
       <property name="toplink.jdbc.password" value="corwin1"/>

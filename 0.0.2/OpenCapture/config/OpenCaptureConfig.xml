@@ -11,6 +11,9 @@
 <OpenCapture version="1.0">
     <ReaderPlugins>
         <Plugin Name="ZXing 3 of 9 Reader" PluginID="CODE39" Class="net.filterlogic.OpenCapture.readers.Code39Reader" Description="Reads 3 of 9 Barcodes." />
+        <Plugin Name="ZXing Code 128 Reader" PluginID="CODE128" Class="net.filterlogic.OpenCapture.readers.Code128Reader" Description="Reads code 128 Barcodes." />
+        <Plugin Name="ZXing QRCode Reader" PluginID="QRCODE" Class="net.filterlogic.OpenCapture.readers.QRCodeReader" Description="Reads QRCode Barcodes." />
+        <Plugin Name="ZXing Multi-Format Reader" PluginID="MULTIFORMAT" Class="net.filterlogic.OpenCapture.readers.MultiFormatReader" Description="Reads Multiple Barcode Formats." />
     </ReaderPlugins>
     <ConverterPlugins>
         <Plugin Name="PDF Converter" PluginID="PDF" Class="net.filterlogic.OpenCapture.converters.PDFConversion" Description="Converts TIFFs to PDF format." />
