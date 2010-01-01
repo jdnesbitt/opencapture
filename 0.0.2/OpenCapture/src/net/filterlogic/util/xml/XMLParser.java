@@ -296,6 +296,41 @@ public class XMLParser
         return result;
     }
     
+    /**
+     * getValue retrieves a single value located at the specified XPath.
+     * @param xPath
+     * @param defaultValue Value to return if xpath doesn't exists or error occurs.
+     * @return String containing value at xpath.
+     */
+    public String getValue(String xPath,String defaultValue)
+    {
+        String result="";
+        
+        Object elem;
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            elem = xpath.selectSingleNode(this.doc);
+            if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+                result = ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getValue();
+            else
+                result = ((Element)elem).getChildNodes().item(0).getNodeValue();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error retrieving data @ " + xPath + "\n" + e.toString());
+            result = defaultValue;
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Get node at XPath.
+     * @param xPath 
+     * @return Return node.
+     * @throws java.lang.Exception
+     */
     public Element getNode(String xPath) throws Exception
     {
         Element elem = null;
@@ -342,6 +377,11 @@ public class XMLParser
         return attributes;
     }
 
+    /**
+     * Get node as XML string.
+     * @param node Node to return as string.
+     * @return String containing XML string.
+     */
     public String getNodeAsXML(Node node)
     {
         String xml = "";
@@ -386,6 +426,10 @@ public class XMLParser
         return xml;
     }
     
+    /**
+     * Get the current XML document structure.
+     * @return String containing current XML document structure.
+     */
     public String getXMLStructure()
     {
         Node node;

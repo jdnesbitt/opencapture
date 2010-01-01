@@ -38,7 +38,8 @@ import javax.persistence.Table;
 @NamedQuery(name = "BatchClass.getBatchClassList", query = "SELECT b FROM BatchClass b"), 
 @NamedQuery(name = "BatchClass.findByImagePath", query = "SELECT b FROM BatchClass b WHERE b.imagePath = :imagePath")})
 
-public class BatchClass implements Serializable {
+public class BatchClass implements Serializable 
+{
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,10 +52,12 @@ public class BatchClass implements Serializable {
     @Column(name = "IMAGE_PATH", nullable = false)
     private String imagePath;
 
-    public BatchClass() {
+    public BatchClass() 
+    {
     }
 
-    public BatchClass(Long batchClassId) {
+    public BatchClass(Long batchClassId) 
+    {
         this.batchClassId = batchClassId;
     }
 

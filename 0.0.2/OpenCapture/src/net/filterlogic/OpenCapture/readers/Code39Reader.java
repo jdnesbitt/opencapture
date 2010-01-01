@@ -19,11 +19,15 @@ package net.filterlogic.OpenCapture.readers;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
-import com.google.zxing.MonochromeBitmapSource;
+//import com.google.zxing.MonochromeBitmapSource;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.common.GlobalHistogramBinarizer;
 
+import com.google.zxing.LuminanceSource;
 import net.filterlogic.OpenCapture.interfaces.OpenCaptureReaderException;
 import java.awt.image.BufferedImage;
-import net.filterlogic.OpenCapture.readers.dependencies.BufferedImageMonochromeBitmapSource;
+//import net.filterlogic.OpenCapture.readers.dependencies.BufferedImageMonochromeBitmapSource;
+import net.filterlogic.OpenCapture.readers.dependencies.BufferedImageLuminanceSource;
 import net.filterlogic.OpenCapture.Zone;
 import net.filterlogic.OpenCapture.interfaces.IZoneReader;
 
@@ -87,7 +91,7 @@ public class Code39Reader implements IZoneReader
     private String ReadZone(int x, int y, int height, int width, BufferedImage image) throws OpenCaptureReaderException
     {
         Hashtable<DecodeHintType, Object> hints = null;
-        MonochromeBitmapSource source = null;
+        LuminanceSource source = null;
         BufferedImage subImage = null;
 
         try
@@ -97,9 +101,10 @@ public class Code39Reader implements IZoneReader
 
             hints = new Hashtable<DecodeHintType, Object>(3);
             hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-            source = new BufferedImageMonochromeBitmapSource(subImage);
+            source = new BufferedImageLuminanceSource(subImage);
+            BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
 
-            String result = new MultiFormatReader().decode(source, hints).getText();
+            String result = new com.google.zxing.oned.Code39Reader().decode(bitmap, hints).getText();
 
             // return what was read
             return result;

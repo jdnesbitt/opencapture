@@ -24,6 +24,7 @@ import net.filterlogic.io.Path;
 public class BatchClass 
 {
     private long ID = -1;
+    private long SiteID = -1;
     private String BatchClassName = "";
     private String Description = "";
     private String ImagePath = "";
@@ -35,8 +36,9 @@ public class BatchClass
         this.BatchClassName = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_NAME);
         this.ImagePath = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_IMAGE_PATH);
         this.Version = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_VERSION);
-        this.Priority = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_PRIORITY);
-        this.ID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_ID));
+        this.Priority = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_PRIORITY,"7");
+        this.ID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_ID,"-1"));
+        this.SiteID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_SITE_ID,"-1"));
 
         if(this.ImagePath.length()<1)
             throw new OpenCaptureException("Image path not set.");
@@ -57,7 +59,7 @@ public class BatchClass
     
     public String getXML()
     {
-        return "<BatchClass Name=\"" + this.BatchClassName + "\" ImagePath=\"" + this.ImagePath + "\" version=\"" + this.Version + "\" Priority=\"" + this.Priority + "\" ID=\"" + String.valueOf(this.ID) + "\">\n";
+        return "<BatchClass Name=\"" + this.BatchClassName + "\" ImagePath=\"" + this.ImagePath + "\" version=\"" + this.Version + "\" Priority=\"" + this.Priority + "\" ID=\"" + String.valueOf(this.ID) + "\" SiteID=\"" + String.valueOf(this.SiteID) + "\">\n";
     }
     public long getID()
     {
