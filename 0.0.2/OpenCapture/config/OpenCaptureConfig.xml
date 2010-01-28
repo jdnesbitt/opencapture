@@ -21,4 +21,20 @@
     <DeliveryPlugins>
         <Plugin Name="XML Delivery" PluginID="XMLDelivery" Class="net.filterlogic.OpenCapture.delivery.XMLDelivery" Description="Writes XML file containing index data and image file." />
     </DeliveryPlugins>
+    <Queues>
+        <Queue Name="OCImport" ID="1" Description="Import images from the filesystem." />
+        <Queue Name="OCCognizance" ID="2" Description="Performs barcode recognition and document separation." />
+        <Queue Name="OCDelivery" ID="3" Description="Delivers documents." />
+        <Queue Name="OCConverter" ID="4" Description="Converts documents from one format to another." />
+    </Queues>
+    <CustomQueues>
+    </CustomQueues>
+    <initDB>
+        <BatchClasses>
+            <BatchClass Name="carrierfiles.xml" Description="This is a sample batch class distributed with OC" />
+        </BatchClasses>
+        <Users>
+            <User UserName="OCAdmin" AuthType="DB" FN="OC" LN="Admin" Password="admin" Description="OpenCapture Administrtor ID" />
+        </Users>
+    </initDB>
 </OpenCapture>

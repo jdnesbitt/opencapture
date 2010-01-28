@@ -33,12 +33,19 @@ public class BatchClass
     
     public BatchClass(XMLParser newBatch) throws OpenCaptureException
     {
-        this.BatchClassName = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_NAME);
-        this.ImagePath = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_IMAGE_PATH);
-        this.Version = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_VERSION);
-        this.Priority = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_PRIORITY,"7");
-        this.ID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_ID,"-1"));
-        this.SiteID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_SITE_ID,"-1"));
+        try
+        {
+            this.BatchClassName = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_NAME);
+            this.ImagePath = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_IMAGE_PATH);
+            this.Version = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_VERSION);
+            this.Priority = newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_PRIORITY,"7");
+            this.ID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_ID,"-1"));
+            this.SiteID = Long.valueOf(newBatch.getValue(OpenCaptureCommon.BATCH_CLASS_SITE_ID,"-1"));
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException(e.toString());
+        }
 
         if(this.ImagePath.length()<1)
             throw new OpenCaptureException("Image path not set.");

@@ -105,6 +105,24 @@ public class XMLParser
             throw new Exception(e);
         }
     }
+
+//    public void loadDocument(String filename) throws Exception
+//    {
+//        try
+//        {
+//            //dbf.setNamespaceAware(true);
+//            // Step 2: create a DocumentBuilder
+//            //DocumentBuilder db = dbf.newDocumentBuilder();
+//            // Step 3: parse the input file to get a Document object
+//            //doc = db.parse(new File(filename));
+//            String xml = ReadWriteTextFile.getContents(new File(filename));
+//            parseDocument(xml);
+//        }
+//        catch(Exception e)
+//        {
+//            throw new Exception(e);
+//        }
+//    }
     
     /**
      * Saves a org.w3c.dom.Document object to a file.
@@ -176,6 +194,31 @@ public class XMLParser
     }
 
     /**
+     * appendNode appends the specified node to the source document at XPath.
+     * @param xPath where to append new node.
+     * @param srcDocument document to append node to.
+     * @param appendNode Node to append.
+     * @param deep Set to true if import into source document should be deep import.
+     * @throws Exception
+     */
+    public static void appendNode(String xPath, Document srcDocument,Node appendNode, boolean deep) throws Exception
+    {
+    	try
+		{
+            XPath xpath = new DOMXPath(xPath);
+            Node result = (Node)xpath.selectSingleNode(srcDocument);
+
+    		Node res = srcDocument.importNode(appendNode,deep);
+
+    		result.appendChild(res);
+		}
+    	catch(Exception e)
+		{
+    		throw new Exception(e.toString());
+		}
+    }
+
+    /**
      * Sets value of tag or attribute at xPath.
      * @param xPath
      * @param value
@@ -205,7 +248,70 @@ public class XMLParser
         }
         catch(Exception e)
         {
-            throw new Exception("Error setting value @ " + xPath + "\n" + e.toString());
+            throw new Exception("Error setting value " + value + " @ " + xPath + "\n" + e.toString());
+        }
+    }
+
+    /**
+     * Set named attributes value at xpath.
+     *
+     * @param xPath
+     * @param attributeName
+     * @param value
+     * @throws Exception
+     */
+    public void setValue(String xPath, String attributeName,String value) throws Exception
+    {
+        Element result = null;
+        Object elem;
+
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            elem = xpath.selectSingleNode(this.doc);
+            if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+                ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getAttributes().getNamedItem(attributeName).setNodeValue(value);
+            else
+                ((Element)elem).getChildNodes().item(0).getAttributes().getNamedItem(attributeName).setNodeValue(value);
+
+        }
+        catch(Exception e)
+        {
+            throw new Exception("Error setting value " + value + " @ " + xPath + ", attributeName= " + attributeName + "\n" + e.toString());
+        }
+    }
+
+    /**
+     * Delete node at XPath.
+     *
+     * @param xPath
+     * @throws Exception
+     */
+    public void deleteNode(String xPath) throws Exception
+    {
+        Element result = null;
+        Object elem;
+
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            elem = xpath.selectSingleNode(this.doc);
+            
+            if(elem != null)
+                this.doc.removeChild((Node)elem);
+            else
+                throw new Exception("XPath[" + xPath + "] doesn't exist!");
+
+//            if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+//                //((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem);
+//                this.doc.removeChild((Node)elem);
+//            else
+//                ((Element)elem).getChildNodes().item(0).setNodeValue(value);
+
+        }
+        catch(Exception e)
+        {
+            throw new Exception("Error deleting node  @ " + xPath + "\n" + e.toString());
         }
     }
     
@@ -235,7 +341,13 @@ public class XMLParser
         }
         return values;
     }
-    
+
+    /**
+     * Returns a List of Maps containing attribute names/values.
+     *
+     * @param xPath
+     * @return List of Maps
+     */
     public List getNodeList(String xPath)
     {
         List result;
@@ -269,13 +381,42 @@ public class XMLParser
         return values;
     }
     
-    
+    /**
+     * Check if xPath exists.
+     * 
+     * @param xPath
+     * @return True if exists, else false.
+     */
+    public boolean Exists(String xPath) throws Exception
+    {
+        boolean result=false;
+        Object elem;
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            elem = xpath.selectSingleNode(this.doc);
+//            if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+//                result = ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getValue();
+//            else
+//                result = ((Element)elem).getChildNodes().item(0).getNodeValue();
+
+            if(elem != null)
+                result = true;
+        }
+        catch(Exception e)
+        {
+            throw new Exception("Error retrieving data @ " + xPath + "\n" + e.toString());
+        }
+
+        return result;
+    }
+
     /**
      * getValue retrieves a single value located at the specified XPath.
      * @param xPath
      * @return String
      */
-    public String getValue(String xPath)
+    public String getValue(String xPath) throws Exception
     {
         String result="";
         Object elem;
@@ -283,16 +424,20 @@ public class XMLParser
         {
             XPath xpath = new DOMXPath(xPath);
             elem = xpath.selectSingleNode(this.doc);
-            if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
-                result = ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getValue();
-            else
-                result = ((Element)elem).getChildNodes().item(0).getNodeValue();
+
+            if(elem != null)
+            {
+                if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+                    result = ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getValue();
+                else
+                    result = ((Element)elem).getChildNodes().item(0).getNodeValue();
+            }
         }
         catch(Exception e)
         {
-            System.out.println("Error retrieving data @ " + xPath + "\n" + e.toString());
-            result = "";
+            throw new Exception("Error retrieving data @ " + xPath + "\n" + e.toString());
         }
+
         return result;
     }
     
@@ -468,6 +613,47 @@ public class XMLParser
         
         return sb.toString();
     }
+
+    /**
+     * Create xml document using an xml string.
+     * @param strXML
+     * @return Codument element
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
+     */
+    public static final Element createDocument(String strXML)
+        throws ParserConfigurationException, SAXException, IOException
+    {
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setValidating(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        InputSource sourceXML = new InputSource(new StringReader(strXML));
+        Document xmlDoc = db.parse(sourceXML);
+        Element e = xmlDoc.getDocumentElement();
+        e.normalize();
+        return e;
+    }
+
+    /**
+     * Pretty print XML.
+     * @param xml XML string
+     * @param out Output writer object.
+     * @throws javax.xml.transform.TransformerConfigurationException
+     * @throws javax.xml.transform.TransformerFactoryConfigurationError
+     * @throws javax.xml.transform.TransformerException
+     */
+    public static final void prettyPrint(Node xml, Writer out)
+        throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException
+    {
+        Transformer tf = TransformerFactory.newInstance().newTransformer();
+        tf.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        tf.setOutputProperty(OutputKeys.INDENT, "yes");
+        tf.transform(new DOMSource(xml), new StreamResult(out));
+    }
+
     
     public static void main(String[] argv)
     {

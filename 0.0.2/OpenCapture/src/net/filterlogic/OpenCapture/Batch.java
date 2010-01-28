@@ -106,7 +106,7 @@ public class Batch
 
             logging = new Logging();           
         }
-        
+
         // load oc config object
         ocConfig = new OpenCaptureConfig();        
         
@@ -339,10 +339,16 @@ public class Batch
         // load batch xml
         loadBatch(batchID);
 
-        this.BatchName = xmlParser.getValue(OpenCaptureCommon.BATCH_NAME);
-        this.ID = xmlParser.getValue(OpenCaptureCommon.BATCH_ID);
-        this.CreateUser = xmlParser.getValue(OpenCaptureCommon.BATCH_SCAN_USER);
-
+        try
+        {
+            this.BatchName = xmlParser.getValue(OpenCaptureCommon.BATCH_NAME);
+            this.ID = xmlParser.getValue(OpenCaptureCommon.BATCH_ID);
+            this.CreateUser = xmlParser.getValue(OpenCaptureCommon.BATCH_SCAN_USER);
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException(e.toString());
+        }
         // create batch class object
         batchClass = new BatchClass(xmlParser);
 

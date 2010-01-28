@@ -10,8 +10,8 @@
     <properties>
       <property name="toplink.jdbc.user" value="opencapture"/>
       <property name="toplink.jdbc.password" value="corwin1"/>
-      <property name="toplink.jdbc.url" value="jdbc:derby://localhost:1527/OpenCapture"/>
-      <property name="toplink.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+      <property name="toplink.jdbc.url" value="jdbc:mysql://localhost:3306/opencapture"/>
+      <property name="toplink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
     </properties>
   </persistence-unit>
 </persistence>
