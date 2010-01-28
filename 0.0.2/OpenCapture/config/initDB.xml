@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : initDB.xml.xml
+    Created on : January 24, 2010, 11:18 AM
+    Author     : dnesbitt
+    Description:
+        Purpose of the document follows.
+-->
+
+<initDB>
+    <BatchClasses>
+        <BatchClass Name="carrierfiles.xml" Description="This is a sample batch class distributed with OC" />
+    </BatchClasses>
+    <Users>
+        <User UserName="OCAdmin" AuthType="DB" FN="OC" LN="Admin" Password="admin" Description="OpenCapture Administrtor ID" />
+    </Users>
+</initDB>

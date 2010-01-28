@@ -129,4 +129,17 @@ public class Path
         else
             return "";
     }
+
+    /**
+     * Get the current application path.
+     *
+     * @return String containing path.
+     */
+    public static String getApplicationPath()
+    {
+        File currentDir = new java.io.File("");
+        String dir = currentDir.getAbsolutePath();
+
+        return dir;
+    }
 }

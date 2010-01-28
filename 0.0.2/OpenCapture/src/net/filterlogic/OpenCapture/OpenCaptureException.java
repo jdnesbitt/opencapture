@@ -31,7 +31,7 @@ public class OpenCaptureException extends Throwable
     
     public String toString()
     {
-        //return this.Message;
-        return net.filterlogic.util.StackTraceUtil.getStackTrace(this);
+        return this.Message;
+        //return net.filterlogic.util.StackTraceUtil.getStackTrace(this);
     }
 }

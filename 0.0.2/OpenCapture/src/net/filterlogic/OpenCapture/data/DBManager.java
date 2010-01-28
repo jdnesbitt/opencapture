@@ -18,14 +18,17 @@ package net.filterlogic.OpenCapture.data;
 
 import java.util.Date;
 import java.lang.reflect.*;
+import java.util.Map;
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.spi.PersistenceUnitInfo;
 import net.filterlogic.OpenCapture.OpenCaptureException;
 
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.spi.PersistenceProvider;
 
 /**
  *
@@ -39,15 +42,15 @@ public class DBManager
     
     private Batches tblBatches;
     private BatchClass tblBatchClasses;
-    
+
     /**
      * Default constructor.
      */
     public DBManager()
     {
-        
+
     }
-    
+
     /**
      * Delete batch using batch id as key.
      * @param batchID Batch id.

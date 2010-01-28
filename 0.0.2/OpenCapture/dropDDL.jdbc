@@ -1,3 +1,4 @@
+DROP TABLE USERS
 DROP TABLE lkp_batchclass_queues
 DROP TABLE batches
 DROP TABLE batch_class
