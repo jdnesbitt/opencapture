@@ -51,6 +51,7 @@ public class OpenCaptureCommon
 {
     public static String PATH_SEPARATOR = System.getProperty("file.separator");
     public static String CURRENT_USER_NAME = System.getProperty("user.name");
+    public static String BATCH_CLASS = "//BatchClass";
     public static String BATCH_CLASS_NAME = "//BatchClass/@Name";
     public static String BATCH_CLASS_IMAGE_PATH = "//BatchClass/@ImagePath";
     public static String BATCH_CLASS_VERSION = "//BatchClass/@version";

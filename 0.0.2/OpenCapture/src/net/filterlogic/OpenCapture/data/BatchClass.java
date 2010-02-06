@@ -51,6 +51,8 @@ public class BatchClass implements Serializable
     private String descr;
     @Column(name = "IMAGE_PATH", nullable = false)
     private String imagePath;
+    @Column(name = "BATCH_CLASS_DISP_NAME", nullable = false)
+    private String batchClassDispName;
 
     public BatchClass() 
     {
@@ -61,8 +63,17 @@ public class BatchClass implements Serializable
         this.batchClassId = batchClassId;
     }
 
-    public BatchClass(Long batchClassId, String batchClassName, String batchClassDescr, String imagePath) {
+//    public BatchClass(Long batchClassId, String batchClassName, String batchClassDescr, String imagePath) {
+//        this.batchClassId = batchClassId;
+//        this.batchClassName = batchClassName;
+//        this.descr = batchClassDescr;
+//        this.imagePath = imagePath;
+//        this.batchClassDispName = batchClassName;
+//    }
+
+    public BatchClass(Long batchClassId, String batchClassDispName, String batchClassName, String batchClassDescr, String imagePath) {
         this.batchClassId = batchClassId;
+        this.batchClassDispName = batchClassDispName;
         this.batchClassName = batchClassName;
         this.descr = batchClassDescr;
         this.imagePath = imagePath;
@@ -74,6 +85,14 @@ public class BatchClass implements Serializable
 
     public void setBatchClassId(Long batchClassId) {
         this.batchClassId = batchClassId;
+    }
+
+    public String getBatchClassDispName() {
+        return batchClassDispName;
+    }
+
+    public void setBatchClassDispName(String batchClassDispName) {
+        this.batchClassDispName = batchClassDispName;
     }
 
     public String getBatchClassName() {

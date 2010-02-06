@@ -1,47 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<BatchClass Name="Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/Images" version="0.0.1" Priority="7">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><BatchClass ImagePath="/home/dnesbitt/NetBeansProjects/OpenCapture/test" Name="Carrier Files" Priority="7" version="0.0.1">
     <Configuration>
 	<CustomProperties>
-            <Property Name="OC_DELIVERY_FORMAT" Value="3" Volital="N" />
-            <Property Name="OC_WORKING_PATH" Value="/tmp" Volital="N" />
-            <Property Name="OC_DELIVERY_PATH" Value="/home/dnesbitt/Test/OpenCapture/XML" Volital="N" />
+            <Property Name="OC_DELIVERY_FORMAT" Value="3" Volital="N"/>
+            <Property Name="OC_WORKING_PATH" Value="/tmp" Volital="N"/>
+            <Property Name="OC_DELIVERY_PATH" Value="/home/dnesbitt/Test/OpenCapture/XML" Volital="N"/>
         </CustomProperties>
         <IndexFields>
-            <IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />
-            <IndexField Name="CUSTOMER_ID" Type="N" Value="" Stickey="Y" />
-            <IndexField Name="MC_NUMBER" Type="N" Value="" Stickey="Y" />
-	    <IndexField Name="DOC_TYPE" Type="S" Value="" Stickey="N" />
+            <IndexField Name="CUSTOMER_NAME" Stickey="Y" Type="S" Value=""/>
+            <IndexField Name="CUSTOMER_ID" Stickey="Y" Type="N" Value=""/>
+            <IndexField Name="MC_NUMBER" Stickey="Y" Type="N" Value=""/>
+	    <IndexField Name="DOC_TYPE" Stickey="N" Type="S" Value=""/>
         </IndexFields>
         <Queues CurrentQueue="">
-            <Queue Name="OCImport" ID="1" CustomPlugin="" />
-            <Queue Name="OCCognizance" ID="2" CustomPlugin="" />
-	    <Queue Name="OCConverter" ID="4" CustomPlugin="PDF" />
-            <Queue Name="OCDelivery" ID="3" CustomPlugin="XMLDelivery" />
+            <Queue CustomPlugin="" ID="1" Name="OCImport"/>
+            <Queue CustomPlugin="" ID="2" Name="OCCognizance"/>
+	    <Queue CustomPlugin="PDF" ID="4" Name="OCConverter"/>
+            <Queue CustomPlugin="XMLDelivery" ID="3" Name="OCDelivery"/>
         </Queues>
-        <BatchFields />
+        <BatchFields/>
         <Documents>
-            <Document Name="Carrier Header" FormID="CARRIER" Number="" Indexed="False">
+            <Document FormID="CARRIER" Indexed="False" Name="Carrier Header" Number="">
                 <Zones>
-                    <Zone Name="FORMID" Type="CODE39" X="232" Y="264" W="1216" H="300" MinAccuracy="" FieldType="FormID"/>
-                    <Zone Name="CUSTOMER_NAME" Type="CODE39" X="108" Y="684" W="1500" H="356" MinAccuracy="" FieldType="Index"/>
-                    <Zone Name="CUSTOMER_ID" Type="CODE39" X="108" Y="1100" W="1500" H="316" MinAccuracy="" FieldType="Index"/>
-                    <Zone Name="MC_NUMBER" Type="CODE39" X="108" Y="1500" W="1500" H="340" MinAccuracy="" FieldType="Index"/>
+                    <Zone FieldType="FormID" H="300" MinAccuracy="" Name="FORMID" Type="CODE39" W="1216" X="232" Y="264"/>
+                    <Zone FieldType="Index" H="356" MinAccuracy="" Name="CUSTOMER_NAME" Type="CODE39" W="1500" X="108" Y="684"/>
+                    <Zone FieldType="Index" H="316" MinAccuracy="" Name="CUSTOMER_ID" Type="CODE39" W="1500" X="108" Y="1100"/>
+                    <Zone FieldType="Index" H="340" MinAccuracy="" Name="MC_NUMBER" Type="CODE39" W="1500" X="108" Y="1500"/>
                 </Zones>
             </Document>
-            <Document Name="Document Header" FormID="DOCUMENT" Number="">
+            <Document FormID="DOCUMENT" Name="Document Header" Number="">
                 <Zones>
-                    <Zone Name="FORMID" Type="CODE39" X="132" Y="260" W="1472" H="340" MinAccuracy="" FieldType="FormID"/>
-                    <Zone Name="DOC_TYPE" Type="CODE39" X="132" Y="744" W="1472" H="364" MinAccuracy="" FieldType="Index"/>
+                    <Zone FieldType="FormID" H="340" MinAccuracy="" Name="FORMID" Type="CODE39" W="1472" X="132" Y="260"/>
+                    <Zone FieldType="Index" H="364" MinAccuracy="" Name="DOC_TYPE" Type="CODE39" W="1472" X="132" Y="744"/>
                 </Zones>
             </Document>
         </Documents>
     </Configuration>
-    <Batch Name="" ID="" CreateDateTime="" ScanUser="">
-        <BatchFields />
-        <Document Name="" FormID="" Number="">
-            <CustomProperties />
-            <IndexFields />
-            <Pages />
+    <Batch CreateDateTime="" ID="" Name="" ScanUser="">
+        <BatchFields/>
+        <Document FormID="" Name="" Number="">
+            <CustomProperties/>
+            <IndexFields/>
+            <Pages/>
         </Document>
     </Batch>
 </BatchClass>

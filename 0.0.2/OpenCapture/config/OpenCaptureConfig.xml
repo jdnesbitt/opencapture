@@ -9,6 +9,9 @@
 -->
 
 <OpenCapture version="1.0">
+    <BatchClasses>
+        <BatchClass Name="Carrier Files" File="carrierfiles.xml"/>
+    </BatchClasses>
     <ReaderPlugins>
         <Plugin Name="ZXing 3 of 9 Reader" PluginID="CODE39" Class="net.filterlogic.OpenCapture.readers.Code39Reader" Description="Reads 3 of 9 Barcodes." />
         <Plugin Name="ZXing Code 128 Reader" PluginID="CODE128" Class="net.filterlogic.OpenCapture.readers.Code128Reader" Description="Reads code 128 Barcodes." />
@@ -16,10 +19,10 @@
         <Plugin Name="ZXing Multi-Format Reader" PluginID="MULTIFORMAT" Class="net.filterlogic.OpenCapture.readers.MultiFormatReader" Description="Reads Multiple Barcode Formats." />
     </ReaderPlugins>
     <ConverterPlugins>
-        <Plugin Name="PDF Converter" PluginID="PDF" Class="net.filterlogic.OpenCapture.converters.PDFConversion" Description="Converts TIFFs to PDF format." />
+        <Plugin Name="PDF Converter" PluginID="PDF" Class="net.filterlogic.OpenCapture.converters.PDFConversion" UIClass="" Description="Converts TIFFs to PDF format." />
     </ConverterPlugins>
     <DeliveryPlugins>
-        <Plugin Name="XML Delivery" PluginID="XMLDelivery" Class="net.filterlogic.OpenCapture.delivery.XMLDelivery" Description="Writes XML file containing index data and image file." />
+        <Plugin Name="XML Delivery" PluginID="XMLDelivery" Class="net.filterlogic.OpenCapture.delivery.XMLDelivery" UIClass="" Description="Writes XML file containing index data and image file." />
     </DeliveryPlugins>
     <Queues>
         <Queue Name="OCImport" ID="1" Description="Import images from the filesystem." />
@@ -31,7 +34,7 @@
     </CustomQueues>
     <initDB>
         <BatchClasses>
-            <BatchClass Name="carrierfiles.xml" Description="This is a sample batch class distributed with OC" />
+            <BatchClass Name="Carrier Files" File="carrierfiles.xml" Description="This is a sample batch class distributed with OC" />
         </BatchClasses>
         <Users>
             <User UserName="OCAdmin" AuthType="DB" FN="OC" LN="Admin" Password="admin" Description="OpenCapture Administrtor ID" />
