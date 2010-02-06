@@ -94,11 +94,14 @@ public class InitializeDB
     {
         try
         {
-            // this will create tables
+            // this will create tableshttp://www.google.com/
             entMgr = entMgrFac.createEntityManager();
 
+            // sleep for a few seconds to allow table creation to occur
+            //Thread.sleep(5000);
+
             // insert default queues.
-            //AddQueues();
+            AddQueues();
             // add bc & lkp entries
             AddBatchClasses();
 
@@ -137,23 +140,28 @@ public class InitializeDB
             if(queueNames.size()>0)
             {
                 tx = entMgr.getTransaction();
-                tx.begin();
 
                 for(int i=0;i<queueNames.size();i++)
                 {
+                    tx.begin();
+
                     // insert standard queues
                     Map map = (Map)queueNames.get(i);
 
                     Long qid = Long.valueOf(map.get("ID").toString());
                     String qname = map.get("Name").toString();
+                    String qdesc = map.get("Description").toString();
 
                     // create queue
                     Queues queues = new Queues(qid, qname);
+                    queues.setQueueDesc(qdesc);
 
                     entMgr.persist(queues);
+
+                    tx.commit();
                 }
 
-                tx.commit();
+                
             }
 
         }
@@ -187,12 +195,13 @@ public class InitializeDB
                     // insert standard queues
                     Map map = (Map)bcNames.get(i);
 
-                    String bcname = map.get("Name").toString();
+                    String bcname = map.get("File").toString();
+                    String bcdName = map.get("Name").toString();
                     String desc = map.get("Description").toString();
                     Long bid = Long.valueOf(0);
 
                     // create bc
-                    BatchClass batchClass = new BatchClass(Long.valueOf(0), bcname, desc, ocRootPath + "test");
+                    BatchClass batchClass = new BatchClass(Long.valueOf(0),bcdName, bcname, desc, ocRootPath + "test");
 
                     entMgr.persist(batchClass);
 
@@ -207,7 +216,7 @@ public class InitializeDB
                     classParser.loadDocument(ocConfigPath + bcname);
 
                     // update carrier image path in batch class config file
-                    classParser.setValue(OpenCaptureCommon.BATCH_CLASS_IMAGE_PATH, "ImagePath", ocRootPath + "test");
+                    classParser.setValue(OpenCaptureCommon.BATCH_CLASS, "ImagePath", ocRootPath + "test");
                     // save updated file
                     classParser.saveDocument(ocConfigPath + bcname);
 

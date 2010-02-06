@@ -563,13 +563,13 @@ public class DBManager
      * @return Return id of new batch class.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
      */
-    public long createBatchClass(long batchClassID, String batchClassName, String batchDescr, String imagePath) throws OpenCaptureException
+    public long createBatchClass(long batchClassID, String batchClassDispName, String batchClassName, String batchDescr, String imagePath) throws OpenCaptureException
     {
         EntityTransaction tx = null;
         
         try
         {
-            tblBatchClasses = new BatchClass(batchClassID, batchClassName, batchDescr, imagePath);
+            tblBatchClasses = new BatchClass(batchClassID,batchClassDispName, batchClassName, batchDescr, imagePath);
             
             entMgr = entMgrFac.createEntityManager();
             

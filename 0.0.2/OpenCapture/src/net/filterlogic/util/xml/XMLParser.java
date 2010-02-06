@@ -272,7 +272,10 @@ public class XMLParser
             if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
                 ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getAttributes().getNamedItem(attributeName).setNodeValue(value);
             else
-                ((Element)elem).getChildNodes().item(0).getAttributes().getNamedItem(attributeName).setNodeValue(value);
+                if(elem.getClass().toString().contains("DeferredElementNSImpl"))
+                    ((com.sun.org.apache.xerces.internal.dom.DeferredElementNSImpl)elem).setAttribute(attributeName, value);
+                else
+                    ((Element)elem).getChildNodes().item(0).getAttributes().getNamedItem(attributeName).setNodeValue(value);
 
         }
         catch(Exception e)
