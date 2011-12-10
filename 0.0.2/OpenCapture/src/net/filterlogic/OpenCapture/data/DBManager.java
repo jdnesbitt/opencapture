@@ -365,6 +365,80 @@ public class DBManager
     }
 
     /**
+     * Get batch list by batch class and queue id's
+     * @param batchClassId
+     * @param queueId
+     * @return List of Batches objects
+     * @throws OpenCaptureException
+     */
+    public List getBatchListByBatchClassAndQueueId(long batchClassId, long queueId) throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            String sql = "SELECT b.*, bc.*, q.* " +
+                    "FROM batches b, batch_class bc, queues q " +
+                    "WHERE b.batch_class_id = " + String.valueOf(batchClassId) + " " +
+                    "AND b.queue_id = " + String.valueOf(queueId) + " " +
+                    "AND b.batch_class_id = bc.batch_class_id " +
+                    "AND b.queue_id = q.queue_id";
+
+            // create native query and set resultset mapping name to use
+            qry = entMgr.createNativeQuery(sql, "BatchesWithClassAndQueue");
+
+            List list = qry.getResultList();
+
+            return list;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to retrieve batch id.  " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+
+            entMgr = null;
+        }
+    }
+
+    /**
+     *
+     * @param batchClassID
+     * @return
+     * @throws OpenCaptureException
+     */
+    public List getBatchListByClassID(long batchClassID) throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            qry = entMgr.createNamedQuery("Batches.findByBatchClassId");
+
+            // set batch class id
+            qry.setParameter("batchClassId", batchClassID);
+
+            List list = qry.getResultList();
+
+            return list;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to retrieve batch id.  " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+
+            entMgr = null;
+        }
+    }
+
+    /**
      * GetBatchClass List
      * 
      * @return List containing batch class.

@@ -43,7 +43,7 @@ import net.filterlogic.OpenCapture.OpenCaptureCommon;
  */
 public class InitializeDB
 {
-    private EntityManagerFactory entMgrFac = Persistence.createEntityManagerFactory("OpenCapturePU");
+    private EntityManagerFactory entMgrFac = null;
     private EntityManager entMgr;
 
     private XMLParser initDBParser = null;
@@ -68,6 +68,8 @@ public class InitializeDB
     {
         try
         {
+            entMgrFac = Persistence.createEntityManagerFactory("OpenCapturePU");
+            
             // get path to application root folder
             ocRootPath = Path.FixPath(Path.getApplicationPath());
             // set config path
@@ -100,23 +102,27 @@ public class InitializeDB
             // sleep for a few seconds to allow table creation to occur
             //Thread.sleep(5000);
 
-            // insert default queues.
-            AddQueues();
-            // add bc & lkp entries
-            AddBatchClasses();
-
+            if(entMgr != null && entMgr.isOpen())
+            {
+                // insert default queues.
+                AddQueues();
+                // add bc & lkp entries
+                AddBatchClasses();
+            }
+            else
+                throw new Exception("Unable to create EntityManager");
             
         }
         catch(Exception e)
         {
-
+            e.printStackTrace();
         }
         finally
         {
-            if(entMgr.isOpen())
+            if(entMgr != null && entMgr.isOpen())
                 entMgr.close();
 
-            if(entMgrFac.isOpen())
+            if(entMgrFac != null && entMgrFac.isOpen())
                 entMgrFac.close();
 
             entMgr = null;
@@ -269,14 +275,17 @@ public class InitializeDB
 
         try
         {
+            System.out.println("OpenCapture - Initilize DB\n\n");
             //InitializeDB idb = new InitializeDB("opencapture", "corwin1", "jdbc:mysql://localhost:3306/opencapture","com.mysql.jdbc.Driver" );
             InitializeDB idb = new InitializeDB();
             
             idb.InitDB();
+
+            System.out.println("Finished initializing OpenCapture's DB.\n");
         }
         catch(OpenCaptureException e)
         {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 }

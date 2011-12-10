@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><BatchClass ImagePath="/home/dnesbitt/NetBeansProjects/OpenCapture/test" Name="Carrier Files" Priority="7" version="0.0.1">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><BatchClass ImagePath="C:\Code\Java\OpenCapture\test" Name="Carrier Files" Priority="7" version="0.0.1">
     <Configuration>
 	<CustomProperties>
             <Property Name="OC_DELIVERY_FORMAT" Value="3" Volital="N"/>

@@ -19,12 +19,15 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityResult;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,11 +38,27 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "batches")
+
+@SqlResultSetMappings(
+{
+    @SqlResultSetMapping(
+        name = "BatchesWithClassAndQueue",
+        entities =
+        {
+            @EntityResult(entityClass = Batches.class),
+            @EntityResult(entityClass = Queues.class),
+            @EntityResult(entityClass = BatchClass.class)
+        }
+    )
+
+})
+
 @NamedQueries(
 {
     @NamedQuery(name = "Batches.findByBatchId", query = "SELECT b FROM Batches b WHERE b.batchId = :batchId"), 
     @NamedQuery(name = "Batches.findByBatchName", query = "SELECT b FROM Batches b WHERE b.batchName = :batchName"), 
-    @NamedQuery(name = "Batches.findByBatchClassId", query = "SELECT b FROM Batches b WHERE b.batchClassId = :batchClassId"), 
+    @NamedQuery(name = "Batches.findByBatchClassId", query = "SELECT b FROM Batches b WHERE b.batchClassId = :batchClassId"),
+    @NamedQuery(name = "Batches.findByBatchClassIdAndQueueId", query = "SELECT b FROM Batches b WHERE b.batchClassId = :batchClassId AND b.queueId = :queueId"),
     @NamedQuery(name = "Batches.findByScanDatetime", query = "SELECT b FROM Batches b WHERE b.scanDatetime = :scanDatetime"), 
     @NamedQuery(name = "Batches.findBySiteId", query = "SELECT b FROM Batches b WHERE b.siteId = :siteId"), 
     @NamedQuery(name = "Batches.findByBatchState", query = "SELECT b FROM Batches b WHERE b.batchState = :batchState"), 

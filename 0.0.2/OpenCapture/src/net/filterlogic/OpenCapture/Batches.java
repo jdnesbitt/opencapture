@@ -16,11 +16,109 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.filterlogic.OpenCapture.data.DBManager;
+
 /**
  *
  * @author dnesbitt
  */
 public class Batches 
 {
+    private DBManager dbm;
+    private List<net.filterlogic.OpenCapture.data.Batches> batches;
+    private long batchClassID;
 
+    private Logging logging = null;
+
+    public Batches()
+    {
+        logging = new Logging();
+    }
+
+    public List<String> getBatchNameList() throws OpenCaptureException
+    {
+        List<String> batchNames = new ArrayList<String>();
+
+        try
+        {
+            // create dbmgr obj
+            dbm = new DBManager();
+
+            // query dbmgr for list of batches
+            batches = dbm.getBatchList();
+
+            // loop through batch list.
+            for(int i=0;i<batches.size();i++)
+            {
+                // get batches obj from query result list
+                net.filterlogic.OpenCapture.data.Batches batch = batches.get(i);
+
+                // add batch name to name list
+                batchNames.add(batch.getBatchName());
+            }
+        }
+        catch(OpenCaptureException oce)
+        {
+            oce.printStackTrace();
+
+            throw oce;
+        }
+
+        return batchNames;
+    }
+
+    /**
+     * Get list of persistence Batches objects.
+     *
+     * @return net.filterlogic.OpenCapture.data.Batches
+     * @throws OpenCaptureException
+     */
+    public List<net.filterlogic.OpenCapture.data.Batches> getRawBatchList() throws OpenCaptureException
+    {
+        try
+        {
+            // create dbmgr obj
+            dbm = new DBManager();
+
+            // query dbmgr for list of batches
+            batches = dbm.getBatchList();
+        }
+        catch(OpenCaptureException oce)
+        {
+            oce.printStackTrace();
+
+            throw oce;
+        }
+
+        return batches;
+    }
+
+    /**
+     * Get batch list by batch class and queue id's
+     * @param batchClassId
+     * @param queueId
+     * @return
+     * @throws OpenCaptureException
+     */
+    public List<net.filterlogic.OpenCapture.data.Batches> getRawBatchList(long batchClassId, long queueId) throws OpenCaptureException
+    {
+        try
+        {
+            // create dbmgr obj
+            dbm = new DBManager();
+
+            // query dbmgr for list of batches
+            batches = dbm.getBatchListByBatchClassAndQueueId(batchClassId, queueId);
+        }
+        catch(OpenCaptureException oce)
+        {
+            oce.printStackTrace();
+
+            throw oce;
+        }
+
+        return batches;
+    }
 }

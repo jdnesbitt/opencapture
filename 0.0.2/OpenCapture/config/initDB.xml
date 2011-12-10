@@ -13,6 +13,6 @@
         <BatchClass Name="carrierfiles.xml" Description="This is a sample batch class distributed with OC" />
     </BatchClasses>
     <Users>
-        <User UserName="OCAdmin" AuthType="DB" FN="OC" LN="Admin" Password="admin" Description="OpenCapture Administrtor ID" />
+        <User UserName="OCAdmin" AuthType="DB" FN="OC" LN="Admin" Password="corwin1" Description="OpenCapture Administrtor ID" />
     </Users>
 </initDB>
