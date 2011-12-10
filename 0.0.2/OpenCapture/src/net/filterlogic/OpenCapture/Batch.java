@@ -73,6 +73,16 @@ public class Batch
    
     private String moduleID = "";
 
+    /**
+     * Use this method to create DBManager object
+     */
+    protected void createDBManager()
+    {
+        // create dbm if needed
+        if(dbm == null)
+            dbm = new DBManager();
+    }
+
     public Batch() throws OpenCaptureException
     {
         dbm = new DBManager();;
@@ -206,6 +216,10 @@ public class Batch
 
             short priority = batchClass.getPriority().length()>0 ? Short.parseShort(batchClass.getPriority()) : Short.parseShort("9");
 
+            // check dbm
+            if(dbm == null)
+                createDBManager();
+
             // create batch db entry and set status to in use.
             id = dbm.createBatch(Long.parseLong("0"), batchName, Long.parseLong("1"),
                                                                             scanDate , 1,OpenCaptureCommon.BATCH_STATUS_READY, 
@@ -304,7 +318,9 @@ public class Batch
 
         try
         {
-            //dbm = new DBManager();
+            // check dbm
+            if(dbm == null)
+                createDBManager();
             
             batchID = dbm.getNextBatch(moduleID);
             
@@ -327,8 +343,10 @@ public class Batch
      */
     public void OpenBatch(long batchID) throws OpenCaptureException
     {
-        //DBManager dbm = new DBManager();
-        
+        // check dbm
+        if(dbm == null)
+            createDBManager();
+
         // of batch already locked, error.
         if(OpenCaptureCommon.isBatchXmlFileLocked(batchID))
             throw new OpenCaptureException("Batch is already being processed!");

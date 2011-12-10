@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
   <persistence-unit name="OpenCapturePU" transaction-type="RESOURCE_LOCAL">
-    <provider>oracle.toplink.essentials.PersistenceProvider</provider>
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>net.filterlogic.OpenCapture.data.BatchClass</class>
     <class>net.filterlogic.OpenCapture.data.Batches</class>
     <class>net.filterlogic.OpenCapture.data.LkpBatchclassQueues</class>
     <class>net.filterlogic.OpenCapture.data.Queues</class>
     <class>net.filterlogic.OpenCapture.data.Users</class>
     <properties>
-      <property name="toplink.jdbc.user" value="opencapture"/>
-      <property name="toplink.jdbc.password" value="corwin1"/>
-      <property name="toplink.jdbc.url" value="jdbc:mysql://localhost:3306/opencapture"/>
-      <property name="toplink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="toplink.ddl-generation" value="drop-and-create-tables"/>
+      <!-- <property name="toplink.ddl-generation" value="create-tables"/> -->
+      <!-- <property name="toplink.ddl-generation" value="drop-and-create-tables"/> -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:jtds:sqlserver://sql.pulsestream.net:1433/OpenCapture"/>
+      <property name="javax.persistence.jdbc.password" value="corwin1"/>
+      <property name="javax.persistence.jdbc.driver" value="net.sourceforge.jtds.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="ocadmin"/>
     </properties>
   </persistence-unit>
 </persistence>
