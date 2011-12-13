@@ -137,6 +137,50 @@ public class Pages
     {
         return pages.get(pageID)!=null ? (Page)pages.get(pageID) : new Page();
     }
+
+    /**
+     * Get page using page sequence number.
+     *
+     * @param sequenceNumber
+     *
+     * @return Populated page object if sequence valid, else empty page object returned.
+     */
+    public Page getPageBySequence(int sequenceNumber)
+    {
+        Page page = null;
+        boolean pageFound = false;
+
+        // if sequence greater than number of pages
+        if(sequenceNumber>this.pages.size())
+            page = new Page();
+        else
+        {
+            List<String> pageList = this.pages.getOrderedNameList();
+
+            for(int i=0;i<this.pages.size();i++)
+            {
+                // get page name
+                String pageName = pageList.get(i);
+                // get page object
+                page = (Page)this.pages.get(pageName);
+
+                // check sequence
+                if(page.getSequenceNumber() == sequenceNumber)
+                {
+                    pageFound = true;
+                    break;
+                }
+
+            }
+        }
+
+        // if page not found, create empty page object
+        if(!pageFound)
+            page = new Page();
+
+        return page;
+
+    }
     
     /**
      * Get list of file names

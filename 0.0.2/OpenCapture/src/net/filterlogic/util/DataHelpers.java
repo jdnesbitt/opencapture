@@ -425,19 +425,6 @@ public class DataHelpers
 
         return nvl;
     }
-//
-//    private String toString(Object value, Class type)
-//    {
-//        String svalue = "";
-//
-//        if(type.getName().equals("java.lang.Byte"))
-//            svalue = String.valueOf(value);
-//
-//        if(type.getName().equals("java.lang.Short"))
-//        java.lang.Short
-//
-//
-//    }
 
     private static String encodeXml(String xml)
     {
@@ -450,7 +437,24 @@ public class DataHelpers
         return newXml;
     }
 
-    //
+    /**
+     * Check if specified object simple name is one of the java simple types.
+     *
+     * Simple java types are:<br/>
+     *<br/>
+     * byte
+     * short
+     * int
+     * long
+     * float
+     * double
+     * char
+     * String
+     * boolean
+     *
+     * @param objectSimpleName
+     * @return True if a simple type found, else false.
+     */
     private static boolean isSimpleJavaType(String objectSimpleName)
     {
         String simpleTypes = ",byte,short,int,long,float,double,char,String,boolean,";
@@ -463,6 +467,133 @@ public class DataHelpers
 
         return result;
     }
+
+    /**
+     * Convert string to long
+     * @param value
+     * @return Value as expected type or -1 for error.
+     */
+    public static long toLong(String value)
+    {
+        long result = 0;
+
+        try
+        {
+            result = Long.valueOf(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert string to int
+     * @param value
+     * @return Value as expected type or -1 for error.
+     */
+    public static int toInt(String value)
+    {
+        int result = 0;
+
+        try
+        {
+            result = Integer.valueOf(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert string to byte
+     * @param value
+     * @return Value as expected type or -1 for error.
+     */
+    public static byte toByte(String value)
+    {
+        byte result = 0;
+
+        try
+        {
+            result = Byte.valueOf(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert string to short
+     * @param value
+     * @return Value as expected type or -1 for error.
+     */
+    public static short toShort(String value)
+    {
+        short result = 0;
+
+        try
+        {
+            result = Short.valueOf(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert string to double
+     * @param value
+     * @return Value as expected type or -1 for error.
+     */
+    public static double toDouble(String value)
+    {
+        double result = 0;
+
+        try
+        {
+            result = Double.valueOf(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert string to float
+     * @param value
+     * @return Value as expected type or -1 for error.
+     */
+    public static float toFloat(String value)
+    {
+        float result = 0;
+
+        try
+        {
+            result = Float.valueOf(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+
+        return result;
+    }
+
 
     public static void main(String[] args)
     {

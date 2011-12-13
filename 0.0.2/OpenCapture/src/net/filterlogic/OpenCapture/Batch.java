@@ -17,6 +17,7 @@ Copyright 2008 Filter Logic
 package net.filterlogic.OpenCapture;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Query;
 import net.filterlogic.OpenCapture.data.DBManager;
 import net.filterlogic.util.xml.XMLParser;
@@ -528,6 +529,46 @@ public class Batch
     }
 
     /**
+     * Close batch.
+     *
+     * @param suspend Set to true if batch is to be held (suspended) in current queue.
+     *
+     * @throws OpenCaptureException
+     */
+    public void SuspendBatch() throws OpenCaptureException
+    {
+        long id = 0;
+
+        try
+        {
+            // set end time
+            String batchCloseDate = DateUtil.getDateTime();
+            getLog().setEndDateTime(batchCloseDate);
+
+            // add log to logging object
+            getLogging().addLog(getLog());
+
+            // set batch state to hold (suspend)
+            dbm.setBatchStateByBatchID(batchID, OpenCaptureCommon.BATCH_STATUS_HOLD);
+
+            // unlock batch file.
+            OpenCaptureCommon.unlockBatchXmlFile(batchID);
+        }
+        catch(Exception e)
+        {
+            logException("Unable to suspend batch. " + net.filterlogic.util.StackTraceUtil.getStackTrace(e));
+            throw new OpenCaptureException(e.toString());
+        }
+        finally
+        {
+            dbm.CloseConnections();
+
+            // save the batch
+            saveBatch();
+        }
+    }
+
+    /**
      * Return the BatchClass object.
      * @return
      */
@@ -658,6 +699,16 @@ public class Batch
     public Page getPage(int pageNumber)
     {
         return loosePages.getPage(pageNumber);
+    }
+
+    /**
+     * Get loose pages.
+     *
+     * @return Loose pages in Pages object
+     */
+    public Pages getLoosPages()
+    {
+        return this.loosePages;
     }
 
     /**
