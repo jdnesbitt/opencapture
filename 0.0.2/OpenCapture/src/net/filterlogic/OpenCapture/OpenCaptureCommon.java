@@ -129,8 +129,10 @@ public class OpenCaptureCommon
         {
             // get application path
             java.io.File path = new java.io.File(".");
-            rootPath = path.getCanonicalPath();
-            
+
+            // get oc_home property if exists, else get local path
+            rootPath = System.getProperty("oc_home", path.getCanonicalPath());
+
             if(rootPath.lastIndexOf(PATH_SEPARATOR) != rootPath.length())
                 rootPath += PATH_SEPARATOR;
         }
