@@ -124,7 +124,9 @@ public class Pages
      */
     public Page getPage(int pageNumber)
     {
-        String v = (String)pages.getOrderedNameList().get(pageNumber);
+        int index = pages.getOrderedNameList().indexOf(pageNumber);
+        //String v = (String)pages.getOrderedNameList().get(pageNumber);
+        String v = (String)pages.getOrderedNameList().get(index);
         return (Page)pages.get(v);
     }
 

@@ -692,13 +692,52 @@ public class Batch
     }
 
     /**
-     * Get page.
+     * Get loose page.
      * @param pageNumber
      * @return Page object.
      */
     public Page getPage(int pageNumber)
     {
-        return loosePages.getPage(pageNumber);
+        return loosePages.getPage(String.valueOf(pageNumber));
+    }
+
+    public Page findPage(int pageNumber)
+    {
+        Page page = loosePages.getPage(String.valueOf(pageNumber));
+
+        if(page == null || page.getName().length()<1)
+        {
+            Documents documents = getDocuments();
+
+            if(documents != null && documents.Count()>0)
+            {
+                for(int i=1;i<=documents.Count();i++)
+                {
+                    Document document = documents.getDocument(i);
+
+                    Pages docPages = document.getPages();
+
+                    if(docPages != null && docPages.Count()>0)
+                    {
+                       Page docPage = docPages.getPage(String.valueOf(pageNumber));
+
+                       if(docPage != null && docPage.getName().length()>0)
+                       {
+                           page = docPage;
+                           break;
+                       }
+                    }
+
+                    page = null;
+                }
+            }
+        }
+
+        if(page == null)
+            page = new Page();
+
+        return page;
+
     }
 
     /**
@@ -721,7 +760,7 @@ public class Batch
     }
 
     /**
-     * Get page file name.
+     * Get loose page file name.
      * @param pageNumber
      * @return String containing file name without page.
      */
