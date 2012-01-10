@@ -27,18 +27,57 @@ public class IndexField
     private String Value = "";
     private boolean Stickey = false;
     
+    // added validator to support custom code at the field level.
+    private String Validator = "";
+    
     private boolean dirty = false;
 
+    /**
+     * Default constructor.
+     */
     public IndexField()
     {
     }
-    
+
+    /**
+     *
+     * @param name
+     * @param type
+     * @param value
+     * @param stickey
+     */
     public IndexField(String name,String type, String value, boolean stickey)
     {
         this.Name=name;
         this.Value=value;
         this.Type=type;
         this.Stickey=stickey;
+    }
+
+    /**
+     * 
+     * @param name
+     * @param type
+     * @param value
+     * @param validator
+     * @param stickey
+     */
+    public IndexField(String name,String type, String value, String validator, boolean stickey)
+    {
+        this.Name=name;
+        this.Value=value;
+        this.Type=type;
+        this.Validator=validator;
+        this.Stickey=stickey;
+    }
+
+
+    public void setValidator(String Validator) {
+        this.Validator = Validator;
+    }
+
+    public String getValidator() {
+        return Validator;
     }
 
     public void setName(String Name)

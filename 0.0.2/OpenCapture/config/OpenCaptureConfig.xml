@@ -31,7 +31,15 @@
         <Queue Name="OCConverter" ID="4" Description="Converts documents from one format to another." />
     </Queues>
     <CustomQueues>
-    </CustomQueues>
+		<Queue Name="Indexer" ID="5" Description="Web indexing application"/>
+	</CustomQueues>
+	<CustomPlugins>
+		<Indexer>
+			<Plugin Name="ABC Indexing Panel" PluginID="" Class="" Description="" />
+			<Plugin Name="ABC Batch Content Panel" PluginID="" Class="" Description="" />
+			<Plugin Name="ABC Thumbnail Panel" PluginID="" Class="" Description="" />
+		</Indexer>
+	</CustomPlugins>
     <initDB>
         <BatchClasses>
             <BatchClass Name="Carrier Files" File="carrierfiles.xml" Description="This is a sample batch class distributed with OC" />
