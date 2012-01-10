@@ -148,7 +148,7 @@ public class IndexFields
             String stickey = !ndxField.isStickey() ? "N" : "Y";
             
             xml += "<IndexField Name=\"" + ndxField.getName() + "\" Type=\"" + ndxField.getType() + 
-                    "\" Value=\"" + ndxField.getValue() + "\" Stickey=\"" + stickey + "\" />\n";
+                    "\" Value=\"" + ndxField.getValue() + "\" Stickey=\"" + stickey + "\" Validator=\"" + ndxField.getValidator() + "\" />\n";
         }
         
         return xml;
