@@ -77,6 +77,7 @@ public class OCCognizance
 
         boolean moreWork = true;
         boolean coverFound = false;
+        int docSeqNum = 1;
         
         try
         {
@@ -168,6 +169,8 @@ public class OCCognizance
 
                                         // create new doc
                                         document = new Document();
+                                        // reset page sequence
+                                        docSeqNum = 1;
 
                                         document.setFormID(zoneValue);
                                         document.setNumber(documentCount);
@@ -193,14 +196,20 @@ public class OCCognizance
                                 // if document found
                                 if(docFound)
                                 {
+                                    // seq page seq
+                                    page.setSequenceNumber(docSeqNum);
+
+                                    // add page to doc.
                                     document.addPage(page);
+
+                                    // increment seq number
+                                    ++docSeqNum;
 
                                     // delete loose page
                                     batch.deleteLoosePage(String.valueOf(i));
                                 }
                                 else
                                     throw new OpenCaptureException("First page in batch isn't a cover page.");
-
                             }
                             catch(Exception ex)
                             {
@@ -216,8 +225,14 @@ public class OCCognizance
                         // if docs found, add last separated document to batch
                         if(docFound)
                         {
+                            // seq page seq
+                            page.setSequenceNumber(docSeqNum);
+
                             // add loose page to document
                             document.addPage(page);
+
+                            // increment seq number
+                            ++docSeqNum;
 
                             // delete loose page
                             batch.deleteLoosePage(String.valueOf(loosePageCount));
