@@ -26,11 +26,16 @@ public class IndexField
     private String Type = "";
     private String Value = "";
     private boolean Stickey = false;
+    private boolean Visible = true;
+    private String label = "";
+    private String keyValue = "";
     
     // added validator to support custom code at the field level.
     private String Validator = "";
     
     private boolean dirty = false;
+
+    private FieldType fieldType = new FieldType();
 
     /**
      * Default constructor.
@@ -52,6 +57,8 @@ public class IndexField
         this.Value=value;
         this.Type=type;
         this.Stickey=stickey;
+
+        fieldType = new FieldType(type);
     }
 
     /**
@@ -69,6 +76,63 @@ public class IndexField
         this.Type=type;
         this.Validator=validator;
         this.Stickey=stickey;
+
+        fieldType = new FieldType(type);
+    }
+
+    public IndexField(String name,String type, String value, String validator, boolean stickey, boolean visible)
+    {
+        this.Name=name;
+        this.Value=value;
+        this.Type=type;
+        this.Validator=validator;
+        this.Stickey=stickey;
+        this.Visible = visible;
+
+        fieldType = new FieldType(type);
+    }
+
+    public IndexField(String name,String type, String value, String validator, boolean stickey, boolean visible, String label)
+    {
+        this.Name=name;
+        this.Value=value;
+        this.Type=type;
+        this.Validator=validator;
+        this.Stickey=stickey;
+        this.Visible = visible;
+        this.label = label;
+
+        fieldType = new FieldType(type);
+    }
+
+    public IndexField(String name,String type, String value, String validator, boolean stickey, boolean visible, String label, String keyValue)
+    {
+        this.Name=name;
+        this.Value=value;
+        this.Type=type;
+        this.Validator=validator;
+        this.Stickey=stickey;
+        this.Visible = visible;
+        this.label = label;
+        this.keyValue = keyValue;
+
+        fieldType = new FieldType(type);
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
 
@@ -78,6 +142,14 @@ public class IndexField
 
     public String getValidator() {
         return Validator;
+    }
+
+    public boolean isVisible() {
+        return Visible;
+    }
+
+    public void setVisible(boolean Visible) {
+        this.Visible = Visible;
     }
 
     public void setName(String Name)
@@ -126,6 +198,11 @@ public class IndexField
         return Type;
     }
 
+    public FieldType getFieldType()
+    {
+        return fieldType;
+    }
+
     public String getValue()
     {
         return Value;
@@ -140,6 +217,87 @@ public class IndexField
     {
         return dirty;
     }
-    
-    
+
+    @Override
+    public String toString()
+    {
+        String stickey = isStickey() ? "N" : "Y";
+        String visible = isVisible() ? "N" : "Y";
+
+        String xml = "<IndexField Name=\"" + getName() + "\" Type=\"" + getType() +
+                    "\" Value=\"" + getValue() + "\" Stickey=\"" + stickey + "\" Visible=\"" + visible + "\" Validator=\"" + getValidator() + "\" KeyValue=\"" + keyValue + "\" />\n";
+
+        return xml;
+    }
+
+
+
+    /**
+     * FieldType class holds the index field type data from the type
+     * attribute of the IndexField object.
+     */
+    public class FieldType
+    {
+        private String dataType = "";
+        private float dataLength = 0;
+        private String mask = "";
+
+        public FieldType()
+        {}
+
+        public FieldType(String unparsedTypeData)
+        {
+            String[] data = unparsedTypeData.split("\\|");
+
+            if(data.length>1)
+            {
+                this.dataType = data[0];
+                this.dataLength = data[1] != null ? Float.valueOf(data[1]) : 0;
+
+                if(data.length>2)
+                    this.mask = data[2];
+            }
+            else
+                this.dataType = data[0];
+        }
+
+        public FieldType(String dataType, float dataLength, String mask)
+        {
+            this.dataType = dataType;
+            this.dataLength = dataLength;
+            this.mask = mask;
+        }
+
+        public float getDataLength() {
+            return dataLength;
+        }
+
+        public void setDataLength(float dataLength) {
+            this.dataLength = dataLength;
+        }
+
+        public String getDataType() {
+            return dataType;
+        }
+
+        public void setDataType(String dataType) {
+            this.dataType = dataType;
+        }
+
+        public String getMask() {
+            return mask;
+        }
+
+        public void setMask(String mask) {
+            this.mask = mask;
+        }
+
+        @Override
+        public String toString()
+        {
+            return dataType + "|" + String.valueOf(dataLength) + "|" + mask;
+        }
+
+
+    }
 }

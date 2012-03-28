@@ -58,10 +58,16 @@ import com.sun.media.imageio.plugins.tiff.BaselineTIFFTagSet;
 //import com.sun.media.imageioimpl.plugins.tiff.TIFFField;
 import com.sun.media.jai.codec.TIFFField;
 import com.sun.media.imageio.plugins.tiff.TIFFTag;
+import com.sun.media.imageioimpl.plugins.tiff.TIFFAttrInfo;
 import javax.media.jai.JAI;
 import javax.media.jai.Histogram;
 import javax.media.jai.RenderedOp;
 import java.awt.image.RenderedImage;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
 import javax.media.jai.PlanarImage;
 
 //import com.sun.media.imageioimpl.plugins.tiff.TIFFImageMetadata;
@@ -74,7 +80,9 @@ import java.text.DecimalFormat;
 import org.apache.log4j.*;
 
 import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageInputStream;
+import org.apache.commons.io.EndianUtils;
 
 public class ToTIFF 
 {
@@ -111,8 +119,12 @@ public class ToTIFF
     public static List toTIFF(String[] srcFiles, String destPath, String archivePath, String pattern, boolean multipage, int dpi) throws OpenCaptureImagingException
     {
         String pathSep = System.getProperty("file.separator");
+        boolean jaiSupport = true;
 
         int pageCount = 0;
+        int fileNameCount = 0;
+
+        byte[] imageData=null;
 
         // make sure destpath has trailing slash.
         if(destPath.lastIndexOf(pathSep) != destPath.length()-1)
@@ -145,17 +157,51 @@ public class ToTIFF
             {
                 
                 File f = new File(srcFiles[i]);
+                imageData = null;
                 
                 ImageIO.setUseCache(false);
                 ImageInputStream imageInputStream = ImageIO.createImageInputStream(f);
                 java.util.Iterator readers = ImageIO.getImageReaders(imageInputStream);
-                ImageReader reader1 = (ImageReader)readers.next();
-                //ImageInputStream iis = ImageIO.createImageInputStream(new FileInputStream(f));
-                reader1.setInput(imageInputStream);
 
-                pageCount = reader1.getNumImages(true);
-                Iterator writers = ImageIO.getImageWritersByFormatName("tiff");
-                ImageWriter writer = (ImageWriter)writers.next();
+                ImageReader reader1 = null;
+
+                if(readers.hasNext())
+                {
+                    reader1 = (ImageReader)readers.next();
+                    jaiSupport = true;
+                }
+                else
+                    jaiSupport = false;
+
+                if(jaiSupport)
+                {
+                //ImageInputStream iis = ImageIO.createImageInputStream(new FileInputStream(f));
+                    reader1.setInput(imageInputStream);
+
+                    pageCount = reader1.getNumImages(true);
+                }
+                else
+                {
+                    String newFileName = bigEndian2LittleEndian(f.getAbsolutePath());
+
+                    if(imageInputStream != null)
+                    {
+                        imageInputStream.flush();
+                        imageInputStream.close();
+
+                        reader1.setInput(imageInputStream);
+                        pageCount = reader1.getNumImages(true);
+
+                    }
+
+                    imageInputStream = ImageIO.createImageInputStream(new File(newFileName));
+
+                    readers = ImageIO.getImageReaders(imageInputStream);
+
+
+                }
+//                Iterator writers = ImageIO.getImageWritersByFormatName("tiff");
+//                ImageWriter writer = (ImageWriter)writers.next();
 
                 //ImageWriteParam param = writer.getDefaultWriteParam();
 
@@ -172,16 +218,28 @@ public class ToTIFF
                 // break out each page to single file
                 for(int t=0;t<pageCount;t++)
                 {
+
                     // format filenumber
-                    String tifName = destPath + formatter.format(t) +  ".tif";
+                    String tifName = destPath + formatter.format(fileNameCount) +  ".tif";
+
+                    while(new File(tifName).exists())
+                    {
+                        tifName = destPath + formatter.format(++fileNameCount) +  ".tif";
+                    }
 
                     FileOutputStream file = new FileOutputStream(new File(tifName));
 
-                    img = reader1.read(t);
-                    IIOImage iioimg = reader1.readAll(t, null);
-                    ios = ImageIO.createImageOutputStream(file);
-                    //IIOMetadata iiom = getMetadata(writer, img, null, 200);
-
+                    if(jaiSupport)
+                    {
+                        img = reader1.read(t);
+                        IIOImage iioimg = reader1.readAll(t, null);
+                        //ios = ImageIO.createImageOutputStream(file);
+                        //IIOMetadata iiom = getMetadata(writer, img, null, 200);
+                    }
+                    else
+                    {
+                        img = loadTIFF(imageData, t);
+                    }
                     TIFFEncodeParam tep = setEncoder(TIFFEncodeParam.COMPRESSION_PACKBITS,200);
 
                     ImageEncoder encoder = ImageCodec.createImageEncoder("TIFF", file, tep);
@@ -193,10 +251,10 @@ public class ToTIFF
 
                     img.flush();
 
-                    ios.flush();
-                    ios.close();
-                    ios = null;
-                    iioimg = null;
+                    //ios.flush();
+                    //ios.close();
+                   // ios = null;
+                    //iioimg = null;
                     //iiom = null;
                     img = null;
                     //writer.dispose();
@@ -210,11 +268,15 @@ public class ToTIFF
                     list.add(tifName);
                 }
 
-                reader1.dispose();
+                if(jaiSupport)
+                {
+                    reader1.dispose();
+                }
+
                 readers = null;
 
-                writer.dispose();
-                writers = null;
+//                writer.dispose();
+//                writers = null;
 
                 imageInputStream.flush();
                 imageInputStream.close();
@@ -222,7 +284,8 @@ public class ToTIFF
 
                 f = null;
 
-                if(!net.filterlogic.io.FileAccess.Move(srcFiles[i], archivePath))
+                // move file with overwrite
+                if(!net.filterlogic.io.FileAccess.Move(srcFiles[i], archivePath,true))
                     throw new Exception("Unable to move input file to archive path [" + srcFiles[i] + "] to [" + archivePath + "]");
 
             }
@@ -286,6 +349,7 @@ public class ToTIFF
      */
     public static int getTIFFPageCount(byte[] byteArray)
     {
+        int pages = 0;
       try
       {
         ByteArraySeekableStream s = new ByteArraySeekableStream(byteArray);
@@ -293,19 +357,51 @@ public class ToTIFF
 
         TIFFDecodeParam param = null;
 
-        ImageDecoder dec = ImageCodec.createImageDecoder("tiff", s, param);
+        try
+        {
+            ImageDecoder dec = ImageCodec.createImageDecoder("tiff", s, param);
+            pages = dec.getNumPages();
+        }
+        catch(IllegalArgumentException iae)
+        {
 
-        return dec.getNumPages();
+            //byte[] bytes = loadFileToByteArray(tempFile.getAbsolutePath());
+
+           // pages = getTIFFPageCount(bytes);
+        }
+
+        return pages;
     
       }
       catch(Exception e)
       {
           System.out.println(e.toString());
           
-          return 0;
+          return pages;
       }
     }
-    
+
+    private static String bigEndian2LittleEndian(String fileName) throws FileNotFoundException,IOException
+    {
+
+        //import java.nio.ByteBuffer;
+        //import java.nio.ByteOrder;
+        //import java.nio.channels.FileChannel;
+        //import java.io.FileOutputStream;
+
+        byte[] imgData = loadFileToByteArray(fileName);
+        String newFileName = fileName + ".be2le.tif";
+
+        ByteBuffer buffer = ByteBuffer.allocate(imgData.length);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.put(imgData);
+        FileChannel out = new FileOutputStream(newFileName).getChannel();
+        out.write(buffer);
+        out.close();
+
+        return newFileName;
+    }
+
     /**
      * Load a TIFF page.
      * 

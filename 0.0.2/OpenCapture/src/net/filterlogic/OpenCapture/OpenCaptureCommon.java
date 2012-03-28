@@ -101,6 +101,7 @@ public class OpenCaptureCommon
     public static String OC_NAME_TAG = "Name";
     public static String OC_DOCUMENT_FORMID_TAG = "FormID";
     public static String OC_DOCUMENT_NUMBER_TAG = "Number";
+    public static String OC_DOCUMENT_INDEXED_TAG = "Indexed";
     public static String OC_LOG_TAG = "Log";
 
     public static int BATCH_STATUS_READY = 0;
