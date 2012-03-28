@@ -108,7 +108,7 @@ public class OCCognizance
 
                         boolean docFound = false;
 
-                        for(int i = 0;i<loosePageCount;i++)
+                        for(int i = 1;i<=loosePageCount;i++)
                         {
                             // get name of page file
                             String pageName = batch.getPageFileName(i);
@@ -208,8 +208,8 @@ public class OCCognizance
                                     // delete loose page
                                     batch.deleteLoosePage(String.valueOf(i));
                                 }
-                                else
-                                    throw new OpenCaptureException("First page in batch isn't a cover page.");
+//                                else
+//                                    throw new OpenCaptureException("First page in batch isn't a cover page.");
                             }
                             catch(Exception ex)
                             {
