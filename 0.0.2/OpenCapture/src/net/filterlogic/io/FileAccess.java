@@ -60,6 +60,36 @@ public class FileAccess
         return success;
     }
 
+    public static boolean Move(String srcFile, String destFolder, boolean overwrite)
+    {
+        // FileAccess (or directory) to be moved
+        java.io.File file = new java.io.File(srcFile);
+
+        if(overwrite)
+        {
+            String sf = file.getName();
+            String newPath = Path.FixPath(destFolder);
+
+            java.io.File dest = new java.io.File(newPath + sf);
+
+            if(dest.exists())
+                dest.delete();
+        }
+
+        if(!file.exists())
+            return false;
+        // Destination directory
+        java.io.File dir = new java.io.File(destFolder);
+
+        if(!dir.exists())
+            return false;
+
+        // Move file to new directory
+        boolean success = file.renameTo(new java.io.File(dir, file.getName()));
+
+        return success;
+    }
+
     /**
      * CopyFile from source to destination.
      * 

@@ -15,6 +15,7 @@ Copyright [2008] [Filter Logic]
 */
 package net.filterlogic.util.xml;
 
+import com.sun.org.apache.xpath.internal.XPathAPI;
 import net.filterlogic.io.ReadWriteTextFile;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import net.filterlogic.util.NamedValueList;
+//import org.eclipse.persistence.eis.EISException;
 
 /**
  *
@@ -346,6 +348,103 @@ public class XMLParser
     }
 
     /**
+     * Get actual java.util.List containing Node objects
+     * @param xPath
+     * @param throwException
+     * @return List of Node objects.
+     * @throws Exception
+     */
+    public List getNodeList(String xPath, boolean throwException) throws Exception
+    {
+        NodeList result = null;
+        List<Node> list = new ArrayList<Node>();
+        try
+        {
+//            XPath xpath = new DOMXPath(xPath);
+//            result = (List)xpath.selectNodes(this.doc);
+            result = XPathAPI.selectNodeList((Node)this.doc, xPath);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+
+            if(throwException)
+                throw new Exception("Error retrieving node list: " + xPath + "\n" + e.toString());
+            else
+                list = new ArrayList<Node>();
+        }
+
+        // if null list returned, create empty array list
+        if (result != null)
+        {
+            for (int i = 0; i < result.getLength(); i++)
+            {
+                list.add(result.item(i));
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Returns a List of Maps containing attribute names/values.
+     *
+     * @param xPath
+     * @return List of Maps
+     */
+    public List getNodeListOfStringArray(String xPath)
+    {
+        List result;
+        List <String[]>values = new ArrayList<String[]>();
+
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            result = (List)xpath.selectNodes(this.doc);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            result = new ArrayList();
+        }
+
+        for(int i=0;i<result.size();i++)
+        {
+            Node elem = (Node)result.get(i);
+
+            String[] map = new String[i];
+            int nodeCount = elem.getChildNodes().getLength();
+
+            for(int m=0;m<nodeCount;m++)
+            {
+                Node node = null;
+
+                try
+                {
+                    node = elem.getChildNodes().item(m);
+                }
+                catch(Exception ne)
+                {
+                    node = null;
+                    System.out.println("Error getting node:\n");
+                    ne.printStackTrace();
+                }
+
+                if(node!=null)
+                    map[m] = getValue(".", node, "");
+                else
+                    map[m] = "";
+
+            }
+
+            values.add(map);
+        }
+
+        return values;
+    }
+
+
+    /**
      * Returns a List of Maps containing attribute names/values.
      *
      * @param xPath
@@ -470,6 +569,29 @@ public class XMLParser
             result = defaultValue;
         }
         
+        return result;
+    }
+
+    public String getValue(String xPath, Node node,String defaultValue)
+    {
+        String result="";
+
+        Object elem;
+        try
+        {
+            XPath xpath = new DOMXPath(xPath);
+            elem = xpath.selectSingleNode(node);
+            if(elem.getClass().toString().contains("DeferredAttrNSImpl"))
+                result = ((com.sun.org.apache.xerces.internal.dom.DeferredAttrNSImpl)elem).getValue();
+            else
+                result = ((Element)elem).getChildNodes().item(0).getNodeValue();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error retrieving data @ " + xPath + "\n" + e.toString());
+            result = defaultValue;
+        }
+
         return result;
     }
     
@@ -710,4 +832,60 @@ public class XMLParser
         xmlDoc = builder.newDocument();
         return xmlDoc;
     }
+
+    /**
+     * Get a list of nodes at XPath
+     *
+     * @param xPath XPath to search
+     * @param node Node to search
+     * @return Returns a list of Node object.
+     * @throws java.lang.Exception
+     */
+    public List getNodes(String xPath, Object node) throws Exception {
+        NodeList result;
+        List<Node> list = new ArrayList<Node>();
+
+        try {
+            //XPath xpath = new DOMXPath(xPath);
+            //result = (List)xpath.selectNodes(node);
+            result = XPathAPI.selectNodeList((Node) node, xPath);
+        } catch (Exception e) {
+            throw new Exception("getNodes failed retrieving nodelist @ [" + xPath + "]." + e.toString());
+        }
+
+        // if null list returned, create empty array list
+        if (result != null) {
+            for (int i = 0; i < result.getLength(); i++) {
+                list.add(result.item(i));
+            }
+        }
+
+
+        return list;
+    }
+
+    /**
+     * getValue retrieves a single value located at the specified XPath.
+     *
+     * @param xPath
+     * @param node Node to retrieve value from.
+     * @return String containing value at xpath.
+     */
+    public String getValue(String xPath, Object node) {
+        String result = "";
+        Node elem;
+        try {
+            elem = XPathAPI.selectSingleNode((Node) node, xPath);
+
+            result = elem.getNodeValue();
+
+        } catch (Exception e) {
+            System.out.println(e);
+            result = "";
+        }
+
+        return result;
+    }
+
+
 }

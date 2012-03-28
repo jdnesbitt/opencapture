@@ -93,6 +93,13 @@ public class Batch
         ocConfig = new OpenCaptureConfig();
     }
 
+    public String createBatchName(String prefix, String suffix)
+    {
+        String batchName = DateUtil.getDateTime("MMddyyyy_HHmmss_S");
+
+        return prefix + batchName + suffix;
+    }
+
     /**
      * Use this constructor when OC configuration and batch class configuration only is needed.
      * The OCBR utility uses this constructor as database connectivity isn't required.  Only access
@@ -222,7 +229,7 @@ public class Batch
                 createDBManager();
 
             // create batch db entry and set status to in use.
-            id = dbm.createBatch(Long.parseLong("0"), batchName, Long.parseLong("1"),
+            id = dbm.createBatch(Long.parseLong("0"), batchName, batchClass.getID(),
                                                                             scanDate , 1,OpenCaptureCommon.BATCH_STATUS_READY, 
                                                                             Long.parseLong("1"),
                                                                             priority);
@@ -338,6 +345,29 @@ public class Batch
     }
 
     /**
+     * Open specified batch
+     * @param batchID ID of batch to open
+     * @param keepDBOpen Set to true, leaves DB connection open, else closes connection
+     * to DB after batch is opened.  Useful for queues/modules that work disconnected from DB.
+     * @throws OpenCaptureException
+     */
+    public void OpenBatch(long batchID, boolean keepDBOpen) throws OpenCaptureException
+    {
+        // check dbm
+        if(dbm == null)
+            createDBManager();
+
+        OpenBatch(batchID);
+
+        // if keep db open is fale, close connection to db
+        if(!keepDBOpen)
+        {
+            dbm.CloseConnections();
+            
+            dbm = null;
+        }
+    }
+    /**
      * Open specified batch.
      * @param batchID ID of batch to open.
      * @throws net.filterlogic.OpenCapture.OpenCaptureException
@@ -412,7 +442,8 @@ public class Batch
             //dbm = new net.filterlogic.OpenCapture.data.DBManager();
 
             // move batch to exception q
-            configurations.getQueues().setCurrentQueue("OCException");
+            configurations.getQueues().setCurrentQueue("OCIndexer");
+            this.currentQueue = configurations.getQueues().getQueue("OCIndexer");
 
             // set end time
             String batchCloseDate = DateUtil.getDateTime();
@@ -424,16 +455,16 @@ public class Batch
             getLogging().addLog(getLog());
 
             // if no more queues, write output log
-            if(configurations.getQueues().getCurrentQueue().getQueueName().length()<1)
-            {
-                // remove lock file
-                OpenCaptureCommon.unlockBatchXmlFile(batchID);
-
-                // delete batch
-                deleteBatch(batchID);
-            }
-            else
-            {
+//            if(configurations.getQueues().getCurrentQueue().getQueueName().length()<1)
+//            {
+//                // remove lock file
+//                OpenCaptureCommon.unlockBatchXmlFile(batchID);
+//
+//                // delete batch
+//                deleteBatch(batchID);
+//            }
+//            else
+//            {
                 // get id of next queue for batch
                 id = dbm.getQueueIDByName(this.currentQueue.getQueueName());
 
@@ -450,7 +481,7 @@ public class Batch
 
                 // unlock batch file.
                 OpenCaptureCommon.unlockBatchXmlFile(batchID);
-            }
+//            }
 
         }
         catch(Exception e)
@@ -461,6 +492,8 @@ public class Batch
         finally
         {
             dbm.CloseConnections();
+
+            dbm = null;
             
             // save the batch
             saveBatch();
@@ -478,6 +511,9 @@ public class Batch
         try
         {
             //dbm = new net.filterlogic.OpenCapture.data.DBManager();
+            // check dbm
+            if(dbm == null)
+                createDBManager();
 
             // move batch to next queue.
             configurations.getQueues().moveNextQueue();
@@ -509,8 +545,7 @@ public class Batch
 
             // unlock batch file.
             OpenCaptureCommon.unlockBatchXmlFile(batchID);
-            
-            
+           
         }
         catch(Exception e)
         {
@@ -520,6 +555,8 @@ public class Batch
         finally
         {
             dbm.CloseConnections();
+
+            dbm = null;
 
             // if valid next queue exists, save batch
             if(configurations.getQueues().getCurrentQueue().getQueueName().length()>0)
@@ -541,6 +578,9 @@ public class Batch
 
         try
         {
+            if(dbm == null)
+                createDBManager();
+
             // set end time
             String batchCloseDate = DateUtil.getDateTime();
             getLog().setEndDateTime(batchCloseDate);
@@ -561,7 +601,10 @@ public class Batch
         }
         finally
         {
-            dbm.CloseConnections();
+            if(dbm != null)
+                dbm.CloseConnections();
+
+            dbm = null;
 
             // save the batch
             saveBatch();
@@ -929,9 +972,14 @@ public class Batch
     public void addDocument(Document document) 
     {
         if(getDocuments() == null)
+        {
+
             setDocuments(new Documents(document));
+        }
         else
+        {
             this.getDocuments().addDocument(document);
+        }
     }
 
     public Documents getDocuments()

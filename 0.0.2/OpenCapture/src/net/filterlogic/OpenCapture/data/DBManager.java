@@ -379,10 +379,52 @@ public class DBManager
 
             String sql = "SELECT b.*, bc.*, q.* " +
                     "FROM batches b, batch_class bc, queues q " +
-                    "WHERE b.batch_class_id = " + String.valueOf(batchClassId) + " " +
-                    "AND b.queue_id = " + String.valueOf(queueId) + " " +
+                    //"WHERE b.batch_class_id = " + String.valueOf(batchClassId) + " " +
+                    "WHERE b.queue_id = " + String.valueOf(queueId) + " " +
                     "AND b.batch_class_id = bc.batch_class_id " +
                     "AND b.queue_id = q.queue_id";
+
+            // create native query and set resultset mapping name to use
+            qry = entMgr.createNativeQuery(sql, "BatchesWithClassAndQueue");
+
+            List list = qry.getResultList();
+
+            return list;
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to retrieve batch id.  " + e.toString());
+        }
+        finally
+        {
+            if(entMgr.isOpen())
+                entMgr.close();
+
+            entMgr = null;
+        }
+    }
+
+    public List getBatchListByBatchClassAndQueueId(long batchClassId, long queueId, String batchNameFilter) throws OpenCaptureException
+    {
+        try
+        {
+            entMgr = entMgrFac.createEntityManager();
+
+            String sql = "SELECT b.*, bc.*, q.* " +
+                    "FROM batches b, batch_class bc, queues q " +
+                    //"WHERE b.batch_class_id = " + String.valueOf(batchClassId) + " " +
+                    "WHERE b.queue_id = " + String.valueOf(queueId) + " " +
+                    "AND b.batch_class_id = bc.batch_class_id " +
+                    "AND b.queue_id = q.queue_id ";
+
+            if(batchNameFilter.length()>0)
+                sql = "SELECT b.*, bc.*, q.* " +
+                    "FROM batches b, batch_class bc, queues q " +
+                    //"WHERE b.batch_class_id = " + String.valueOf(batchClassId) + " " +
+                    "WHERE b.queue_id = " + String.valueOf(queueId) + " " +
+                    "AND b.batch_class_id = bc.batch_class_id " +
+                    "AND b.queue_id = q.queue_id " +
+                    "AND b.batch_name like '%" + batchNameFilter + "%'";
 
             // create native query and set resultset mapping name to use
             qry = entMgr.createNativeQuery(sql, "BatchesWithClassAndQueue");

@@ -14,6 +14,7 @@
       <property name="javax.persistence.jdbc.password" value="corwin1"/>
       <property name="javax.persistence.jdbc.driver" value="net.sourceforge.jtds.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.user" value="ocadmin"/>
+      <property name="eclipselink.query-results-cache" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>

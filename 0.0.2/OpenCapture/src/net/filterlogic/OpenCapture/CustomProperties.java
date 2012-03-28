@@ -94,6 +94,16 @@ public class CustomProperties
     }
 
     /**
+     * Get ordered name list of custom properties.
+     *
+     * @return List of property names.
+     */
+    public List getPropertyList()
+    {
+        return this.properties.getOrderedNameList();
+    }
+
+    /**
      * Get XML representation of object.
      * 
      * @return String containing XML.

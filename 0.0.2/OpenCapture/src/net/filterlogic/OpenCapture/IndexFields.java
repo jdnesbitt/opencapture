@@ -48,8 +48,10 @@ public class IndexFields
         for(int i=0;i<indexFields.Count();i++)
         {
             IndexField ndxField = (IndexField)indexFields.get(i);
-            
-            addIndexField(new IndexField(ndxField.getName(), ndxField.getType(), ndxField.getValue(), ndxField.isStickey()));
+
+//System.out.println("New IndexField from IndexFields: " + ndxField.toString());
+
+            addIndexField(new IndexField(ndxField.getName(), ndxField.getType(), ndxField.getValue(), ndxField.getValidator(), ndxField.isStickey(),ndxField.isVisible(), ndxField.getLabel(),ndxField.getKeyValue()));
         }
     }
     
@@ -84,12 +86,18 @@ public class IndexFields
                 String ndxName = (String)map.get("Name");
                 String type = map.get("Type") != null ? (String)map.get("Type") : "";
                 String value = (String)map.get("Value");
-                String s = ((String)map.get("Stickey")).toUpperCase();
+                String s = map.get("Stickey") != null ? ((String)map.get("Stickey")).toUpperCase() : "";
+                String v = map.get("Visible") != null ? ((String)map.get("Visible")).toUpperCase() : "";
                 
-                boolean stickey = s.toUpperCase().equals("N") || s.length()<1 ? false : true;
-                
+                boolean stickey = s.toUpperCase().equals("Y") ? true : false;
+                boolean visible = v.toUpperCase().equals("Y") ? true : false;
+
+                String validator = map.get("Validator") != null ? (String)map.get("Validator") : "";
+                String label = map.get("Label") != null ? (String)map.get("Label") : "";
+                String keyValue = map.get("KeyValue") != null ? (String)map.get("KeyValue") : "";
+//System.out.println("KeyValue: " + keyValue);
                 // create and fill ndx field object
-                IndexField ndxField = new IndexField(ndxName,type,value,stickey);
+                IndexField ndxField = new IndexField(ndxName,type,value,validator,stickey,visible,label,keyValue);
 
                 // add ndx field to hash
                 indexFields.put(ndxName, ndxField);
@@ -145,10 +153,11 @@ public class IndexFields
         {
             String name = (String)list.get(i);
             IndexField ndxField = (IndexField)indexFields.get(name);
-            String stickey = !ndxField.isStickey() ? "N" : "Y";
+            String stickey = ndxField.isStickey() == true ? "Y" : "N";
+            String visible = ndxField.isVisible() == true ? "Y" : "N";
             
             xml += "<IndexField Name=\"" + ndxField.getName() + "\" Type=\"" + ndxField.getType() + 
-                    "\" Value=\"" + ndxField.getValue() + "\" Stickey=\"" + stickey + "\" Validator=\"" + ndxField.getValidator() + "\" />\n";
+                    "\" Value=\"" + ndxField.getValue() + "\" Stickey=\"" + stickey + "\" Visible=\"" + visible + "\" Validator=\"" + ndxField.getValidator() + "\" Label=\"" + ndxField.getLabel() + "\" KeyValue=\"" + ndxField.getKeyValue() + "\" />\n";
         }
         
         return xml;

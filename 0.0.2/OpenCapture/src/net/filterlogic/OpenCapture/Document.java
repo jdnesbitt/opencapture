@@ -31,6 +31,7 @@ public class Document
     private String Name = "";
     private String formID = "";
     private int number = 0;
+    private boolean indexed = false;
 
     /**
      * Constructor used to parse specified document.
@@ -48,6 +49,16 @@ public class Document
         loadDocument(batch, number);
     }
 
+    public Document(XMLParser batch,String documentName,String formID, int number, boolean indexed) throws OpenCaptureException
+    {
+        this.Name = documentName;
+        this.formID = formID;
+        this.number = number;
+        this.indexed = indexed;
+
+        loadDocument(batch, number);
+    }
+
     /**
      * Load document method is used to parse batch xml and load document related
      * data.
@@ -59,6 +70,7 @@ public class Document
     {
         try
         {
+            
             String xPath = (OpenCaptureCommon.INDEX_FIELDS).replaceAll("<1>",documentName);
 
             // get index fields for this document.
@@ -119,7 +131,16 @@ public class Document
          pages = new Pages();
          customProperties = new CustomProperties();
     }
-    
+
+    /**
+     * Constructor to create index fields, pages, set document name, formId, and doucument number.
+     *
+     * @param indexFields
+     * @param pages
+     * @param documentName
+     * @param formID
+     * @param documentNumber
+     */
     public Document(IndexFields indexFields, Pages pages, String documentName, String formID,int documentNumber)
     {
         this.indexFields = IndexFields.newInstanceOf(indexFields);
@@ -130,6 +151,26 @@ public class Document
         customProperties = new CustomProperties();
     }
 
+    /**
+     *
+     * @param indexFields
+     * @param pages
+     * @param documentName
+     * @param formID
+     * @param documentNumber
+     * @param indexed
+     */
+    public Document(IndexFields indexFields, Pages pages, String documentName, String formID,int documentNumber, boolean indexed, CustomProperties props)
+    {
+        this.indexFields = IndexFields.newInstanceOf(indexFields);
+        this.pages = pages;
+        this.Name = documentName;
+        this.formID = formID;
+        this.number = documentNumber;
+        this.indexed = indexed;
+        this.customProperties = props;
+    }
+
     public static Document newInstanceOf()
     {
         return new Document();
@@ -137,12 +178,20 @@ public class Document
   
     public static Document newInstanceOf(Document document)
     {
-        return new Document(document.getIndexFields(),document.getPages(),document.getName(), document.getFormID(), document.getNumber());
+        return new Document(document.getIndexFields(),document.getPages(),document.getName(), document.getFormID(), document.getNumber(), document.isIndexed(), document.getCustomProperties());
     }
 
     public IndexFields getIndexFields()
     {
         return indexFields;
+    }
+
+    public void setIndexed(boolean indexed) {
+        this.indexed = indexed;
+    }
+
+    public boolean isIndexed() {
+        return indexed;
     }
 
     public String getName()

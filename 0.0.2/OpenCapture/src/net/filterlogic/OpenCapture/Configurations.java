@@ -215,6 +215,26 @@ public class Configurations
     public void setDocuments(NamedValueList<String, Configuration> documents) {
         this.documents = documents;
     }
+
+    public Configuration findDocumentConfigurationByFormID(String formID)
+    {
+        if(documents != null)
+        {
+            List names = documents.getOrderedNameList();
+
+            for(int i=0;i<names.size();i++)
+            {
+                String key = (String)names.get(i);
+
+                Configuration document = (Configuration)documents.get(key);
+
+                if(document.getFormID().equals(formID))
+                    return document;
+            }
+        }
+
+        return null;
+    }
     
     /**
      * Add document to document collection.

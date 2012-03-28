@@ -109,7 +109,6 @@ public class XMLDelivery implements IOCDeliveryPlugin
     /**
      * Close repository connection.
      * 
-     * @throws net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException
      */
     public void CloseRepository() throws OpenCaptureDeliveryException
     {

@@ -37,6 +37,11 @@ public class Documents
      */
     public Documents(Document document)
     {
+        // get next available document number
+        int dn = getNextDocumentNumber();
+        // set document numbers
+        document.setNumber(dn);
+
         documents.put(String.valueOf(document.getNumber()), document);
     }
     
@@ -56,7 +61,10 @@ public class Documents
                 int number = ((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)).trim().length()>0 
                         ? Integer.parseInt((String)map.get(OpenCaptureCommon.OC_DOCUMENT_NUMBER_TAG)) : 0;
 
-                Document document = new Document(batch, documentName, formID,number);
+                boolean indexed = map.get(OpenCaptureCommon.OC_DOCUMENT_INDEXED_TAG) != null
+                        ? Boolean.parseBoolean((String)map.get(OpenCaptureCommon.OC_DOCUMENT_INDEXED_TAG)) : false;
+
+                Document document = new Document(batch, documentName, formID, number, indexed);
                 
                 // add document obj to documents hash
                 documents.put(String.valueOf(number), document);
@@ -78,6 +86,21 @@ public class Documents
         Document document = (Document)getDocuments().get(documentNumber);
         
         return document;
+    }
+
+    /**
+     * Get next available document number.
+     *
+     * @return Document number as int.
+     */
+    protected int getNextDocumentNumber()
+    {
+        int dn = 1;
+
+        while(getDocument(String.valueOf(dn)) != null)
+            ++dn;
+
+        return dn;
     }
 
     /**
@@ -104,7 +127,7 @@ public class Documents
             String name = (String)list.get(i);
             Document document = (Document)getDocuments().get(name);
 
-            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\">\n";
+            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\" Indexed=\"" + String.valueOf(document.isIndexed()) + "\">\n";
             xml += "<CustomProperties>\n";
             xml += document.getCustomProperties().getXML();
             xml += "</CustomProperties>";
@@ -162,6 +185,9 @@ public class Documents
      */
     public void addDocument(Document document)
     {
+        int dn = getNextDocumentNumber();
+
+        document.setNumber(dn);
         documents.put(String.valueOf(document.getNumber()), document);
     }
     
