@@ -35,4 +35,89 @@ public class StringUtils
         return new String(hex, "ASCII");
     }
 
+    /**
+     * Returns StringBuffer as a character array.
+     * @param sb StringBuffer
+     * @return Character array from StringBuffer.
+     * @throws Exception
+     */
+    public static char[] StringBuffer2CharArray(StringBuffer sb) throws Exception
+    {
+        char[] chars;
+
+        if(sb == null || sb.length()<1)
+            throw new Exception("StringBuffer must contain data!");
+
+        chars = new char[sb.length()];
+
+        for(int i=0;i<sb.length();i++)
+        {
+            chars[i] = sb.charAt(i);
+        }
+
+        return chars;
+    }
+
+    /**
+     * Convert string to byte array
+     * @param data
+     * @return byte array
+     */
+    public static byte[] toBytes(String data)
+    {
+        byte[] result = data.getBytes();
+
+        return result;
+    }
+
+    /**
+     * Convert string to char array
+     * @param data
+     * @return char array
+     */
+    public static char[] toChars(String data)
+    {
+        char[] result = new char[data.length()];
+
+        data.getChars(0, data.length(), result, 0);
+
+        return result;
+    }
+
+    /***
+     * Convert string to integer.
+     *
+     * @param data
+     *
+     * @return Returns -999 if exception occurs.
+     */
+    public static int toInt(String data)
+    {
+        int i = Integer.parseInt(data.trim());
+
+        return i;
+    }
+
+    /**
+     * Capitalize first letter in word.
+     *
+     * @param word
+     * @return Capitalized word.
+     */
+    public static String firstCapital(String word)
+    {
+        String tmp;
+
+        word = word.trim();
+
+        if(word.length()>0)
+        {
+            tmp = word.substring(0, 1).toUpperCase() + word.substring(1);
+        }
+        else
+            tmp = word;
+
+        return tmp;
+    }
+
 }

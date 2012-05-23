@@ -28,7 +28,8 @@ public class OpenCaptureException extends Throwable
     {
         this.Message = message;
     }
-    
+
+    @Override
     public String toString()
     {
         return this.Message;

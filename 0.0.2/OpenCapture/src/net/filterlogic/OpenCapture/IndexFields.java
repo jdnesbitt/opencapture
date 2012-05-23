@@ -88,16 +88,19 @@ public class IndexFields
                 String value = (String)map.get("Value");
                 String s = map.get("Stickey") != null ? ((String)map.get("Stickey")).toUpperCase() : "";
                 String v = map.get("Visible") != null ? ((String)map.get("Visible")).toUpperCase() : "";
+                String r = map.get("Required") != null ? ((String)map.get("Required")).toUpperCase() : "";
                 
                 boolean stickey = s.toUpperCase().equals("Y") ? true : false;
                 boolean visible = v.toUpperCase().equals("Y") ? true : false;
+                boolean required = r.toUpperCase().equals("Y") ? true : false;
 
                 String validator = map.get("Validator") != null ? (String)map.get("Validator") : "";
                 String label = map.get("Label") != null ? (String)map.get("Label") : "";
                 String keyValue = map.get("KeyValue") != null ? (String)map.get("KeyValue") : "";
+
 //System.out.println("KeyValue: " + keyValue);
                 // create and fill ndx field object
-                IndexField ndxField = new IndexField(ndxName,type,value,validator,stickey,visible,label,keyValue);
+                IndexField ndxField = new IndexField(ndxName,type,value,validator,stickey,visible,label,keyValue,required);
 
                 // add ndx field to hash
                 indexFields.put(ndxName, ndxField);
@@ -140,7 +143,8 @@ public class IndexFields
     }
     
     /**
-     * Return batch xml.
+     * Return IndexField as xml.
+     * 
      * @return String containing XML.
      */
     public String getXML()
@@ -153,11 +157,8 @@ public class IndexFields
         {
             String name = (String)list.get(i);
             IndexField ndxField = (IndexField)indexFields.get(name);
-            String stickey = ndxField.isStickey() == true ? "Y" : "N";
-            String visible = ndxField.isVisible() == true ? "Y" : "N";
             
-            xml += "<IndexField Name=\"" + ndxField.getName() + "\" Type=\"" + ndxField.getType() + 
-                    "\" Value=\"" + ndxField.getValue() + "\" Stickey=\"" + stickey + "\" Visible=\"" + visible + "\" Validator=\"" + ndxField.getValidator() + "\" Label=\"" + ndxField.getLabel() + "\" KeyValue=\"" + ndxField.getKeyValue() + "\" />\n";
+            xml += ndxField.toString();
         }
         
         return xml;

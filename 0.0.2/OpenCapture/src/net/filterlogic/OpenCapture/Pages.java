@@ -95,6 +95,36 @@ public class Pages
         }
     }
 
+        /**
+     * Move page (change page order);
+     * @param pageNumber Page to move.
+     * @param newSequence New page index.
+     * @throws net.filterlogic.OpenCapture.OpenCaptureException
+     */
+    public void MovePage(String pageNumber, int newSequence) throws OpenCaptureException
+    {
+        try
+        {
+            String name = "";
+
+            for(int i=0;i<pages.getOrderedNameList().size();i++)
+            {
+                name = (String)pages.getOrderedNameList().get(i);
+
+                if(name.equals(pageNumber))
+                    break;
+            }
+
+            if(name.length()>0)
+                pages.getOrderedNameList().add(newSequence, name);
+
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to move page[" + pageNumber + "]. " + e.toString());
+        }
+    }
+
     /**
      * Add page to pages object.
      * @param page Page to add.
@@ -105,6 +135,21 @@ public class Pages
             throw new OpenCaptureException("Invalid Page object.  PageNumber must be set.");
 
         pages.put(String.valueOf(page.getPageNumber()), page);
+    }
+
+    /**
+     * Add page to pages object.
+     *
+     * @param page
+     * @param index
+     * @throws OpenCaptureException
+     */
+    public void addPage(Page page, int index) throws OpenCaptureException
+    {
+        if(page.getPageNumber()<=0)
+            throw new OpenCaptureException("Invalid Page object.  PageNumber must be set.");
+
+        pages.put(String.valueOf(page.getPageNumber()), page,index);
     }
 
     /**

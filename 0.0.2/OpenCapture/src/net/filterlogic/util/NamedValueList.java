@@ -45,6 +45,25 @@ public class NamedValueList<K,V> extends HashMap
         return super.put(key, value);
     }
 
+    /**
+     * Put new item on list at specified index in ordered list.
+     * 
+     * @param key
+     * @param value
+     * @param index
+     * @return
+     */
+    public Object put(Object key, Object value, int index)
+    {
+        // if key doesn't exists, add to list.
+        if(!super.containsKey(key))
+        {
+            nameList.add(index, key);
+        }
+
+        return super.put(key, value);
+    }
+
     @Override
     public Object get(Object key) 
     {
@@ -54,7 +73,18 @@ public class NamedValueList<K,V> extends HashMap
     @Override
     public Object remove(Object key) 
     {
-        //nameList.remove(key);
+
+        for(int i=0;i<nameList.size();i++)
+        {
+            String name = (String)nameList.get(i);
+
+            if(name.equals(key.toString()))
+            {
+                nameList.remove(i);
+                break;
+            }
+        }
+        
         return super.remove(key);
     }
 

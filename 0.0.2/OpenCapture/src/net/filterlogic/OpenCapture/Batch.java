@@ -596,6 +596,7 @@ public class Batch
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             logException("Unable to suspend batch. " + net.filterlogic.util.StackTraceUtil.getStackTrace(e));
             throw new OpenCaptureException(e.toString());
         }
