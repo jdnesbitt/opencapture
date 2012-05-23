@@ -20,6 +20,7 @@ import net.filterlogic.util.NamedValueList;
 import net.filterlogic.util.xml.XMLParser;
 import java.util.List;
 import java.util.HashMap;
+import net.filterlogic.util.DataHelpers;
 
 /**
  * CustomProperties class is used to manage custom properties setup for 
@@ -121,7 +122,7 @@ public class CustomProperties
             String volital = !property.isVolital() ? "N" : "Y";
             
             xml += "<Property Name=\"" + property.getName() + 
-                    "\" Value=\"" + property.getValue() + "\" Volital=\"" + volital + "\" />\n";
+                    "\" Value=\"" + DataHelpers.encodeXml(property.getValue()) + "\" Volital=\"" + volital + "\" />\n";
         }
 
         return xml;

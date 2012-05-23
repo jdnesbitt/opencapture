@@ -269,6 +269,24 @@ public class Document
             this.pages.addPage(page);
     }
 
+    public void addPage(Page page, int index) throws OpenCaptureException
+    {
+        if(pages == null)
+            pages = new Pages(page);
+        else
+            this.pages.addPage(page);
+    }
+
+    public void movePage(String pageName, int newIndex) throws OpenCaptureException
+    {
+        pages.MovePage(pageName, newIndex);
+    }
+
+    public Page deletePage(String pageName)
+    {
+        return pages.deletePage(pageName);
+    }
+
     public CustomProperties getCustomProperties() {
         return customProperties;
     }

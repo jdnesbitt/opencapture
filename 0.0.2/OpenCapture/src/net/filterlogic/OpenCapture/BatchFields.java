@@ -21,6 +21,7 @@ import net.filterlogic.util.NamedValueList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import net.filterlogic.util.DataHelpers;
 
 /**
  *
@@ -105,8 +106,8 @@ public class BatchFields
             String name = (String)list.get(i);
             BatchField batchField = (BatchField)batchFields.get(name);
 
-            xml += "<BatchField Name=\"" + batchField.getName() + "\" Type=\"" + batchField.getType() + 
-                    "\" Value=\"" + batchField.getValue() + "\" />\n";
+            xml += "<BatchField Name=\"" + batchField.getName() + "\" Type=\"" + batchField.getType() +
+                    "\" Value=\"" + DataHelpers.encodeXml(batchField.getValue()) + "\" />\n";
         }
 
         return xml;

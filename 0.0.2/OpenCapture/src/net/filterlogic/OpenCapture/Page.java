@@ -33,6 +33,11 @@ public class Page
      */
     public Page()
     {}
+
+    public static Page newInstanceOf(Page page)
+    {
+        return new Page(page.getName(), page.getPageNumber(), page.getSequenceNumber());
+    }
     
     /**
      * Page constructor

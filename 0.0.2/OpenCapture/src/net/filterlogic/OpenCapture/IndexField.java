@@ -16,6 +16,8 @@ Copyright 2008 Filter Logic
 
 package net.filterlogic.OpenCapture;
 
+import net.filterlogic.util.DataHelpers;
+
 /**
  *
  * @author dnesbitt
@@ -34,6 +36,7 @@ public class IndexField
     private String Validator = "";
     
     private boolean dirty = false;
+    private boolean required = false;
 
     private FieldType fieldType = new FieldType();
 
@@ -117,6 +120,36 @@ public class IndexField
         this.keyValue = keyValue;
 
         fieldType = new FieldType(type);
+    }
+
+    public IndexField(String name,String type, String value, String validator, boolean stickey, boolean visible, String label, String keyValue, boolean required)
+    {
+        this.Name=name;
+        this.Value=value;
+        this.Type=type;
+        this.Validator=validator;
+        this.Stickey=stickey;
+        this.Visible = visible;
+        this.label = label;
+        this.keyValue = keyValue;
+        this.required = required;
+
+        fieldType = new FieldType(type);
+    }
+
+    public void setIndexField(IndexField ndxField)
+    {
+        this.Name=ndxField.getName();
+        this.Value=ndxField.getValue();
+        this.Type=ndxField.getType();
+        this.Validator=ndxField.getValidator();
+        this.Stickey=ndxField.isStickey();
+        this.Visible = ndxField.isVisible();
+        this.label = ndxField.getLabel();
+        this.keyValue = ndxField.getKeyValue();
+        this.required = ndxField.isRequired();
+
+        fieldType = new FieldType(this.Type);
     }
 
     public String getKeyValue() {
@@ -218,19 +251,26 @@ public class IndexField
         return dirty;
     }
 
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
     @Override
     public String toString()
     {
-        String stickey = isStickey() ? "N" : "Y";
-        String visible = isVisible() ? "N" : "Y";
+        String stickey = isStickey() ? "Y" : "N";
+        String visible = isVisible() ? "Y" : "N";
+        String required = isRequired() ? "Y" : "N";
 
-        String xml = "<IndexField Name=\"" + getName() + "\" Type=\"" + getType() +
-                    "\" Value=\"" + getValue() + "\" Stickey=\"" + stickey + "\" Visible=\"" + visible + "\" Validator=\"" + getValidator() + "\" KeyValue=\"" + keyValue + "\" />\n";
+        String xml = "<IndexField Name=\"" + getName() + "\" Label=\"" + DataHelpers.encodeXml(getLabel()) + "\" Type=\"" + getType().toString() +
+                    "\" Value=\"" + DataHelpers.encodeXml(getValue()) + "\" Stickey=\"" + stickey + "\" Visible=\"" + visible + "\" Validator=\"" + getValidator() + "\" KeyValue=\"" + DataHelpers.encodeXml(keyValue) + "\" Required=\"" + required + "\" />\n";
 
         return xml;
     }
-
-
 
     /**
      * FieldType class holds the index field type data from the type

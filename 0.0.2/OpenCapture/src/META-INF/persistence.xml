@@ -15,6 +15,7 @@
       <property name="javax.persistence.jdbc.driver" value="net.sourceforge.jtds.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.user" value="ocadmin"/>
       <property name="eclipselink.query-results-cache" value="false"/>
+      <property name="eclipselink.cache.shared.default" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>

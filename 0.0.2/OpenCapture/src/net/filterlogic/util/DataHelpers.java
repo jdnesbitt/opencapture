@@ -426,7 +426,7 @@ public class DataHelpers
         return nvl;
     }
 
-    private static String encodeXml(String xml)
+    public static String encodeXml(String xml)
     {
         String newXml = xml.replaceAll("&", "&amp;");
         newXml = newXml.replaceAll("<", "&lt;");

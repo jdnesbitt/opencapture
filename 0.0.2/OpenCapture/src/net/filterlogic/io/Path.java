@@ -26,6 +26,11 @@ import java.io.File;
 public class Path 
 {
     /**
+     * Returns the current operating system's path separator character as a string.
+     */
+    public static String pathSeparator = System.getProperty("file.separator");
+    
+    /**
      * Validates path.
      * @param path Path to validate.
      * @return True if path exists, otherwise false.
@@ -141,5 +146,19 @@ public class Path
         String dir = currentDir.getAbsolutePath();
 
         return dir;
+    }
+
+    /**
+     * Get path portion of fileName.
+     *
+     * @param fileName
+     *
+     * @return Path with trailing slash.
+     */
+    public static String getPath(String fileName)
+    {
+        File tmpFile = new File(fileName);
+
+        return FixPath(tmpFile.getParent());
     }
 }

@@ -19,6 +19,7 @@ package net.filterlogic.OpenCapture;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.List;
+import net.filterlogic.util.DataHelpers;
 import net.filterlogic.util.xml.XMLParser;
 import net.filterlogic.util.NamedValueList;
 
@@ -127,7 +128,7 @@ public class Documents
             String name = (String)list.get(i);
             Document document = (Document)getDocuments().get(name);
 
-            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + document.getFormID() + "\" Number=\"" + String.valueOf(document.getNumber()) + "\" Indexed=\"" + String.valueOf(document.isIndexed()) + "\">\n";
+            xml += "<Document Name=\"" + document.getName() + "\" FormID=\"" + DataHelpers.encodeXml(document.getFormID()) + "\" Number=\"" + String.valueOf(document.getNumber()) + "\" Indexed=\"" + String.valueOf(document.isIndexed()) + "\">\n";
             xml += "<CustomProperties>\n";
             xml += document.getCustomProperties().getXML();
             xml += "</CustomProperties>";
@@ -150,6 +151,16 @@ public class Documents
      */
     public NamedValueList<String, Configuration> getDocuments() {
         return documents;
+    }
+
+    /**
+     * Get list of document numbers
+     *
+     * @return List of String containing document numbers.
+     */
+    public List<String> getDocumentList()
+    {
+        return documents.getOrderedNameList();
     }
 
     /**
@@ -190,7 +201,12 @@ public class Documents
         document.setNumber(dn);
         documents.put(String.valueOf(document.getNumber()), document);
     }
-    
+
+    public void insertDocument(Document document, int index)
+    {
+        documents.put(String.valueOf(document.getNumber()), document,index);
+    }
+
     /**
      * Delete document from documents collection.
      * @param documentName Name of document to delete.
@@ -199,5 +215,20 @@ public class Documents
     public Document deleteDocument(String documentNumber)
     {
         return documents.containsKey(documentNumber) ? (Document)documents.remove(documentNumber) : new Document();
+    }
+
+    public void moveDocument(String documentNumber, int newIndex) throws OpenCaptureException
+    {
+        try
+        {
+
+            Document document = Document.newInstanceOf((Document)documents.remove(documentNumber));
+
+            insertDocument(document, newIndex);
+        }
+        catch(Exception e)
+        {
+            throw new OpenCaptureException("Unable to move page[" + documentNumber + "]. " + e.toString());
+        }
     }
 }
