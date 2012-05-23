@@ -36,6 +36,7 @@ import net.filterlogic.OpenCapture.interfaces.OpenCaptureDeliveryException;
  */
 public class OCDelivery 
 {
+    private static String OC_DELIVERY_CONFIG_FILE_PATH = "oc.delivery.config.file.path";
     static Logger myLogger = Logger.getLogger(OCDelivery.class.getName( ));
 
     private String configFile = "";
@@ -157,6 +158,8 @@ public class OCDelivery
             }
 
             OCDelivery ocDelivery = new OCDelivery(args[0]);
+
+            System.setProperty(OC_DELIVERY_CONFIG_FILE_PATH, args[0]);
 
             ocDelivery.ProcessBatches();
         }

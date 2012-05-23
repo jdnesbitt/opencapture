@@ -96,6 +96,10 @@ public class OCConverter
                         // load converter plugin
                         String converterID = batch.getConfigurations().getQueues().getCurrentQueue().getPluginID();
                         String className = batch.getOcConfig().getConverterClass(converterID);
+
+                        myLogger.info("Converter PludingID:" + converterID);
+                        myLogger.info("Converter PluginClass: " + className);
+                        
                         // load converter plugin
                         Class c = Class.forName(className);
                         // create converter object.
@@ -138,6 +142,8 @@ public class OCConverter
                                     Page page = (Page)document.getPages().getPage(pageNum);
                                     
                                     files[i] = imagePath + page.getName();
+
+                                    System.out.println("Adding file to list: " + imagePath + page.getName());
                                 }
 
                                 // set path to pdf folder

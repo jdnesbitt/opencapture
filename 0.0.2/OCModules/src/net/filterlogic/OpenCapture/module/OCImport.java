@@ -32,11 +32,15 @@ import java.io.FilenameFilter;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.util.ArrayList;
+import net.filterlogic.OpenCapture.managers.ImportSettings;
 import net.filterlogic.OpenCapture.managers.Mapping;
 import net.filterlogic.OpenCapture.managers.MappingFile;
 import net.filterlogic.OpenCapture.managers.ValueMap;
 import net.filterlogic.io.FileAccess;
 import net.filterlogic.util.xml.XMLParser;
+
+import net.filterlogic.OpenCapture.interfaces.IOCImportPlugin;
+import net.filterlogic.util.xml.XSLTransform;
 
 class FileNameFilter implements FilenameFilter 
 {
@@ -177,8 +181,10 @@ public class OCImport
                 String archivePath = prop.getProperty("archivepath." + String.valueOf(i));
                 String batchnameprefix = prop.getProperty("batchnameprefix." + String.valueOf(i)) != null ? prop.getProperty("batchnameprefix." + String.valueOf(i)) : "";
                 String batchnamesuffix = prop.getProperty("batchnamesuffix." + String.valueOf(i)) != null ? prop.getProperty("batchnamesuffix." + String.valueOf(i)) : "";
+                String importPlugin = prop.getProperty("importplugin." + String.valueOf(i)) != null ? prop.getProperty("importplugin." + String.valueOf(i)) : "";
 
                 myLogger.info("pollDir=" + path);
+                myLogger.info("archiveDir=" + archivePath);
                 myLogger.info("importTrigger=" + ext);
                 myLogger.info("batchclass=" + batchclass);
                 myLogger.info("processsubfolder=" + processsubfolder);
@@ -189,19 +195,19 @@ public class OCImport
                 // create settings obj
                 ImportSettings impset = new ImportSettings();
 
-                impset.archivePath = archivePath;
-                impset.batchClass = batchclass;
-                impset.batchPerFile = batchperfile;
-                impset.documentPerFile = documentperfile;
-                impset.filesOnly = filesonly;
-                impset.imagePath = imagePath;
-                impset.mappingFile = mappingfile;
-                impset.pollDir = path;
-                impset.processSubFolder = processsubfolder;
-                impset.triggerExt = ext;
+                impset.setArchivePath(archivePath);
+                impset.setBatchClass(batchclass);
+                impset.setBatchPerFile(batchperfile);
+                impset.setDocumentPerFile(documentperfile);
+                impset.setFilesOnly(filesonly);
+                impset.setImagePath(imagePath);
+                impset.setMappingFile(mappingfile);
+                impset.setPollDir(path);
+                impset.setProcessSubFolder(processsubfolder);
+                impset.setTriggerExt(ext);
                 impset.setBatchNamePrefix(batchnameprefix);
                 impset.setBatchNameSuffix(batchnamesuffix);
-                
+
                 MappingFile mf = null;
 
                 // if mapping file set, create mappingfile object
@@ -218,65 +224,77 @@ public class OCImport
                     impset.setMappingFileObj(null);
                 }
 
-                // if process sub dirs is true, get dir list
-                File[] directories = null;
 
-                if(processsubfolder)
+                /**
+                 * ***** ADD CODE HERE TO LOAD AND RUN IMPORT PLUGIN *****
+                 */
+
+                if(importPlugin.length()<1)
                 {
-                    directories = getDirList(path);
+                    // if process sub dirs is true, get dir list
+                    File[] directories = null;
 
-                    // if no sub directories, process current
-                    if(directories == null || directories.length<1)
+                    if(processsubfolder)
+                    {
+                        directories = getDirList(path);
+
+                        // if no sub directories, process current
+                        if(directories == null || directories.length<1)
+                        {
+                            directories = new File[1];
+
+                            // add file object (path) to array
+                            directories[0] = new File(path);
+                        }
+                    }
+                    else
                     {
                         directories = new File[1];
-
                         // add file object (path) to array
                         directories[0] = new File(path);
                     }
-                }
+
+                    myLogger.info("DirectoryCount=" + directories.length);
+
+                    // loop through directories
+                    for(int d=0;d<directories.length;d++)
+                    {
+                        String dirPath = directories[d].getAbsolutePath();
+
+                        myLogger.info("Processing dir=" + dirPath);
+
+                        File[] files;
+
+                        if(filesonly)
+                             files = getFileList(dirPath);
+                        else
+                            files =  getFileList(dirPath,ext);
+
+                        if(files == null || files.length<1)
+                        {
+                            myLogger.info("No files to process in " + dirPath);
+
+                            continue;
+                        }
+
+                        // if there's something to process, do it
+                        if(files.length>0)
+                        {
+                            if(batchperfile)
+                                ProcessBatchPerFile(files, impset, mf);
+                            else
+                                ProcessMultiFilePerBatch(files, impset, mf);
+                        }
+
+                    } // dir for loop
+
+                }   // import plugin check
                 else
                 {
-                    directories = new File[1];
-                    // add file object (path) to array
-                    directories[0] = new File(path);
+                    // use import plugin to process
                 }
 
-                myLogger.info("DirectoryCount=" + directories.length);
-
-                // loop through directories
-                for(int d=0;d<directories.length;d++)
-                {
-                    String dirPath = directories[d].getAbsolutePath();
-
-                    myLogger.info("Processing dir=" + dirPath);
-
-                    File[] files;
-
-                    if(filesonly)
-                         files = getFileList(dirPath);
-                    else
-                        files =  getFileList(dirPath,ext);
-
-                    if(files == null || files.length<1)
-                    {
-                        myLogger.info("No files to process in " + dirPath);
-
-                        continue;
-                    }
-
-                    // if there's something to process, do it
-                    if(files.length>0)
-                    {
-                        if(batchperfile)
-                            ProcessBatchPerFile(files, impset, mf);
-                        else
-                            ProcessMultiFilePerBatch(files, impset, mf);
-                    }
-
-
-
-                } // dir for loop
-            }
+            }   // polldir loop
         }
         catch(Exception e)
         {
@@ -350,7 +368,8 @@ public class OCImport
                             {
                                 ProcessXMLM(file, batch, impSet);
 
-
+                                // move trigger file to archive path
+                                FileAccess.Move(file.getAbsolutePath(), impSet.getArchivePath(), true);
                             }
                         }
                     
@@ -543,6 +562,7 @@ public class OCImport
                         String entryValue = xmlParser.getValue(xpath,"");
 
                         String vmValue = "";
+                        String vmKeyValue = "";
 
                         // if value map exists, check it for mapping
                         if(map.getValueMapList().size()>0)
@@ -550,7 +570,10 @@ public class OCImport
                             ValueMap vm = map.findValueMap(entryValue);
 
                             if(vm != null)
+                            {
                                 vmValue = vm.getValue();
+                                vmKeyValue = vm.getKeyValue();
+                            }
     //                                        else
     //                                            vmValue = entryValue;
 
@@ -560,6 +583,7 @@ public class OCImport
 
                         // set index field value
                         indexFields.getIndexField(map.getDestination()).setValue(vmValue);
+                        indexFields.getIndexField(map.getDestination()).setKeyValue(vmKeyValue);
                     }
 
                     // set index fields in document
@@ -579,8 +603,181 @@ public class OCImport
 
     }
 
-    private void ProcessXMLM(File triggerFile, Batch batch, ImportSettings impSet)
+    private void ProcessXMLM(File triggerFile, Batch batch, ImportSettings impSet) throws OpenCaptureImagingException,OpenCaptureException,Exception
     {
+        List mappings = null;
+        MappingFile mf = impSet.getMappingFileObj();
+        String imagePath = "";
+        File[] imageFiles = null;
+        XMLParser xmlParser = null;
+
+        try
+        {
+            xmlParser = new XMLParser();
+
+            if(mf != null)
+            {
+                mappings = mf.getMappings();
+            }
+            else
+            {
+                throw new Exception("Must have a mapping file for XML trigger files.");
+            }
+
+            if(triggerFile == null)
+                throw new Exception("Invalid trigger file.");
+
+            // load xml trigger file
+            xmlParser.loadDocument(triggerFile.getAbsolutePath());
+
+            // if xslt provided, transform xml doc
+            if(impSet.getMappingFileObj().getXslt().length()>0)
+                xmlParser.setXmlDocument(XSLTransform.transform(xmlParser.getXmlDocument(), impSet.getMappingFileObj().getXslt()));
+
+            // get image path
+            imagePath = triggerFile.getParent();
+
+            Mapping fileNameMap = mf.findMappingByDestination("FILENAME");
+            Mapping formIDMap = mf.findMappingByDestination("FORMID");
+            String fileNameXPath = fileNameMap.getSource();
+            String formIDXPath = formIDMap.getSource();
+
+            List impFileNames = null;
+
+            String impFileName = "";
+
+            // get list of names in xml doc
+            if(fileNameXPath.length()>0)
+                impFileNames = xmlParser.getValues(fileNameXPath);
+
+            if(impFileNames.size()>0)
+                imageFiles = getFileList(imagePath, impFileName);
+            else
+                imageFiles = getFileList(imagePath, "tif");
+
+            for(int i=0;i<imageFiles.length;i++)
+            {
+//                // if batchperfile se and not first file
+//                if(impSet.batchPerFile && i >0)
+//                {
+//                    // close current batch
+//                    batch.CloseBatch();
+//                    // create new batch and get it's id
+//                    long batchId = createBatch(impSet);
+//                    // create new batch object
+//                    batch = new Batch();
+//                    // opoen new batch
+//                    batch.OpenBatch(batchId);
+//                }
+
+                String[] tiffs = new String[1];
+
+                tiffs[0] = imageFiles[i].getAbsolutePath();
+
+                //List list = ToTIFF.toTIFF(tiffs, OpenCaptureCommon.getBatchFilePath(batchID), "00000000", false, 200);
+                List list = ToTIFF.toTIFF(tiffs, batch.getImageFilePath(),impSet.getArchivePath(), "00000000", false, 200);
+
+                // get value @ form id xpath
+                String formIDValue = xmlParser.getValue(formIDXPath, "");
+
+                ValueMap formIDVM = formIDMap.findValueMap(formIDValue);
+
+                // add check here for db type when connecting to db
+                String formID = "DOCUMENT";
+                String vmapValue = "Document";
+                String docName = "Document";
+
+                if(formIDVM != null)
+                {
+                    formID = formIDVM.getId();
+                    vmapValue = formIDVM.getValue();
+                }
+
+                // get document config from batch class configuration section
+                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
+
+                // get index fields from batch class
+                IndexFields indexFields = batch.getConfigurations().getIndexFields();
+
+
+                if(documentConfig != null)
+                {
+                    docName = documentConfig.getName();
+                }
+
+                Document document = new Document();
+
+                document.setFormID(formID);
+                document.setName(docName);
+                //document.setNumber(documentNumber);
+                //++documentNumber;
+
+                if(document!=null)
+                {
+                    // add pages to document
+                    for(int p=0;p<list.size();p++)
+                    {
+                        ++totalPages;
+
+                        String pageName = (String)list.get(p);
+                        pageName = Path.getFileName(pageName);
+
+                        Page page = new Page(pageName, totalPages, totalPages);
+
+                        document.addPage(page);
+                    }
+
+                    for(int e=0;e<mappings.size();e++)
+                    {
+                        Mapping map = (Mapping)mappings.get(e);
+
+                        if(map.getDestination().equals("FILENAME") || map.getDestination().equals("FORMID"))
+                            continue;
+
+                        // get source xpath
+                        String xpath = map.getSource();
+                        // get source value
+                        String entryValue = xmlParser.getValue(xpath,"");
+
+                        String vmValue = "";
+                        String vmKeyValue = "";
+
+                        // if value map exists, check it for mapping
+                        if(map.getValueMapList().size()>0)
+                        {
+                            ValueMap vm = map.findValueMap(entryValue);
+
+                            if(vm != null)
+                            {
+                                vmValue = vm.getValue();
+                                vmKeyValue = vm.getKeyValue();
+                            }
+    //                                        else
+    //                                            vmValue = entryValue;
+
+                        }
+                        else
+                            vmValue = entryValue;
+
+                        // set index field value
+                        indexFields.getIndexField(map.getDestination()).setValue(vmValue);
+                        indexFields.getIndexField(map.getDestination()).setKeyValue(vmKeyValue);
+                    }
+
+                    // set index fields in document
+                    document.setIndexFields(indexFields);
+
+                    // add the document to batch
+                    batch.addDocument(document);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            myLogger.error("Error in ProcessXMLS\n" + e.toString());
+
+            throw(e);
+        }
 
     }
 
@@ -652,7 +849,8 @@ public class OCImport
                             {
                                 ProcessXMLM(file, batch, impSet);
 
-                                
+                                // move trigger file to archive path
+                                FileAccess.Move(file.getAbsolutePath(), impSet.getArchivePath(), true);
                             }
                         }
                         else
@@ -710,89 +908,104 @@ public class OCImport
 
                             tiffs[0] = importFile.getAbsolutePath();
 
-                            //List list = ToTIFF.toTIFF(tiffs, OpenCaptureCommon.getBatchFilePath(batchID), "00000000", false, 200);
-                            List list = ToTIFF.toTIFF(tiffs, batch.getImageFilePath(),archivePath, "00000000", false, 200);
-
-                            String formIDColValue = entry[formIDCol];
-                            ValueMap formIDVM = formIDMap.findValueMap(formIDColValue);
-
-                            // add check here for db type when connecting to db
-                            String formID = "DOCUMENT";
-                            String vmapValue = "Document";
-                            String docName = "Document";
-
-                            if(formIDVM != null)
+                            // check if file exists
+                            if((new File(tiffs[0]).exists()))
                             {
-                                formID = formIDVM.getId();
-                                vmapValue = formIDVM.getValue();
-                            }
 
-                            Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
-                            //Configuration documentConfig2 = batch.getConfigurations().getConfiguration(vmapValue);
-                            IndexFields indexFields = batch.getConfigurations().getIndexFields();
+                                //List list = ToTIFF.toTIFF(tiffs, OpenCaptureCommon.getBatchFilePath(batchID), "00000000", false, 200);
+                                List list = ToTIFF.toTIFF(tiffs, batch.getImageFilePath(),archivePath, "00000000", false, 200);
 
+                                String formIDColValue = entry[formIDCol];
+                                ValueMap formIDVM = formIDMap.findValueMap(formIDColValue);
 
-                            if(documentConfig != null)
-                            {
-                                docName = documentConfig.getName();
-                            }
+                                // add check here for db type when connecting to db
+                                String formID = "DOCUMENT";
+                                String vmapValue = "Document";
+                                String docName = "Document";
 
-                            Document document = new Document();
-
-                            document.setFormID(formID);
-                            document.setName(docName);
-                            document.setNumber(documentNumber);
-                            ++documentNumber;
-
-                            for(int p=0;p<list.size();p++)
-                            {
-                                ++totalPages;
-
-                                String pageName = (String)list.get(p);
-                                pageName = Path.getFileName(pageName);
-
-                                Page page = new Page(pageName, totalPages, totalPages);
-
-                                document.addPage(page);
-                            }
-
-                            if(document!=null)
-                            {
-                                for(int e=0;e<mappings.size();e++)
+                                if(formIDVM != null)
                                 {
-                                    Mapping map = (Mapping)mappings.get(e);
-
-                                    if(map.getDestination().equals("FILENAME") || map.getDestination().equals("FORMID"))
-                                        continue;
-
-                                    int col = Integer.parseInt(map.getSource());
-                                    String entryValue = entry[col];
-                                    String vmValue = "";
-
-                                    // if value map exists, check it for mapping
-                                    if(map.getValueMapList().size()>0)
-                                    {
-                                        ValueMap vm = map.findValueMap(entryValue);
-
-                                        if(vm != null)
-                                            vmValue = vm.getValue();
-//                                        else
-//                                            vmValue = entryValue;
-
-                                    }
-                                    else
-                                        vmValue = entryValue;
-
-                                    // set index field value
-                                    indexFields.getIndexField(map.getDestination()).setValue(vmValue);
+                                    formID = formIDVM.getId();
+                                    vmapValue = formIDVM.getValue();
                                 }
 
-                                // set index fields in document
-                                document.setIndexFields(indexFields);
+                                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
+                                //Configuration documentConfig2 = batch.getConfigurations().getConfiguration(vmapValue);
+                                IndexFields indexFields = batch.getConfigurations().getIndexFields();
 
-                                // add the document to batch
-                                batch.addDocument(document);
-                            }
+
+                                if(documentConfig != null)
+                                {
+                                    docName = documentConfig.getName();
+                                }
+
+                                Document document = new Document();
+
+                                document.setFormID(formID);
+                                document.setName(docName);
+                                document.setNumber(documentNumber);
+                                ++documentNumber;
+
+                                for(int p=0;p<list.size();p++)
+                                {
+                                    ++totalPages;
+
+                                    String pageName = (String)list.get(p);
+                                    pageName = Path.getFileName(pageName);
+
+                                    Page page = new Page(pageName, totalPages, totalPages);
+
+                                    document.addPage(page);
+                                }
+
+                                if(document!=null)
+                                {
+                                    for(int e=0;e<mappings.size();e++)
+                                    {
+                                        Mapping map = (Mapping)mappings.get(e);
+
+                                        if(map.getDestination().equals("FILENAME") || map.getDestination().equals("FORMID"))
+                                            continue;
+
+                                        int col = -1;
+                                        String entryValue = "";
+                                        String vmValue = "";
+                                        String vmKeyValue = "";
+                                        if(map.getSource().length()>0)
+                                        {
+                                            col = Integer.parseInt(map.getSource());
+                                            entryValue = entry[col];
+                                        }
+
+                                        // if value map exists, check it for mapping
+                                        if(map.getValueMapList().size()>0)
+                                        {
+                                            ValueMap vm = map.findValueMap(entryValue);
+
+                                            if(vm != null)
+                                            {
+                                                vmValue = vm.getValue();
+                                                vmKeyValue = vm.getKeyValue();
+                                            }
+    //                                        else
+    //                                            vmValue = entryValue;
+
+                                        }
+                                        else
+                                            vmValue = entryValue;
+
+                                        // set index field value
+                                        indexFields.getIndexField(map.getDestination()).setValue(vmValue);
+                                        indexFields.getIndexField(map.getDestination()).setKeyValue(vmKeyValue);
+                                    }
+
+                                    // set index fields in document
+                                    document.setIndexFields(indexFields);
+
+                                    // add the document to batch
+                                    batch.addDocument(document);
+                                }
+                            }   // if import file exists
                         }
                     }
                     else
@@ -845,145 +1058,6 @@ public class OCImport
         return null;
     }
 
-    public class ImportSettings
-    {
-        private String imagePath = "";
-        private String archivePath = "";
-        private String batchClass = "";
-
-        private String pollDir = "";
-        private boolean filesOnly = false;
-        private boolean processSubFolder = false;
-        private boolean documentPerFile = false;
-        private boolean batchPerFile = false;
-        private String triggerExt = "";
-        private String mappingFile = "";
-        private boolean useMappingFile = false;
-        private MappingFile mappingFileObj = null;
-
-        private String batchNamePrefix = "";
-        private String batchNameSuffix = "";
-
-        public ImportSettings()
-        {
-        }
-
-        public String getBatchNamePrefix() {
-            return batchNamePrefix;
-        }
-
-        public void setBatchNamePrefix(String batchNamePrefix) {
-            this.batchNamePrefix = batchNamePrefix;
-        }
-
-        public String getBatchNameSuffix() {
-            return batchNameSuffix;
-        }
-
-        public void setBatchNameSuffix(String batchNameSuffix) {
-            this.batchNameSuffix = batchNameSuffix;
-        }
-
-        public boolean isUseMappingFile() {
-            return useMappingFile;
-        }
-
-        public void setUseMappingFile(boolean useMappingFile) {
-            this.useMappingFile = useMappingFile;
-        }
-
-
-        public String getArchivePath() {
-            return archivePath;
-        }
-
-        public void setArchivePath(String archivePath) {
-            this.archivePath = archivePath;
-        }
-
-        public String getBatchClass() {
-            return batchClass;
-        }
-
-        public void setBatchClass(String batchClass) {
-            this.batchClass = batchClass;
-        }
-
-        public boolean isBatchPerFile() {
-            return batchPerFile;
-        }
-
-        public void setBatchPerFile(boolean batchPerFile) {
-            this.batchPerFile = batchPerFile;
-        }
-
-        public boolean isDocumentPerFile() {
-            return documentPerFile;
-        }
-
-        public void setDocumentPerFile(boolean documentPerFile) {
-            this.documentPerFile = documentPerFile;
-        }
-
-        public boolean isFilesOnly() {
-            return filesOnly;
-        }
-
-        public void setFilesOnly(boolean filesOnly) {
-            this.filesOnly = filesOnly;
-        }
-
-        public String getImagePath() {
-            return imagePath;
-        }
-
-        public void setImagePath(String imagePath) {
-            this.imagePath = imagePath;
-        }
-
-        public String getMappingFile() {
-            return mappingFile;
-        }
-
-        public void setMappingFile(String mappingFile) {
-            this.mappingFile = mappingFile;
-        }
-
-        public String getPollDir() {
-            return pollDir;
-        }
-
-        public void setPollDir(String pollDir) {
-            this.pollDir = pollDir;
-        }
-
-        public boolean isProcessSubFolder() {
-            return processSubFolder;
-        }
-
-        public void setProcessSubFolder(boolean processSubFolder) {
-            this.processSubFolder = processSubFolder;
-        }
-
-        public String getTriggerExt() {
-            return triggerExt;
-        }
-
-        public void setTriggerExt(String triggerExt) {
-            this.triggerExt = triggerExt;
-        }
-
-        public MappingFile getMappingFileObj() {
-            return mappingFileObj;
-        }
-
-        public void setMappingFileObj(MappingFile mappingFileObj) {
-            this.mappingFileObj = mappingFileObj;
-        }
-
-
-    }
-    
     /**
      * @param args the command line arguments
      */
