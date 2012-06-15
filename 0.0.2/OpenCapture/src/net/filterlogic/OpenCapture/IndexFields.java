@@ -51,7 +51,7 @@ public class IndexFields
 
 //System.out.println("New IndexField from IndexFields: " + ndxField.toString());
 
-            addIndexField(new IndexField(ndxField.getName(), ndxField.getType(), ndxField.getValue(), ndxField.getValidator(), ndxField.isStickey(),ndxField.isVisible(), ndxField.getLabel(),ndxField.getKeyValue()));
+            addIndexField(new IndexField(ndxField.getName(), ndxField.getType(), ndxField.getValue(), ndxField.getValidator(), ndxField.isStickey(),ndxField.isVisible(), ndxField.getLabel(),ndxField.getKeyValue(),ndxField.isRequired()));
         }
     }
     

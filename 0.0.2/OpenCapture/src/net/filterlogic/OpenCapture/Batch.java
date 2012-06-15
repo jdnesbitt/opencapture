@@ -380,7 +380,7 @@ public class Batch
 
         // of batch already locked, error.
         if(OpenCaptureCommon.isBatchXmlFileLocked(batchID))
-            throw new OpenCaptureException("Batch is already being processed!");
+            throw new OpenCaptureException("Batch is already being processed [" + String.valueOf(batchID) + "]!");
 
         // set batch state in db to processing.
         dbm.setBatchStateByBatchID(batchID, OpenCaptureCommon.BATCH_STATUS_PROCESSING);
