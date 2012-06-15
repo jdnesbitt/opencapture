@@ -129,13 +129,13 @@ public class OCDelivery
                 }
                 catch(Exception ex)
                 {
-                    myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(ex));
+                    myLogger.error(ex.toString());
                     batch.CloseBatch(true, ex.toString());
 
                 }
                 catch(OpenCaptureDeliveryException e)
                 {
-                    myLogger.error(net.filterlogic.util.StackTraceUtil.getStackTrace(e));
+                    myLogger.error(e.toString());
                     batch.CloseBatch(true, e.toString());
                 }
 

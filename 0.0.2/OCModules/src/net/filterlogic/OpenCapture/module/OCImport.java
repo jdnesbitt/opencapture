@@ -508,19 +508,45 @@ public class OCImport
                 String formID = "DOCUMENT";
                 String vmapValue = "Document";
                 String docName = "Document";
-
-                if(formIDVM != null)
-                {
-                    formID = formIDVM.getId();
-                    vmapValue = formIDVM.getValue();
-                }
-
-                // get document config from batch class configuration section
-                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
-
+                
                 // get index fields from batch class
                 IndexFields indexFields = batch.getConfigurations().getIndexFields();
 
+                // check doctype default value
+                IndexField ndxDocType = indexFields.getIndexField("DOC_TYPE");
+
+                                // if doc type index field found
+                                if(ndxDocType.getName().length()>0 && ndxDocType.getValue().length()>0)
+                                {
+                                    myLogger.debug("Default DOC_TYPE set in batch class: " + ndxDocType.getName());
+                                    myLogger.debug(ndxDocType.toString());
+                                    
+                                    // set form id, vmap value, and doc name
+                                    if(ndxDocType.getKeyValue().length()>0)
+                                        formID = ndxDocType.getKeyValue();
+                                    else
+                                        formID = ndxDocType.getValue();
+
+                                    vmapValue = ndxDocType.getValue();
+                                    
+                                    myLogger.debug("FormID: " + formID);
+                                    myLogger.debug("DocType: " + vmapValue);
+
+                                }
+                                
+                                if(formIDVM != null)
+                                {
+                                    myLogger.debug("Override DOC_TYPE from mapping template");
+                                    
+                                    formID = formIDVM.getId();
+                                    vmapValue = formIDVM.getValue();
+                                }
+                                
+                                myLogger.debug("FormID: " + formID);
+                                myLogger.debug("DocType: " + vmapValue);
+                                
+                // get document config from batch class configuration section
+                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
 
                 if(documentConfig != null)
                 {
@@ -687,18 +713,44 @@ public class OCImport
                 String vmapValue = "Document";
                 String docName = "Document";
 
-                if(formIDVM != null)
-                {
-                    formID = formIDVM.getId();
-                    vmapValue = formIDVM.getValue();
-                }
-
-                // get document config from batch class configuration section
-                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
-
                 // get index fields from batch class
                 IndexFields indexFields = batch.getConfigurations().getIndexFields();
 
+                // check doctype default value
+                IndexField ndxDocType = indexFields.getIndexField("DOC_TYPE");
+
+                                // if doc type index field found
+                                if(ndxDocType.getName().length()>0 && ndxDocType.getValue().length()>0)
+                                {
+                                    myLogger.debug("Default DOC_TYPE set in batch class: " + ndxDocType.getName());
+                                    myLogger.debug(ndxDocType.toString());
+                                    
+                                    // set form id, vmap value, and doc name
+                                    if(ndxDocType.getKeyValue().length()>0)
+                                        formID = ndxDocType.getKeyValue();
+                                    else
+                                        formID = ndxDocType.getValue();
+
+                                    vmapValue = ndxDocType.getValue();
+                                    
+                                    myLogger.debug("FormID: " + formID);
+                                    myLogger.debug("DocType: " + vmapValue);
+
+                                }
+                                
+                                if(formIDVM != null)
+                                {
+                                    myLogger.debug("Override DOC_TYPE from mapping template");
+                                    
+                                    formID = formIDVM.getId();
+                                    vmapValue = formIDVM.getValue();
+                                }
+                                
+                                myLogger.debug("FormID: " + formID);
+                                myLogger.debug("DocType: " + vmapValue);
+
+                // get document config from batch class configuration section
+                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
 
                 if(documentConfig != null)
                 {
@@ -923,16 +975,47 @@ public class OCImport
                                 String vmapValue = "Document";
                                 String docName = "Document";
 
-                                if(formIDVM != null)
-                                {
-                                    formID = formIDVM.getId();
-                                    vmapValue = formIDVM.getValue();
-                                }
-
-                                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
-                                //Configuration documentConfig2 = batch.getConfigurations().getConfiguration(vmapValue);
+                                // get index fields from batch class
                                 IndexFields indexFields = batch.getConfigurations().getIndexFields();
 
+                                // check doctype default value
+                                IndexField ndxDocType = indexFields.getIndexField("DOC_TYPE");
+
+                                // if doc type index field found
+                                if(ndxDocType.getName().length()>0 && ndxDocType.getValue().length()>0)
+                                {
+                                    myLogger.debug("Default DOC_TYPE set in batch class: " + ndxDocType.getName());
+                                    myLogger.debug(ndxDocType.toString());
+                                    
+                                    // set form id, vmap value, and doc name
+                                    if(ndxDocType.getKeyValue().length()>0)
+                                        formID = ndxDocType.getKeyValue();
+                                    else
+                                        formID = ndxDocType.getValue();
+
+                                    vmapValue = ndxDocType.getValue();
+                                    
+                                    myLogger.debug("FormID: " + formID);
+                                    myLogger.debug("DocType: " + vmapValue);
+
+                                }
+                                
+                                if(formIDVM != null)
+                                {
+                                    myLogger.debug("Override DOC_TYPE from mapping template");
+                                    
+                                    formID = formIDVM.getKeyValue();
+                                    vmapValue = formIDVM.getValue();
+                                }
+                                
+                                myLogger.debug("FormID: " + formID);
+                                myLogger.debug("DocType: " + vmapValue);
+                                
+                                // set index field doctype value
+                                indexFields.getIndexField("DOC_TYPE").setValue(vmapValue);
+                                indexFields.getIndexField("DOC_TYPE").setKeyValue(formID);
+
+                                Configuration documentConfig = batch.getConfigurations().getConfiguration(vmapValue);
 
                                 if(documentConfig != null)
                                 {
