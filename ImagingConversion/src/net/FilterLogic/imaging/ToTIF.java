@@ -29,6 +29,7 @@ import com.sun.media.jai.codec.TIFFDecodeParam;
 import com.sun.media.jai.codec.TIFFDirectory;
 import com.sun.media.jai.codec.TIFFEncodeParam;
 import com.sun.media.jai.codec.TIFFField;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
@@ -669,6 +670,28 @@ public class ToTIF implements IConversion
         pb.addSource(ri);
         pb.add(matrix);
         return JAI.create("BandCombine", pb, null);
+    }
+    
+    /**
+     * Rotate image specified degree.
+     * 
+     * -90.0 -  rotate 90 degrees left
+     *  90.0 - rotate 90 degrees right.
+     * 
+     * @param image BufferedImage to rotate.
+     * 
+     * @return Rotated BufferedImage.
+     */
+    public BufferedImage rotateImage(BufferedImage image, double degree)
+    {
+        if(image != null)
+        {
+            Image img = ImageUtils.toImage(image);
+            img = ImageUtils.rotateImage(img, degree);
+            image = ImageUtils.toBufferedImage(img);
+        }
+
+        return image;
     }
 
     private TIFFEncodeParam setEncoder() throws Exception

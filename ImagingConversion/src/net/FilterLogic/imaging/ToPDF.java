@@ -26,6 +26,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 //import com.itextpdf.text.pdf.RandomAccessFileOrArray;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
@@ -161,6 +162,28 @@ public class ToPDF implements IConversion
 
         if(pageNumber<document.size())
             document.add(pageNumber, documentPage);
+    }
+    
+    /**
+     * Rotate image specified degree.
+     * 
+     * -90.0 -  rotate 90 degrees left
+     *  90.0 - rotate 90 degrees right.
+     * 
+     * @param image BufferedImage to rotate.
+     * 
+     * @return Rotated BufferedImage.
+     */
+    public BufferedImage rotateImage(BufferedImage image, double degree)
+    {
+        if(image != null)
+        {
+            Image img = ImageUtils.toImage(image);
+            img = ImageUtils.rotateImage(img, degree);
+            image = ImageUtils.toBufferedImage(img);
+        }
+
+        return image;
     }
 
     public void saveDocument(String fileName) throws Exception

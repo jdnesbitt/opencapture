@@ -132,6 +132,28 @@ public class ToGIF implements IConversion
         totalPages = document.size();
     }
     
+    /**
+     * Rotate image specified degree.
+     * 
+     * -90.0 -  rotate 90 degrees left
+     *  90.0 - rotate 90 degrees right.
+     * 
+     * @param image BufferedImage to rotate.
+     * 
+     * @return Rotated BufferedImage.
+     */
+    public BufferedImage rotateImage(BufferedImage image, double degree)
+    {
+        if(image != null)
+        {
+            Image img = ImageUtils.toImage(image);
+            img = ImageUtils.rotateImage(img, degree);
+            image = ImageUtils.toBufferedImage(img);
+        }
+
+        return image;
+    }
+    
     public void addDocumentProperty(String propertyName, String propertyValue) throws Exception
     {
         documentProperties.setProperty(propertyName.toUpperCase(), propertyValue);
@@ -184,7 +206,7 @@ public class ToGIF implements IConversion
     	   //i2 = (BufferedImage)document.get(reqPage);
     	   //image = new BufferedImage(i2.getWidth(),i2.getHeight(),BufferedImage.TYPE_INT_RGB);
     	   //image.getGraphics().drawImage(i2, 0, 0, i2.getWidth(), i2.getHeight(), null);
-    	   //image = ImageUtil.convertToRgb(i2);
+    	   //image = ImageUtils.convertToRgb(i2);
 
     	   // write image to file
     	   if(!ImageIO.write(image, "JPG", os))
@@ -252,25 +274,25 @@ public class ToGIF implements IConversion
     		this.documentProperties.put("IMAGEWIDTH", String.valueOf(iw));
     		this.documentProperties.put("IMAGEHEIGHT", String.valueOf(ih));
     		
-    		//image = ImageUtil.toBufferedImage(img);
+    		//image = ImageUtils.toBufferedImage(img);
 
     		// resize image to 1024 by 768 if image resolution/size too high/large
     		if(resize)
     		{
-    			//int[] xy = ImageUtil.calculateResize((int)iw, (int)ih, fileSize, RESIZE_LIMIT);
+    			//int[] xy = ImageUtils.calculateResize((int)iw, (int)ih, fileSize, RESIZE_LIMIT);
 
     			String theTime = new Date().toString();
     			this.documentProperties.put("RESIZE_START_TIME", theTime);
 
 				if(iw > ih)
-					image = ImageUtil.resizeTrick(image, RESIZE_WIDTH, RESIZE_HEIGHT);
+					image = ImageUtils.resizeTrick(image, RESIZE_WIDTH, RESIZE_HEIGHT);
 				else
 					if(ih > iw)
-						image = ImageUtil.resizeTrick(image, RESIZE_HEIGHT, RESIZE_WIDTH);
+						image = ImageUtils.resizeTrick(image, RESIZE_HEIGHT, RESIZE_WIDTH);
 					else
-						image = ImageUtil.resizeTrick(image, RESIZE_WIDTH, RESIZE_WIDTH);
+						image = ImageUtils.resizeTrick(image, RESIZE_WIDTH, RESIZE_WIDTH);
 
-    			//image = ImageUtil.resizeImage(image, RESIZE_WIDTH);
+    			//image = ImageUtils.resizeImage(image, RESIZE_WIDTH);
     			theTime = new Date().toString();
     			this.documentProperties.put("RESIZE_FINISH_TIME", theTime);
     			
