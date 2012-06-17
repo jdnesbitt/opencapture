@@ -31,6 +31,16 @@ import java.util.Properties;
 public interface IConversion
 {
     /**
+     * Rotate image specified degree.
+     * 
+     * @param image BufferedImage to rotate.
+     * @param degree Number of degrees to rotate image.
+     * 
+     * @return Rotated BufferedImage.
+     */
+    public BufferedImage rotateImage(BufferedImage image, double degree);
+    
+    /**
      * Get List containing all file names after saveDocument called.
      * 
      * @return List of String file names.
