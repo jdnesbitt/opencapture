@@ -16,6 +16,7 @@ Copyright 2008 Filter Logic
 
 package net.FilterLogic.imaging;
 
+import java.awt.image.BufferedImage;
 import java.util.Properties;
 
 /**
@@ -28,7 +29,8 @@ public class Converter
     public static void main(String[] args)
     {
 
-        String fname = "/tmp/invoice253.pdf";
+        //String fname = "C:\\export\\oc\\OCData\\Images\\0000003c\\00000000.tif";
+        String fname = "C:\\tmp\\attsl.pdf";
         //String fname = "C:\\OCData\\Import\\Archive\\MXFax\\59.tif";
         //String fname = "C:\\OCData\\Import\\TRANSFLO\\Archive\\TransfloExpress\\2.tif";
 
@@ -36,13 +38,13 @@ public class Converter
         try
         {
             ToTIF tt = new ToTIF();
-            ToPDF toPdf = new ToPDF();
+            ToPDF tp = new ToPDF();
             
-            toPdf.setDocument(fname);
+            //toPdf.setDocument(fname);
         	//ToGIF tt = new ToGIF();
 
             //tt.setDocument("C:\\TestDocs\\TIFF\\TIF1.tif");
-            tt.setDocument(toPdf.getBufferedImages());
+            tp.setDocument(fname);
             //tt.setDocument("C:\\Dell\\E-WTRMRK.GIF");
             //tt.setDocument("C:\\mqmapps\\gskit\\jre\\javaws\\sunlogo64x30.gif");
             //tt.setDocument("C:\\mqmapps\\gskit\\jre\\javaws\\javalogo52x88.gif");
@@ -57,15 +59,18 @@ public class Converter
 //            tp.setVerticalDPI(tt.getVerticalDPI());
 //            Properties p = new Properties();
 
-            tt.addDocumentProperty("Compression", "COMPRESSION_GROUP4");
+            //tt.addDocumentProperty("Compression", "COMPRESSION_GROUP4");
+            tt.addDocumentProperty("Compression", "COMPRESSION_PACKBITS");
             
             // single page tifs
-            tt.addDocumentProperty(tt.MULTIPAGE_PROPERTY_NAME, "false");
-
+            tt.addDocumentProperty(tt.MULTIPAGE_PROPERTY_NAME, "true");
+            //tt.rotateImage(1, -90.0);
+            tt.setDocument(tp.getBufferedImagesAsGrayscale());
+            
             tt.saveDocument(fname + ".tif");
 
-            for(int i=0;i<tt.getFiles().size();i++)
-                System.out.println("File-" + i + " = " + tt.getFiles().get(i));
+//            for(int i=0;i<tt.getFiles().size();i++)
+//                System.out.println("File-" + i + " = " + tt.getFiles().get(i));
 
 //            p.put("TITLE", "Test Document");
 //            p.put("AUTHOR", "DARRON NESBITT");

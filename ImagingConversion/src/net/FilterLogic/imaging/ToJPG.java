@@ -156,16 +156,23 @@ public class ToJPG implements IConversion
      * 
      * @return Rotated BufferedImage.
      */
-    public BufferedImage rotateImage(BufferedImage image, double degree)
+    public void rotateImage(int page, double degree) throws Exception
     {
+        BufferedImage image = getPage(page);
+        
         if(image != null)
         {
             Image img = ImageUtils.toImage(image);
             img = ImageUtils.rotateImage(img, degree);
             image = ImageUtils.toBufferedImage(img);
+            
+            if(page>0)
+                page -= 1;
+            
+            document.remove(page);
+            
+            document.add(page, image);
         }
-
-        return image;
     }
 
     /**
