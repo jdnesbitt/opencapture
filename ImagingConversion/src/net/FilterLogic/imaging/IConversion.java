@@ -38,7 +38,7 @@ public interface IConversion
      * 
      * @return Rotated BufferedImage.
      */
-    public BufferedImage rotateImage(BufferedImage image, double degree);
+    public void rotateImage(int page, double degree) throws Exception;
     
     /**
      * Get List containing all file names after saveDocument called.

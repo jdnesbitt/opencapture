@@ -25,6 +25,7 @@ import com.itextpdf.text.pdf.PdfReader;
 //import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 //import com.itextpdf.text.pdf.RandomAccessFileOrArray;
@@ -174,16 +175,23 @@ public class ToPDF implements IConversion
      * 
      * @return Rotated BufferedImage.
      */
-    public BufferedImage rotateImage(BufferedImage image, double degree)
+    public void rotateImage(int page, double degree) throws Exception
     {
+        BufferedImage image = getPage(page);
+        
         if(image != null)
         {
             Image img = ImageUtils.toImage(image);
             img = ImageUtils.rotateImage(img, degree);
             image = ImageUtils.toBufferedImage(img);
+            
+            if(page>0)
+                page -= 1;
+            
+            document.remove(page);
+            
+            document.add(page, image);
         }
-
-        return image;
     }
 
     public void saveDocument(String fileName) throws Exception
@@ -334,6 +342,34 @@ public class ToPDF implements IConversion
         
         return bi;
     }
+    
+    
+    public List<BufferedImage> getBufferedImagesAsGrayscale() throws Exception
+    {
+        List<BufferedImage> bi = new ArrayList<BufferedImage>();
+        
+        for(int i=0;i<this.document.size();i++)
+        {
+            BufferedImage image = this.document.get(i);
+            
+            image = convertRGBToGrayscaleImage(image);
+            
+            bi.add(image);
+        }
+        
+        return bi;
+    }
+    
+    public BufferedImage convertRGBToGrayscaleImage(BufferedImage colorImage)
+    {
+        BufferedImage image = new BufferedImage(colorImage.getWidth(), colorImage.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
+        Graphics g = image.getGraphics();
+        g.drawImage(colorImage, 0, 0, null);
+        g.dispose();
+        
+        return image;
+    }
+    
     public BufferedImage processImage(BufferedImage image) {
 
         BufferedImage newImage=null;

@@ -29,6 +29,7 @@ import com.sun.media.jai.codec.TIFFDecodeParam;
 import com.sun.media.jai.codec.TIFFDirectory;
 import com.sun.media.jai.codec.TIFFEncodeParam;
 import com.sun.media.jai.codec.TIFFField;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -672,6 +673,16 @@ public class ToTIF implements IConversion
         return JAI.create("BandCombine", pb, null);
     }
     
+    public static BufferedImage convertRGBToGrayscaleImage(BufferedImage colorImage)
+    {
+        BufferedImage image = new BufferedImage(colorImage.getWidth(), colorImage.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
+        Graphics g = image.getGraphics();
+        g.drawImage(colorImage, 0, 0, null);
+        g.dispose();
+        
+        return image;
+    }
+    
     /**
      * Rotate image specified degree.
      * 
@@ -682,16 +693,23 @@ public class ToTIF implements IConversion
      * 
      * @return Rotated BufferedImage.
      */
-    public BufferedImage rotateImage(BufferedImage image, double degree)
+    public void rotateImage(int page, double degree) throws Exception
     {
+        BufferedImage image = getPage(page);
+        
         if(image != null)
         {
             Image img = ImageUtils.toImage(image);
             img = ImageUtils.rotateImage(img, degree);
             image = ImageUtils.toBufferedImage(img);
+            
+            if(page>0)
+                page -= 1;
+            
+            document.remove(page);
+            
+            document.add(page, image);
         }
-
-        return image;
     }
 
     private TIFFEncodeParam setEncoder() throws Exception
@@ -878,18 +896,34 @@ public class ToTIF implements IConversion
 
         return tep;
     }
+    
+    private int toInt(String value)
+    {
+        int result = -1;
+        
+        try
+        {
+            result = Integer.parseInt(value);
+        }
+        catch(Exception e)
+        {
+            result = -1;
+        }
+        
+        return result;
+    }
 
     private int getCompressionMethod(String compressionTypeName)
     {
-        int value = -1;
+        int value = toInt(compressionTypeName);
 
         compressionTypeName = compressionTypeName.toUpperCase();
 
         if(compressionTypeName.equals("COMPRESSION_NONE"))
             value = TIFFEncodeParam.COMPRESSION_NONE;
 
-        if(compressionTypeName.equals("COMPRESSION_PACKBITS"))
-            value = TIFFEncodeParam.COMPRESSION_NONE;
+        if(compressionTypeName.equals("COMPRESSION_PACKBITS") )
+            value = TIFFEncodeParam.COMPRESSION_PACKBITS;
 
         if(compressionTypeName.equals("COMPRESSION_GROUP3_1D"))
             value = TIFFEncodeParam.COMPRESSION_GROUP3_1D;

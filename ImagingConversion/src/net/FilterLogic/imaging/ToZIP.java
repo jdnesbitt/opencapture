@@ -83,7 +83,7 @@ public class ToZIP implements IConversion
     }
 
     @Override
-    public BufferedImage rotateImage(BufferedImage image, double degree) {
+    public void rotateImage(int page, double degree) {
         throw new UnsupportedOperationException("RotateImage not supported yet in ZIP.");
     }
     
