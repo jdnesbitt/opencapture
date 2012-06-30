@@ -30,7 +30,7 @@ public class Converter
     {
 
         //String fname = "C:\\export\\oc\\OCData\\Images\\0000003c\\00000000.tif";
-        String fname = "C:\\tmp\\attsl.pdf";
+        String fname = "C:\\Code\\invoice343.pdf";
         //String fname = "C:\\OCData\\Import\\Archive\\MXFax\\59.tif";
         //String fname = "C:\\OCData\\Import\\TRANSFLO\\Archive\\TransfloExpress\\2.tif";
 
@@ -65,9 +65,9 @@ public class Converter
             // single page tifs
             tt.addDocumentProperty(tt.MULTIPAGE_PROPERTY_NAME, "true");
             //tt.rotateImage(1, -90.0);
-            tt.setDocument(tp.getBufferedImagesAsGrayscale());
+            tt.setDocument(tp.getBufferedImages());
             
-            tt.saveDocument(fname + ".tif");
+            tt.saveDocument(fname + ".color.tif");
 
 //            for(int i=0;i<tt.getFiles().size();i++)
 //                System.out.println("File-" + i + " = " + tt.getFiles().get(i));
