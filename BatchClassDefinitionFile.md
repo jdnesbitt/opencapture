@@ -1,0 +1,187 @@
+# Introduction #
+
+This page explains the layout of the batch class XML definition file.  We'll attempt to document all aspects of this file.  If there are sections that are too vague, please leave us a comment.
+
+
+# Details #
+
+The purpose of this document is to describe the XML definition file used for both batch classes and batches.  This file is the key to importing and processing batches.
+
+## BatchClass Tag ##
+
+A batch class is an organizational unit used to define or describe a group of documents that are similar.  These documents may be stored in the same repository or may be used by the same department or organization.
+The batch class tag has several attributes.  The following is sample batch class tag:
+
+```
+<BatchClass Name="FFE Carrier Files" ImagePath="C:\Temp" version="0.0.1" Priority=”7”>
+```
+
+BatchClass attributes:
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of the batch class.  This is also used to as the filename of the batch class xml config file._ |
+| ImagePath          | _This is the page to where the imported or scanned images will be stored._ |
+| Version            | _The version of the xml file._ |
+| Priority           | _Priority of batches created using this batch class._ |
+
+
+### 2.1.1  Configuration Tag ###
+
+The Configuration tag encapsulates all the batch class configuration.
+
+### 2.1.1.1 CustomProperties and Property Tags ###
+
+The CustomProperties tag encapsulates configuration properties related to custom components built to plugin to OpenCapture.
+
+The Property tag is used to define a custom property.  The Property tag has the following attributes:
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of the property.  This is key to retrieving the property at runtime._ |
+| Value              | _Value of the property._ |
+| Volital            | _Defines whether or not the property is volitile or non-volitile._ |
+
+In the Configuration section of the XML definition file CustomProperties should be non-volitile (N).
+
+```
+<CustomProperties>
+	<Property Name=”TEST” Value=”TEST1” Volital=”N” />
+</CustomProperties>
+```
+
+### 2.1.1.2 IndexFields and IndexField Tags ###
+
+The IndexFields tag encapsulates the IndexField tag.  The IndexField tag in the configuration section if used to configure the names and types of IndexFields.  IndexFields apply to all document types defined in the batch class.  The following attributes exist in the IndexField tag:
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of index field._ |
+| Type               | _Type of field(S = String, N = Numeric, A = Amount, D = Date).  NOTE:  Not currently used.  All data types are confidered String._ |
+| Value              | _Value of field.  If populated, typed value used.  NOTE:  Typed value not currently used._ |
+| Stickey            | _This identifies whether or not the field's value should be copied to the next document if a value isn't read for that field._ |
+
+```
+<IndexFields>
+    <IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />
+</IndexFields>
+```
+
+### 2.1.1.3 Queues/Queue Tags ###
+
+Queues is an enclosing tag for the Queue tag.  The Queue tag is used to define the queues the batch will be processed through.  The first queue is usually Scan/Import queue where the batch is scanned or imported into the system.  Below is an example of the Queues/Queue definition:
+
+```
+<Queues CurrentQueue="">
+    <Queue Name="OCImport" ID="1" CustomPlugin=""/>
+    <Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
+    <Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery"/>
+</Queues>
+```
+
+Queues attributes:
+
+**CurrentQueue:	The name of the queue the batch is currently being processed in or the next queue the batch will be provessed through.**
+
+Queue attributes:
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of the queue._ |
+| ID                 | _Unique ID of the queue._ |
+| CustomPlugin       | _Java class of the custom plugin the module should call during processing._ |
+
+### 2.1.1.4  BatchFields/BatchField Tags ###
+
+BatchFields are used to define a set of fields that are relevant to all the documents in the batch.  The BatchFields tag encloses the BatchField tag which is used to define each field.  The BatchFields/BatchField tags are shown below.  Each BatchField tag has several attributes.
+
+```
+<BatchFields>
+	<BatchField Name="" Type="S" Value=""/>
+</BatchFields>
+```
+
+BatchField attributes:
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of the batch field._ |
+| Type               | _Type of field(S = String, N = Numeric, A = Amount, D = Date)._ |
+| Value              | _Default value of field._ |
+
+### 2.1.1.5  Document Tag ###
+
+The Document tag has several uses.  The first is it serves as a definition of the type of document being searched for.  The second is it acts as enclosing tag holding all the specific information about a specific document type.  Within the batch, the Document tag also contains all the read data from the zones.  Below is a sample of a Document definition:
+
+```
+<Document Name="Carrier Header" FormID="HDR" Number=””>
+```
+
+Document attributes:
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of the document type._ |
+| FormID             | _Form identification value.  This is the value used when scanning for separators in the batch._ |
+| Number             | _Document number is set at runtime._ |
+
+### 2.1.1.6 Zones and Zone Tags ###
+
+Zones and Zone tags exist at the document configuration level.  A set of zone tags is setup to define the coordinates of the area of an image to read.  The following attributes make up the Zone tag:
+
+```
+<Zones>
+	<Zone FieldType="FormID" H="1637" MinAccuracy="0" Name="FORMID" Type="CODE39" W="299" X="30" Y="253"/>
+</Zones>
+```
+
+| **Attribute Name** | **Description** |
+|:-------------------|:----------------|
+| Name               | _Name of zone.  The name FORMID should be used to identify the location of the form identification area of the zone._ |
+| Type               | _Type of zone.  Specify the PluginID for the reader that will be used to read the zone._ |
+| X                  | _X coordinate for the zone to read._ |
+| Y                  | _Y coordinate for the zone to read._ |
+| W                  | _Width of the zone to read._ |
+| H                  | _Height of the zone to read._ |
+| MinAccuracy        | _Minimum accuracy in order for content to be accepted.  NOTE:  Not currently operational._ |
+| FieldType          | _Type of field to populate (Index, Batch).  NOTE:  Not currently operational.  Only Index fields populated._ |
+
+### Example Definition File ###
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<BatchClass Name="Carrier Files" ImagePath="/home/dnesbitt/Test/OpenCapture/Images" version="0.0.1" Priority="7">
+    <Configuration>
+	<CustomProperties />
+        <IndexFields>
+            <IndexField Name="CUSTOMER_NAME" Type="S" Value="" Stickey="Y" />
+            <IndexField Name="CUSTOMER_ID" Type="N" Value="" Stickey="Y" />
+            <IndexField Name="MC_NUMBER" Type="N" Value="" Stickey="Y" />
+	    <IndexField Name="DOC_TYPE" Type="S" Value="" Stickey="N" />
+        </IndexFields>
+        <Queues CurrentQueue="">
+            <Queue Name="OCImport" ID="1" CustomPlugin="" />
+            <Queue Name="OCCognizance" ID="2" CustomPlugin="" />
+	    <Queue Name="OCConverter" ID="4" CustomPlugin="" />
+            <Queue Name="OCDelivery" ID="3" CustomPlugin="AlfrescoDelivery" />
+        </Queues>
+        <BatchFields />
+        <Documents>
+            <Document Name="Carrier Header" FormID="CARRIER" Number="" Indexed="False">
+                <Zones>
+                    <Zone Name="FORMID" Type="CODE39" X="393" Y="218" W="851" H="300" MinAccuracy="" FieldType="FormID"/>
+                    <Zone Name="CUSTOMER_NAME" Type="CODE39" X="40" Y="580" W="1536" H="220" MinAccuracy="" FieldType="Index"/>
+                    <Zone Name="CUSTOMER_ID" Type="CODE39" X="20" Y="807" W="1642" H="221" MinAccuracy="" FieldType="Index"/>
+                    <Zone Name="MC_NUMBER" Type="CODE39" X="30" Y="1040" W="1629" H="229" MinAccuracy="" FieldType="Index"/>
+                </Zones>
+            </Document>
+            <Document Name="Document Header" FormID="DOCUMENT" Number="">
+                <Zones>
+                    <Zone Name="FORMID" Type="CODE39" X="30" Y="253" W="1637" H="299" MinAccuracy="" FieldType="FormID"/>
+                    <Zone Name="DOC_TYPE" Type="CODE39" X="35" Y="741" W="1614" H="301" MinAccuracy="" FieldType="Index"/>
+                </Zones>
+            </Document>
+        </Documents>
+    </Configuration>
+</BatchClass>
+```

@@ -1,0 +1,21 @@
+# Introduction #
+
+A batch class represents a batch or set of documents that are similar in type and should be grouped together when scanning or importing.
+
+
+# Details #
+
+As an example take the following mortgage documents.
+  * Appraisal
+  * Note
+  * W9
+
+The above documents all fit into the same category of documents.  When using OpenCapture these documents would be scanned into the same batch class as they are all mortgage documents.
+
+Consider the following document types:
+
+  * Invoice
+  * Phone Bill
+  * Electric Bill
+
+These are not types of mortgage documents and therefore should not be scanned into a mortgage batch class.  Instead, another batch class should be created for these documents.

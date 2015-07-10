@@ -1,0 +1,20 @@
+# Introduction #
+
+The Converter module usually appears in the workflow just prior to the Delivery module.  Conversions should only be performed after the documents have been properly indexed.
+
+## Details ##
+
+When the Converter module processes a batch, the CustomPluginID located in the BatchClassDefinitionFile configuration section under Queues is read.  This plugin ID is used to lookup the appropriate ConverterPlugin to load.  Below is the configuration section where the Queues are configured:
+
+```
+<Queues CurrentQueue="">
+    <Queue Name="OCImport" ID="1" CustomPlugin=""/>
+    <Queue Name="OCCognizance" ID="2" CustomPlugin=""/>
+    <Queue Name="OCConverter" ID="4" CustomPlugin="PDF"/>
+    <Queue Name="OCDelivery" ID="3" CustomPlugin="XMLDelivery"/>
+</Queues>
+```
+
+Notice the Converter plugin ID is PDF.  The plugin class is loaded from the OpenCaptureConfigurationFile.  The Converter plugins are located in the [ConverterPlugins](HowToWriteConverterPlugins.md) section.
+
+Once the Converter finishes processing a batch, it is closed and the converted documents are located in the batch image directory in a folder with the same name as the Converter's plugin ID.

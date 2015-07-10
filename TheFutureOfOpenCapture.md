@@ -1,0 +1,14 @@
+This page can be considered a simple roadmap.  It contains a list of features we hope to add in future releases of OpenCapture.
+
+| **Feature/Enhancement** | **Description** |
+|:------------------------|:----------------|
+| Batch Monitor           | Web interface for monitoring batch status/state |
+| Indexing module         | Web interface for indexing batches |
+| Configuration module    | Web interface for configuring OpenCapture |
+| Scanning module         | Scanning module that supports USB scanners |
+| Web import module       | Web interface for uploading/importing new batches |
+| Scripting support       | Scripting support in modules (probably PHP) |
+| Authentication          | LDAP, local DB authentication |
+| Non-image support       | Support for non-image file types |
+
+Let us know your thoughts.  We don't consider ourselves the experts so any comments would be helpful.
